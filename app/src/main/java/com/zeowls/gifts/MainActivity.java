@@ -1,5 +1,7 @@
 package com.zeowls.gifts;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,10 +16,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +30,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    Firebase myFirebaseRef;
+    FireOwl fireOwl = new FireOwl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        Firebase.setAndroidContext(this);
+        myFirebaseRef = new Firebase("https://giftshop.firebaseio.com/");
+        myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+
         // Set behavior of Navigation drawer
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -59,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // TODO: handle navigation
                         if (menuItem.getItemId() == R.id.navLoginBTN) {
-                            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             return true;
                         }
@@ -72,18 +84,18 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "Hello Snackbar!",
-                        Snackbar.LENGTH_LONG).show();
+            public void onClick(final View v) {
+                Snackbar.make(v, fireOwl.addItem(MainActivity.this) + " Added" , Snackbar.LENGTH_LONG).show();
             }
         });
     }
+
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ListContentFragment(), "List");
-        adapter.addFragment(new TileContentFragment(), "Tile");
-        adapter.addFragment(new CardContentFragment(), "Card");
+        adapter.addFragment(new GiftsContentFragment(), "Gifts");
+        adapter.addFragment(new ShopsContentFragment(), "Shops");
+//        adapter.addFragment(new CardContentFragment(), "Card");
         viewPager.setAdapter(adapter);
     }
 
@@ -120,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 

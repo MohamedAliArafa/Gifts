@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
-public class DetailActivity extends AppCompatActivity {
+public class ItemDetailActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

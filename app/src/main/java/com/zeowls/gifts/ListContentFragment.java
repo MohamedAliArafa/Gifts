@@ -12,20 +12,50 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Provides UI for the view with List.
- */
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
+import java.util.ArrayList;
+
 public class ListContentFragment extends Fragment {
+
+    Firebase myFirebaseRef;
+    ArrayList<ItemData> items;
+    ContentAdapter adapter;
+    RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter();
+
+        Firebase.setAndroidContext(this.getContext());
+        adapter = new ContentAdapter();
         recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        items = new ArrayList<>();
+        myFirebaseRef = new Firebase("https://giftshop.firebaseio.com/items");
+
+        myFirebaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot usersSnapshot) {
+                items.clear();
+                for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
+                    ItemData user = userSnapshot.getValue(ItemData.class);
+                        items.add(0, user);
+                        recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
         return recyclerView;
     }
 
@@ -37,7 +67,7 @@ public class ListContentFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, DetailActivity.class);
+                    Intent intent = new Intent(context, ItemDetailActivity.class);
                     context.startActivity(intent);
                 }
             });
@@ -48,9 +78,6 @@ public class ListContentFragment extends Fragment {
      * Adapter to display recycler view.
      */
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 18;
-        private final String[] items= {"Cat","Dog"};
 
         public ContentAdapter() {
         }
@@ -62,22 +89,21 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            // no-op
-            final String name = items[position];
             TextView title = (TextView) holder.itemView.findViewById(R.id.list_title);
-            title.setText(items[position]);
+            TextView desc = (TextView) holder.itemView.findViewById(R.id.list_desc);
+            title.setText(items.get(position).getName());
+            desc.setText(items.get(position).getDesc());
             title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(ListContentFragment.this.getContext(), name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListContentFragment.this.getContext(), items.get(position).getName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
         @Override
         public int getItemCount() {
-//            return LENGTH;
-            return items.length;
+            return items.size();
         }
     }
 

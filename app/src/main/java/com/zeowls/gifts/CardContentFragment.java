@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 /**
  * Provides UI for the view with Cards.
@@ -39,7 +38,7 @@ public class CardContentFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, DetailActivity.class);
+                    Intent intent = new Intent(context, ItemDetailActivity.class);
                     context.startActivity(intent);
                 }
             });
