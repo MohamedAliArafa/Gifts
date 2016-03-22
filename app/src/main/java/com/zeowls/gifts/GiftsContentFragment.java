@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 public class GiftsContentFragment extends Fragment {
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
