@@ -143,15 +143,10 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
         mPersonData = (TextView) findViewById(R.id.person_data);
 
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestScopes(new Scope(Scopes.PLUS_LOGIN))
-//                .requestEmail()
-//                .build();
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-//                .addApi(Plus.API)
-//                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
     }
 
@@ -367,38 +362,11 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
         // Indicate that the sign in process is complete.
         mSignInProgress = SIGNED_IN;
-
-        Log.d("Connected","true");
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null).setResultCallback(this);
-
-        /*String personName="Unknown";
-        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            personName = currentPerson.getDisplayName();
-            Log.d("Test APi ",personName);
-        }else {
-            Log.d("Test APi ","Null ");
-        }*/
-
 
         try {
             String emailAddress = Plus.AccountApi.getAccountName(mGoogleApiClient);
-
-
-            //    String personName = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName();
-            //String personPhoto = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage();
-            //    String personId = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getId();
-            //   String personGooglePlusProfile = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getUrl();
-
-
-
             mStatus.setText(String.format("Signed In to My App as %s", emailAddress));
-
-
-
-
-            //    Log.d("Person" ,personGooglePlusProfile);
-            mPersonData.setText("zzzzzzzzz");
 
         } catch (Exception ex) {
             String exception = ex.getLocalizedMessage();
@@ -406,14 +374,14 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             Log.d("Exc",exceptionString);
             // Note that you should log these errors in a 'real' app to aid in debugging
         }
-//        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-//            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-//            String personName = currentPerson.getDisplayName();
-////            String personPhoto = currentPerson.getImage();
-//            String personId = currentPerson.getId();
-//            String personGooglePlusProfile = currentPerson.getUrl();
-//            mPersonData.setText(personName+"\n"+personId+"\n"+personGooglePlusProfile);
-//        }
+        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            String personName = currentPerson.getDisplayName();
+            String personId = currentPerson.getId();
+            Person.Image personPhoto = currentPerson.getImage();
+            mPersonData.setText(personName+"\n"+personId+"\n"+personPhoto);
+            Log.d("person photo", personPhoto.getUrl());
+        }
     }
 
     @Override
@@ -469,50 +437,10 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                 if (!mGoogleApiClient.isConnecting()) {
                     mGoogleApiClient.connect();
                 }
-                /*GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                handleSignInResult(result);
-
-                // G+
-                Person person  = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-                Log.i(TAG, "--------------------------------");
-                Log.i(TAG, "Display Name: " + person.getDisplayName());
-                Log.i(TAG, "Gender: " + person.getGender());
-                Log.i(TAG, "AboutMe: " + person.getAboutMe());
-                Log.i(TAG, "Birthday: " + person.getBirthday());
-                Log.i(TAG, "Current Location: " + person.getCurrentLocation());
-                Log.i(TAG, "Language: " + person.getLanguage());*/
-                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                GoogleSignInAccount acct = result.getSignInAccount();
-                String personName = acct.getDisplayName();
-                String personEmail = acct.getEmail();
-                String personId = acct.getId();
-                Uri personPhoto = acct.getPhotoUrl();
-                mPersonData.setText(personName+"\n"+personId+"\n"+personPhoto);
                 break;
         }
     }
 
-    /*private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-            // Views inside NavigationView's header
-            mUserTextView.setText(acct.getDisplayName());
-            mEmailTextView.setText(acct.getEmail());
-            Uri uri = acct.getPhotoUrl();
-            Picasso.with(mContext)
-                    .load(uri)
-                    .placeholder(android.R.drawable.sym_def_app_icon)
-                    .error(android.R.drawable.sym_def_app_icon)
-                    .into(mProfileImageView);
-            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
-        }
-    }*/
 
     @Override
     public void onClick(View v) {
