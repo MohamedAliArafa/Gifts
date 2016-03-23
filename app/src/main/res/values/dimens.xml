@@ -22,5 +22,6 @@
     <dimen name="content_inset_half">8dp</dimen>
     <dimen name="content_inset">16dp</dimen>
     <dimen name="spacing">10dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>
