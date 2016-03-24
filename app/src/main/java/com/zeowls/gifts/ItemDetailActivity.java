@@ -58,7 +58,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
 
-                Core core = new Core();
+                Core core = new Core(ItemDetailActivity.this);
             try {
                 itemsJSON = core.getShop(id);
             } catch (JSONException e) {
