@@ -24,7 +24,7 @@ public class newitem extends AppCompatActivity {
 
     ListView listItems;
     ArrayList<String> items = new ArrayList<>();
-    EditText nameEdit,quantity;
+    EditText nameEdit, quantity;
     ArrayAdapter adapter;
 
     @Override
@@ -38,14 +38,12 @@ public class newitem extends AppCompatActivity {
         Button submit = (Button) findViewById(R.id.submitBTN);
         setSupportActionBar(toolbar);
 
-        new loadingData().execute();
-
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nameEdit.getText() != null && quantity.getText()!=null) {
+                if (nameEdit.getText() != null && quantity.getText() != null) {
                     //ToDo
                     new postData().execute();
                 } else {
@@ -85,7 +83,7 @@ public class newitem extends AppCompatActivity {
         protected Object doInBackground(Object[] params) {
 
             try {
-                new Core(newitem.this).newItem(name,Quantity);
+                new Core(newitem.this).newItem(name, Quantity);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -93,43 +91,5 @@ public class newitem extends AppCompatActivity {
         }
     }
 
-    private class loadingData extends AsyncTask {
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            listItems.setAdapter(adapter);
-        }
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-
-            try {
-                Core core = new Core();
-                JSONObject itemsJSON = core.getAllShops();
-                if (itemsJSON.getJSONArray("Shop").length() != 0){
-                    for (int i = 0; i < itemsJSON.getJSONArray("Shop").length(); i++){
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Shop");
-                Core core = new Core(newitem.this);
-                JSONObject itemsJSON = core.getShopItems(3);
-                if (itemsJSON.getJSONArray("Items").length() != 0){
-                    for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++){
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
-                        JSONObject item = itemsarray.getJSONObject(i);
-                        String name = item.getString("name");
-                        items.add(name);
-                        //items.add(itemsJSON.getJSONArray("Shop").getJSONObject(i).getString("name"));
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
 
 }
