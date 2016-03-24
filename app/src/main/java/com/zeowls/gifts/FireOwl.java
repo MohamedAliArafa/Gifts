@@ -32,7 +32,7 @@ public class FireOwl {
             public void onClick(DialogInterface dialog, int which) {
                 String nameTxt = name.getText().toString();
                 String descTxt = desc.getText().toString();
-                ItemData item = new ItemData();
+                ItemDataMode item = new ItemDataMode();
                 item.setName(nameTxt);
                 item.setDesc(descTxt);
                 firebaseRef.child("items").push().setValue(item);

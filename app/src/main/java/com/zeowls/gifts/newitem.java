@@ -107,13 +107,14 @@ public class newitem extends AppCompatActivity {
 
             try {
                 Core core = new Core();
-                JSONObject itemsJSON = core.getShopItems(3);
-                if (itemsJSON.getJSONArray("Items").length() != 0){
-                    for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++){
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
+                JSONObject itemsJSON = core.getAllShops();
+                if (itemsJSON.getJSONArray("Shop").length() != 0){
+                    for (int i = 0; i < itemsJSON.getJSONArray("Shop").length(); i++){
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Shop");
                         JSONObject item = itemsarray.getJSONObject(i);
                         String name = item.getString("name");
-                        items.add(itemsJSON.getJSONArray("Items").getJSONObject(i).getString("name"));
+                        items.add(name);
+                        //items.add(itemsJSON.getJSONArray("Shop").getJSONObject(i).getString("name"));
                     }
                 }
             } catch (JSONException e) {

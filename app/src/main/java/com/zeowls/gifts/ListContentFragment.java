@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class ListContentFragment extends Fragment {
 
     Firebase myFirebaseRef;
-    ArrayList<ItemData> items;
+    ArrayList<ItemDataMode> items;
     ContentAdapter adapter;
     RecyclerView recyclerView;
 
@@ -45,7 +45,7 @@ public class ListContentFragment extends Fragment {
             public void onDataChange(DataSnapshot usersSnapshot) {
                 items.clear();
                 for (DataSnapshot userSnapshot : usersSnapshot.getChildren()) {
-                    ItemData user = userSnapshot.getValue(ItemData.class);
+                    ItemDataMode user = userSnapshot.getValue(ItemDataMode.class);
                         items.add(0, user);
                         recyclerView.setAdapter(adapter);
                 }

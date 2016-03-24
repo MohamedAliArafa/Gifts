@@ -151,6 +151,40 @@ public class Core {
         return json;
     }
 
+    public JSONObject getShop(int id) throws JSONException {
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/GetShop/"+id+"/JSON");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("getShopItems", response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
+    public JSONObject getAllShops(){
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/GetAllShops/JSON");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("getAllShops", response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
 
     public JSONObject newItem(String name) throws JSONException {
         JSONObject json = null;
