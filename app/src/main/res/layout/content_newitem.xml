@@ -25,9 +25,16 @@
         android:layout_height="wrap_content"
         android:hint="Item Name"/>
 
+    <EditText
+        android:id="@+id/QuEdit"
+        android:layout_below="@+id/nameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quantity"/>
+
     <Button
         android:id="@+id/submitBTN"
-        android:layout_below="@+id/nameEdit"
+        android:layout_below="@+id/QuEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"/>

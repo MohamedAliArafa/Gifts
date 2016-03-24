@@ -1,8 +1,18 @@
 package com.zeowls.gifts;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,16 +31,20 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
 
-/**
- * Created by root on 3/23/16.
- */
 public class Core {
+
+    Context context;
+
+    public Core(Context context){
+        this.context = context;
+    }
 
     private String Domain = "http://bubble-zeowls.herokuapp.com";
 
@@ -56,61 +70,39 @@ public class Core {
         return data;
     }
 
+
+
+
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void postRequest(String name) throws IOException {
-//        String data;
-//        BufferedReader reader;
-//        URL url1 = new URL(url);
-//        Log.d("url", url);
-//        HttpURLConnection httpURLConnection = (HttpURLConnection) url1.openConnection();
-//        httpURLConnection.setRequestMethod("GET");
-//        httpURLConnection.setConnectTimeout(2000);
-//        httpURLConnection.connect();
+    private void postRequest(final String name, final int Quantity) throws IOException {
 
-        URL url = new URL(Domain + "/newShopItem/3/" );
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000);
-        conn.setConnectTimeout(15000);
-        conn.setRequestMethod("POST");
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Domain + "/newShopItem/3/",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(context,response,Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<>();
+                params.put("name",name);
+                params.put("quantity", String.valueOf(Quantity));
+//                params.put(KEY_EMAIL, email);
+                return params;
+            }
 
-        ArrayList<AbstractMap.SimpleEntry> params = new ArrayList<>();
-        params.add(new AbstractMap.SimpleEntry<>("name", name));
+        };
 
-        OutputStream os = conn.getOutputStream();
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-        writer.write(getQuery(params));
-        writer.flush();
-        writer.close();
-        os.close();
-
-        conn.connect();
-
-//        String urlParameters  = "name=" + name;
-//        byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
-//        int    postDataLength = postData.length;
-//        URL url = new URL( Domain + "/newShopItem/5/" );
-//        HttpURLConnection conn= (HttpURLConnection) url.openConnection();
-//        conn.setDoOutput( true );
-//        conn.setInstanceFollowRedirects( false );
-//        conn.setRequestMethod( "POST" );
-//        conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-//        conn.setRequestProperty( "charset", "utf-8");
-//        conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-//        conn.setUseCaches( false );
-//        conn.connect();
-
-//        InputStream inputStream = httpURLConnection.getInputStream();
-//        StringBuilder stringBuffer = new StringBuilder();
-//        assert inputStream != null;
-//        reader = new BufferedReader(new InputStreamReader(inputStream));
-//        String line;
-//        while ((line = reader.readLine())!=null){
-//            stringBuffer.append(line);
-//        }
-//        data = stringBuffer.toString();
-//        return data;
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
     }
 
 
@@ -186,10 +178,10 @@ public class Core {
     }
 
 
-    public JSONObject newItem(String name) throws JSONException {
+    public JSONObject newItem(String name,int Quantity) throws JSONException {
         JSONObject json = null;
         try {
-            postRequest(name);
+            postRequest(name,Quantity);
         } catch (IOException e) {
             e.printStackTrace();
         }
