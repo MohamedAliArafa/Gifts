@@ -1,5 +1,6 @@
 package com.zeowls.gifts.GiftsTap;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +34,8 @@ import java.util.ArrayList;
 public class GiftsContentFragment1 extends Fragment {
 
     static ArrayList<ItemDataMode> GiftItems = new ArrayList<>();
-    public  RecyclerView recyclerView;
-    MainAdapter adapter ;
+    public RecyclerView recyclerView;
+    MainAdapter adapter;
 
 
     @Override
@@ -41,32 +43,51 @@ public class GiftsContentFragment1 extends Fragment {
                              Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
+
+
+        new loadingData().execute();
+
+
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
 
-         adapter = new MainAdapter();
+        adapter = new MainAdapter();
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(),
                 getResources().getInteger(R.integer.grid_span));
         recyclerView.setLayoutManager(manager);
         adapter.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-
         return recyclerView;
     }
 
 
-
     private class loadingData extends AsyncTask {
+        ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
+            pDialog = new ProgressDialog(getContext());
+            pDialog.setMessage(getString(R.string.loading) + "...");
+            pDialog.setIndeterminate(false);
+            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDialog.show();
 
+        }
+
+        private void hidePDialog() {
+            if (pDialog != null) {
+                pDialog.dismiss();
+                pDialog = null;
+            }
         }
 
         @Override
         protected void onPostExecute(Object o) {
+
+            hidePDialog();
             recyclerView.setAdapter(adapter);
+            Log.d("Gifts Array", GiftItems.toString());
         }
 
         @Override
@@ -75,39 +96,107 @@ public class GiftsContentFragment1 extends Fragment {
             try {
                 Core core = new Core(getContext());
                 JSONObject itemsJSON = core.getItemsByCategoryId(1);
-                if (core.getAllShops() != null &&  itemsJSON.getJSONArray("Shop").length() != 0 ){
-                    for (int i = 0; i < itemsJSON.getJSONArray("Shop").length(); i++){
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Shop");
+                if (core.getItemsByCategoryId(1) != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    for (int i = 0; i < 4; i++) {
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
                         JSONObject item = itemsarray.getJSONObject(i);
-                        ItemDataMode Giftitem = new ItemDataMode();
-                       // Giftitem.setId(item.getInt("id"));
-                        Giftitem.setName(item.getString("name"));
-                        Giftitem.setDesc(item.getString("description"));
-                        Giftitem.setImgUrl(item.getString("profile_pic"));
+                        ItemDataMode Gift_Item = new ItemDataMode();
+                        Gift_Item.setId(item.getInt("id"));
+                        Gift_Item.setName(item.getString("name"));
+                        Gift_Item.setDesc(item.getString("description"));
+                        // Gift_Item.setPrice(item.getString("price"));
+                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
 
-                        GiftItems.add(Giftitem);
+                        GiftItems.add(Gift_Item);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
+            try {
+                Core core = new Core(getContext());
+                JSONObject itemsJSON = core.getItemsByCategoryId(2);
+                if (core.getItemsByCategoryId(2) != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    for (int i = 0; i < 4; i++) {
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
+                        JSONObject item = itemsarray.getJSONObject(i);
+                        ItemDataMode Gift_Item = new ItemDataMode();
+                        Gift_Item.setId(item.getInt("id"));
+                        Gift_Item.setName(item.getString("name"));
+                        Gift_Item.setDesc(item.getString("description"));
+                        // Gift_Item.setPrice(item.getString("price"));
+                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+
+                        GiftItems.add(Gift_Item);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                Core core = new Core(getContext());
+                JSONObject itemsJSON = core.getItemsByCategoryId(3);
+                if (core.getItemsByCategoryId(3) != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    for (int i = 0; i < 4; i++) {
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
+                        JSONObject item = itemsarray.getJSONObject(i);
+                        ItemDataMode Gift_Item = new ItemDataMode();
+                        Gift_Item.setId(item.getInt("id"));
+                        Gift_Item.setName(item.getString("name"));
+                        Gift_Item.setDesc(item.getString("description"));
+                        // Gift_Item.setPrice(item.getString("price"));
+                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+
+                        GiftItems.add(Gift_Item);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                Core core = new Core(getContext());
+                JSONObject itemsJSON = core.getItemsByCategoryId(4);
+                if (core.getItemsByCategoryId(4) != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    for (int i = 0; i < 4; i++) {
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
+                        JSONObject item = itemsarray.getJSONObject(i);
+                        ItemDataMode Gift_Item = new ItemDataMode();
+                        Gift_Item.setId(item.getInt("id"));
+                        Gift_Item.setName(item.getString("name"));
+                        Gift_Item.setDesc(item.getString("description"));
+                        // Gift_Item.setPrice(item.getString("price"));
+                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+
+                        GiftItems.add(Gift_Item);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
             return null;
         }
     }
 
 
-
-
-
-
-
     public static class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
-
 
 
         @Override
         public int getSectionCount() {
-            return 4;
+            if (GiftItems.size() != 0) {
+                return GiftItems.size()/4;
+            }
+
+            return 0;
+
         }
 
         @Override
@@ -120,11 +209,37 @@ public class GiftsContentFragment1 extends Fragment {
         @Override
         public void onBindHeaderViewHolder(MainVH holder, int section) {
             holder.ShopName.setText(String.format("Section %d", section));
+
         }
 
         @Override
-        public void onBindViewHolder(MainVH holder, int section, int relativePosition, int absolutePosition) {
+        public void onBindViewHolder(MainVH holder, int section, int relativePosition, final int absolutePosition) {
             holder.ShopName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
+
+            if (GiftItems.size() != 0) {
+                Log.d("Araay size", String.valueOf(GiftItems.size()));
+                holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
+                holder.ShopName.setText(GiftItems.get(absolutePosition).getDesc());
+                holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
+
+            }
+
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Context context = v.getContext();
+//                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
+//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+//                    context.startActivity(intent);  Context context = v.getContext();
+//                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
+//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+//                    context.startActivity(intent);
+                }
+            });
+
         }
 
         @Override
@@ -156,9 +271,6 @@ public class GiftsContentFragment1 extends Fragment {
         }
 
 
-
-
-
         public static class MainVH extends RecyclerView.ViewHolder {
 
 
@@ -169,8 +281,8 @@ public class GiftsContentFragment1 extends Fragment {
             public MainVH(View itemView) {
                 super(itemView);
 
-                ShopName = (TextView) itemView.findViewById(R.id.title);
-                ItemName = (TextView) itemView.findViewById(R.id.card_text);
+                ShopName = (TextView) itemView.findViewById(R.id.card_Shop_name);
+                ItemName = (TextView) itemView.findViewById(R.id.card_Name);
                 ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
 
 
@@ -193,7 +305,6 @@ public class GiftsContentFragment1 extends Fragment {
                 });
 
 
-
                 ItemName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -201,7 +312,6 @@ public class GiftsContentFragment1 extends Fragment {
                         Toast.makeText(context, "Item  name", Toast.LENGTH_SHORT).show();
                     }
                 });
-
 
 
                 ItemPrice.setOnClickListener(new View.OnClickListener() {
@@ -213,42 +323,9 @@ public class GiftsContentFragment1 extends Fragment {
                 });
 
 
-
-
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

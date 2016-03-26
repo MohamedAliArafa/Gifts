@@ -60,7 +60,7 @@
 
 
         <TextView
-            android:id="@+id/card_text"
+            android:id="@+id/card_Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
@@ -74,10 +74,10 @@
             android:textSize="@dimen/article_subheading" />
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/card_Shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/card_text"
+            android:layout_below="@+id/card_Name"
             android:text="Shop Name"
             android:textColor="?attr/colorPrimary" />
 
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/card_text"
+            android:layout_below="@+id/card_Name"
             android:layout_marginEnd="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
             android:text="Price"

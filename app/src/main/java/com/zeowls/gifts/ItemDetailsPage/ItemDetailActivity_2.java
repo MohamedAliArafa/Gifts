@@ -2,11 +2,9 @@ package com.zeowls.gifts.ItemDetailsPage;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import com.zeowls.gifts.R;
 
@@ -16,9 +14,6 @@ import com.zeowls.gifts.R;
 public class ItemDetailActivity_2 extends AppCompatActivity {
 
     int id;
-    TextView name, description;
-    CollapsingToolbarLayout collapsingToolbar;
-
     Item_Detail_Fragment Detail_Fragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;

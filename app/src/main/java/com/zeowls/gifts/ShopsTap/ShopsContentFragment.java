@@ -17,8 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -152,7 +152,7 @@ public class ShopsContentFragment extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
+                    Intent intent = new Intent(context, Shop_Detail_Activity.class);
                     intent.putExtra("id", shops.get(position).getId());
                     context.startActivity(intent);
                 }
