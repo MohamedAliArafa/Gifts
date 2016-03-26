@@ -26,7 +26,7 @@ public class Item_Detail_Fragment extends Fragment {
 
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
-    TextView name, description;
+    TextView name, description, price, shopName;
 
 
     @Nullable
@@ -51,7 +51,8 @@ public class Item_Detail_Fragment extends Fragment {
         collapsingToolbar.setTitle(getString(R.string.item_title));
 
        description = (TextView) view.findViewById(R.id.Item_Description);
-
+        price = (TextView) view.findViewById(R.id.description2);
+        shopName = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
 
     }
 
@@ -67,14 +68,15 @@ public class Item_Detail_Fragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-
         }
 
         @Override
         protected void onPostExecute(Object o) {
             try {
-                description.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
-                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
+                description.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("description"));
+                price.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
+                shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
+                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -85,7 +87,7 @@ public class Item_Detail_Fragment extends Fragment {
 
             Core core = new Core(getContext());
             try {
-                itemsJSON = core.getShop(id);
+                itemsJSON = core.getItem(id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

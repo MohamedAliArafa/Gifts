@@ -50,7 +50,7 @@ public class CategoryContentFragment extends Fragment {
         new loadingData().execute();
 
         recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
@@ -167,9 +167,9 @@ public class CategoryContentFragment extends Fragment {
                     if (fragment != null) {
                         fragmentTransaction.remove(fragment);
                     }
-
                     fragment = new ItemsByCategoryIdFragment();
                     fragment.setId(categories.get(position).getId());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.category1, fragment);
                     fragmentTransaction.commit();
 //                    Context context = v.getContext();

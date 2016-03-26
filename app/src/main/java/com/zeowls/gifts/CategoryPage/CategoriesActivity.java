@@ -26,6 +26,7 @@ public class CategoriesActivity extends AppCompatActivity {
         }
         fragment = new CategoryContentFragment();
        // fragment.setId(id);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.category1, fragment);
         fragmentTransaction.commit();
     }
@@ -33,6 +34,10 @@ public class CategoriesActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        fragmentManager.popBackStack();
+        if (fragmentManager.getBackStackEntryCount() == 1){
+            this.finish();
+        }else {
+            fragmentManager.popBackStack();
+        }
     }
 }

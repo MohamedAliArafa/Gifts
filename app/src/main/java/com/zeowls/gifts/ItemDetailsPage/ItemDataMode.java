@@ -31,7 +31,15 @@ public class ItemDataMode {
     String imgUrl;
 
     int catId, id, shopId;
-    String price, shortDesc;
+    String price, shortDesc, shopName;
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 
     public int getCatId() {
         return catId;

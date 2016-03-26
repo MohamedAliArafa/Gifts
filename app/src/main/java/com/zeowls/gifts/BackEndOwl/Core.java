@@ -150,6 +150,22 @@ public class Core {
         return json;
     }
 
+    public JSONObject getItem(int id) throws JSONException {
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/GetItem/"+id+"/JSON");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("get Items", response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
     public JSONObject getAllShops(){
         JSONObject json = null;
         try {

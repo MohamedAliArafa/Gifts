@@ -1,9 +1,15 @@
 package com.zeowls.gifts.CategoryPage;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +21,8 @@ import android.widget.TextView;
 
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
+import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
+import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
@@ -34,6 +42,14 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
     int id =0;
 
+    protected FragmentActivity myContext;
+
+    @Override
+    public void onAttach(Activity activity) {
+        myContext = (FragmentActivity) activity;
+        super.onAttach(activity);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -44,7 +60,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
         new loadingData().execute();
 
         recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
@@ -96,7 +112,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.category_item_card, parent, false));
@@ -107,6 +123,8 @@ public class ItemsByCategoryIdFragment extends Fragment{
             imageView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
+//                    Context context =  v.getContext();
+//                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
                     Snackbar.make(v, "Image is pressed",
                             Snackbar.LENGTH_LONG).show();
                 }
@@ -128,9 +146,12 @@ public class ItemsByCategoryIdFragment extends Fragment{
     /**
      * Adapter to display recycler view.
      */
-    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
+        Item_Detail_Fragment fragment;
+        FragmentManager fragmentManager;
+        FragmentTransaction fragmentTransaction;
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -152,6 +173,17 @@ public class ItemsByCategoryIdFragment extends Fragment{
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    fragmentManager = myContext.getSupportFragmentManager();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    if (fragment != null) {
+                        fragmentTransaction.remove(fragment);
+                    }
+
+                    fragment = new Item_Detail_Fragment();
+                    fragment.setId(items.get(position).getId());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.replace(R.id.category1, fragment);
+                    fragmentTransaction.commit();
 //                    Context context = v.getContext();
 //                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
 //                    Intent intent = new Intent(context, ItemDetailActivity.class);
