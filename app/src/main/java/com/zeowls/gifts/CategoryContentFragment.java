@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,40 +12,50 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
 
 /**
- * Provides UI for the view with Cards.
+ * Created by nora on 3/24/2016.
  */
-public class ShopsContentFragment extends Fragment {
-
-    static ArrayList<ShopDataModel> shops = new ArrayList<>();
+public class CategoryContentFragment extends Fragment {
+    static ArrayList<ShopDataModel> categories = new ArrayList<>();
     RecyclerView recyclerView;
     ContentAdapter adapter;
 
+    int id =0;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         adapter = new ContentAdapter();
 
         new loadingData().execute();
 
-        //recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
         return recyclerView;
     }
 
-    private class loadingData extends AsyncTask {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+        private class loadingData extends AsyncTask {
 
         @Override
         protected void onPreExecute() {
@@ -63,19 +72,16 @@ public class ShopsContentFragment extends Fragment {
 
             try {
                 Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getAllShops();
-                if (core.getAllShops() != null &&  itemsJSON.getJSONArray("Shop").length() != 0 ){
-                    for (int i = 0; i < itemsJSON.getJSONArray("Shop").length(); i++){
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Shop");
+                JSONObject itemsJSON = core.getAllCategories();
+                if (core.getAllCategories() != null &&  itemsJSON.getJSONArray("Category").length() != 0 ){
+                    for (int i = 0; i < itemsJSON.getJSONArray("Category").length(); i++){
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Category");
                         JSONObject item = itemsarray.getJSONObject(i);
-                        ShopDataModel shop = new ShopDataModel();
-                        shop.setId(item.getInt("id"));
-                        shop.setName(item.getString("name"));
-                        shop.setDescription(item.getString("description"));
-                        shop.setOwner(item.getString("owner"));
-                        shop.setPictureUrl(item.getString("profile_pic"));
+                        ShopDataModel category = new ShopDataModel();
+                        category.setId(item.getInt("id"));
+                        category.setName(item.getString("name"));
 
-                        shops.add(shop);
+                        categories.add(category);
                     }
                 }
             } catch (JSONException e) {
@@ -88,37 +94,28 @@ public class ShopsContentFragment extends Fragment {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_card, parent, false));
+            super(inflater.inflate(R.layout.category_item_card, parent, false));
 
 
             // Adding Snackbar to Action Button inside card
-            Button button = (Button) itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener(){
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            imageView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, "Action is pressed",
+                    Snackbar.make(v, "Image is pressed",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            });
+            TextView textView = (TextView) itemView.findViewById(R.id.textView);
+
+            textView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(v, "Text is pressed",
                             Snackbar.LENGTH_LONG).show();
                 }
             });
 
-            ImageButton favoriteImageButton =
-                    (ImageButton) itemView.findViewById(R.id.favorite_button);
-            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Added to Favorite",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-
-            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-            shareImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Share article",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
         }
     }
 
@@ -137,27 +134,32 @@ public class ShopsContentFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, final int position) {
             // no-op
-            if (shops.size() != 0) {
-                TextView name = (TextView) holder.itemView.findViewById(R.id.card_title);
-                TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
-                name.setText(shops.get(position).getName());
-                text.setText(shops.get(position).getDescription());
+            if (categories.size() != 0) {
+                ImageView image = (ImageView) holder.itemView.findViewById(R.id.imageView);
+                TextView name = (TextView) holder.itemView.findViewById(R.id.textView);
+                //TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
+                name.setText(categories.get(position).getName());
+                //text.setText(shops.get(position).getDescription());
             }
+
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
-                    Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra("id", shops.get(position).getId());
-                    context.startActivity(intent);
+//                    Context context = v.getContext();
+//                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(context, ItemDetailActivity.class);
+//                    intent.putExtra("id", shops.get(position).getId());
+//                    context.startActivity(intent);
+
+
                 }
             });
         }
 
         @Override
         public int getItemCount() {
-            return LENGTH;
+            return categories.size();
         }
     }
 }

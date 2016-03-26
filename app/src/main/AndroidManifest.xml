@@ -41,7 +41,8 @@
         <activity
             android:name=".newitem"
             android:label="@string/title_activity_newitem"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".CategoriesActivity"></activity>
     </application>
 
 </manifest>

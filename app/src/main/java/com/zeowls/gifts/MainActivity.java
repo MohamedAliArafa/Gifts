@@ -72,6 +72,17 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             return true;
                         }
+
+                        if (menuItem.getItemId() == R.id.categoryBTN) {
+                            Intent intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+
+
+
+
+
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
