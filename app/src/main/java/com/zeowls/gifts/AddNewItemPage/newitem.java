@@ -1,4 +1,4 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.AddNewItemPage;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,9 +13,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
+import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.R;
+
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 

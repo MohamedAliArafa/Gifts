@@ -1,4 +1,4 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.GiftsTap;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.zeowls.SectionedREcycler.MainAdapter;
 import com.zeowls.SectionedREcycler.SpacesItemDecoration;
+import com.zeowls.gifts.R;
 
 /**
  * Provides UI for the view with Cards.

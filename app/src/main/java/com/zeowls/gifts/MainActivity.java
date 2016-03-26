@@ -20,6 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.client.Firebase;
+import com.zeowls.gifts.AddNewItemPage.newitem;
+import com.zeowls.gifts.BackEndOwl.FireOwl;
+import com.zeowls.gifts.CategoryPage.CategoriesActivity;
+import com.zeowls.gifts.GiftsTap.GiftsContentFragment1;
+import com.zeowls.gifts.LoginPage.LoginActivity;
+import com.zeowls.gifts.ShopsTap.ShopsContentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new GiftsContentFragment1(), "Gifts");
         adapter.addFragment(new ShopsContentFragment(), "Shops");
-//        adapter.addFragment(new CardContentFragment(), "Card");
         viewPager.setAdapter(adapter);
     }
 

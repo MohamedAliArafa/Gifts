@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/md_keylines"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/item_Detail_SHop_Image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/paris" />
+
+
+    <TextView
+        android:id="@+id/item_Detail_Shop_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:maxWidth="200dp"
+        android:text="Candy Shop"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/item_Detail_Shop_Slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:maxWidth="300dp"
+        android:text="Awlad el 7ag kofta w s7abo ll blastik bel sala 3al naby" />
+
+
+    <Button
+        android:id="@+id/Item_Detail_Shop_Visit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:text="Visit Shop"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+
+        />
+
+
+</LinearLayout>
+

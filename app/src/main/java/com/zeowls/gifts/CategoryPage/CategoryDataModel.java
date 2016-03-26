@@ -1,4 +1,4 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.CategoryPage;
 
 /**
  * Created by nora on 3/24/2016.

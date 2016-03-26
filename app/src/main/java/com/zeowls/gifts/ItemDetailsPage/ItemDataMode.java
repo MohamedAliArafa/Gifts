@@ -1,4 +1,4 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.ItemDetailsPage;
 
 public class ItemDataMode {
     public String getName() {

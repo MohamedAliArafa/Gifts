@@ -1,41 +1,66 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.ItemDetailsPage;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.json.JSONArray;
+import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Provides UI for the Detail page with Collapsing Toolbar.
+ * Created by Nezar Saleh on 3/24/2016.
  */
-public class ItemDetailActivity extends AppCompatActivity {
+public class Item_Detail_Fragment extends Fragment {
 
-    int id;
-    TextView name, description;
+
+    int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
+    TextView name, description;
+
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        new loadingData().execute();
+        return inflater.inflate(R.layout.item_detail_in_fragment, container, false);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        // Set title of Detail page
-        new loadingData().execute();
+                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
+
         collapsingToolbar.setTitle(getString(R.string.item_title));
-        Intent intent = getIntent();
-        id = intent.getIntExtra("id", 0);
-        description = (TextView) findViewById(R.id.description);
+
+       description = (TextView) view.findViewById(R.id.Item_Description);
+
+
     }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
     private class loadingData extends AsyncTask {
 
         JSONObject itemsJSON;
@@ -58,7 +83,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
 
-                Core core = new Core(ItemDetailActivity.this);
+            Core core = new Core(getContext());
             try {
                 itemsJSON = core.getShop(id);
             } catch (JSONException e) {
@@ -68,4 +93,11 @@ public class ItemDetailActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
+
+
+
+
+
 }

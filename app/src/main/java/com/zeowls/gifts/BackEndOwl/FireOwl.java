@@ -1,4 +1,4 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.BackEndOwl;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.firebase.client.Firebase;
+import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
 
 public class FireOwl {
 

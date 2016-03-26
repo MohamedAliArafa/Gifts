@@ -1,9 +1,11 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.CategoryPage;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.zeowls.gifts.R;
 
 public class CategoriesActivity extends AppCompatActivity {
 

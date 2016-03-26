@@ -1,4 +1,4 @@
-package com.zeowls.gifts;
+package com.zeowls.gifts.ShopsTap;
 
 /**
  * Created by nora on 3/23/2016.

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zeowls.gifts.ItemDetailActivity;
+import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
 import com.zeowls.gifts.R;
 
 
@@ -88,7 +88,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, ItemDetailActivity.class);
+                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
                     context.startActivity(intent);
                 }
             });
