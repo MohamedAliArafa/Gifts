@@ -31,8 +31,7 @@ public class ItemDataMode {
     String imgUrl;
 
     int catId, id, shopId;
-    double price;
-    String shortDesc;
+    String price, shortDesc;
 
     public int getCatId() {
         return catId;
@@ -66,11 +65,11 @@ public class ItemDataMode {
         this.shortDesc = shortDesc;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 }

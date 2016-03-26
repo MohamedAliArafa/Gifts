@@ -29,4 +29,10 @@ public class CategoriesActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.category1, fragment);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        fragmentManager.popBackStack();
+    }
 }
