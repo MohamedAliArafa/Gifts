@@ -2,7 +2,6 @@ package com.zeowls.gifts.BackEndOwl;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,25 +17,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SimpleTimeZone;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class Core {
 
@@ -194,6 +185,27 @@ public class Core {
 //        putMoviesDB(json);
         return json;
     }
+
+    public JSONObject getItemsByCategoryId(int id){
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/GetItemByCategory/"+id+"/JSON");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("get Items By Cat id", response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
+
+
 
 
     public JSONObject newItem(String name,int Quantity) throws JSONException {
