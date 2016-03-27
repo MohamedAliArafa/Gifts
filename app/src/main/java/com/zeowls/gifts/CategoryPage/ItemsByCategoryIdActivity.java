@@ -23,6 +23,7 @@ public class ItemsByCategoryIdActivity extends AppCompatActivity {
         Intent intent = getIntent();
         id = intent.getIntExtra("id",0);
 
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         if (fragment != null) {
