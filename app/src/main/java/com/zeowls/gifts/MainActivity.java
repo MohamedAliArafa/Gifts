@@ -22,7 +22,6 @@ import android.view.View;
 import com.firebase.client.Firebase;
 import com.zeowls.gifts.AddNewItemPage.newitem;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
-import com.zeowls.gifts.CategoryPage.CategoriesActivity;
 import com.zeowls.gifts.CategoryPage.CategoryContentFragment1;
 import com.zeowls.gifts.GiftsTap.GiftsContentFragment1;
 import com.zeowls.gifts.LoginPage.LoginActivity;
@@ -80,11 +79,7 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         }
 
-                        if (menuItem.getItemId() == R.id.categoryBTN) {
-                            Intent intent = new Intent(getApplicationContext(), CategoriesActivity.class);
-                            startActivity(intent);
-                            return true;
-                        }
+
 
 
 
