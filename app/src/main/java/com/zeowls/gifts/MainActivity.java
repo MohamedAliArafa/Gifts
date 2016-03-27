@@ -24,7 +24,6 @@ import com.zeowls.gifts.AddNewItemPage.newitem;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.CategoryPage.CategoryContentFragment1;
 import com.zeowls.gifts.GiftsTap.GiftsContentFragment1;
-import com.zeowls.gifts.LoginPage.LoginActivity;
 import com.zeowls.gifts.ShopsTap.ShopsContentFragment;
 
 import java.util.ArrayList;
@@ -72,18 +71,12 @@ public class MainActivity extends AppCompatActivity {
                         // Set item in checked state
                         menuItem.setChecked(true);
 
-                        // TODO: handle navigation
-                        if (menuItem.getItemId() == R.id.navLoginBTN) {
-                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                            startActivity(intent);
-                            return true;
-                        }
-
-
-
-
-
-
+//                        // TODO: handle navigation
+//                        if (menuItem.getItemId() == R.id.navLoginBTN) {
+//                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                            startActivity(intent);
+//                            return true;
+//                        }
 
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
@@ -95,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Snackbar.make(v, fireOwl.addItem(MainActivity.this) + " Added" , Snackbar.LENGTH_LONG).show();
+
+            //    Snackbar.make(v, fireOwl.addItem(MainActivity.this) + " Added", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v,"Hello To bubble",Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -158,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this,newitem.class);
+            Intent intent = new Intent(MainActivity.this, newitem.class);
             startActivity(intent);
             return true;
         } else if (id == android.R.id.home) {

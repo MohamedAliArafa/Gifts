@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.BackEndOwl.Core;
@@ -320,7 +319,7 @@ public class CategoryContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -329,7 +328,7 @@ public class CategoryContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 

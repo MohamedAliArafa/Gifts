@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
@@ -171,7 +170,7 @@ public class CategoryContentFragment extends Fragment {
 //                    fragmentTransaction.commit();
 //
                     Context context = v.getContext();
-                    Toast.makeText(context, "id: " + categories.get(position).getId(), Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(context, "id: " + categories.get(position).getId(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ItemsByCategoryIdActivity.class);
                     intent.putExtra("id", categories.get(position).getId());
                     context.startActivity(intent);

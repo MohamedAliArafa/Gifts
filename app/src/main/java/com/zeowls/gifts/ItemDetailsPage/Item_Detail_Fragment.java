@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
@@ -31,6 +33,7 @@ public class Item_Detail_Fragment extends Fragment {
     CollapsingToolbarLayout collapsingToolbar;
     TextView name, description, price, shopName;
     Button visitShop;
+    ImageView Item_Pic;
 
 
     @Nullable
@@ -58,6 +61,7 @@ public class Item_Detail_Fragment extends Fragment {
         price = (TextView) view.findViewById(R.id.description2);
         shopName = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         visitShop = (Button) view.findViewById(R.id.Item_Detail_Shop_Visit);
+        Item_Pic= (ImageView) view.findViewById(R.id.image);
 
 
     }
@@ -83,6 +87,8 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
+                Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).into(Item_Pic);
+
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override

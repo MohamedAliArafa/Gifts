@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
@@ -70,11 +69,16 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         protected void onPreExecute() {
+
+            GiftItems.clear();
+
             pDialog = new ProgressDialog(getContext());
             pDialog.setMessage(getString(R.string.loading) + "...");
             pDialog.setIndeterminate(false);
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog.show();
+
+
 
         }
 
@@ -238,7 +242,7 @@ public class GiftsContentFragment1 extends Fragment {
                 public void onClick(View v) {
 
                     Context context = v.getContext();
-                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ItemDetailActivity_2.class);
                     intent.putExtra("id", GiftItems.get(absolutePosition).getId());
                     context.startActivity(intent);
@@ -314,7 +318,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
+                     //   Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -323,7 +327,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, "Item  name", Toast.LENGTH_SHORT).show();
+                     //   Toast.makeText(context, "Item  name", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -332,7 +336,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
+                     //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
                     }
                 });
 

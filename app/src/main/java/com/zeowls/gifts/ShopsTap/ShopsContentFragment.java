@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
@@ -58,7 +57,7 @@ public class ShopsContentFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-
+                shops.clear();
         }
 
         @Override
@@ -160,7 +159,7 @@ public class ShopsContentFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, Shop_Detail_Activity.class);
                     intent.putExtra("id", shops.get(position).getId());
                     context.startActivity(intent);
