@@ -61,7 +61,9 @@
 
         <TextView
             android:id="@+id/card_Name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:lines="1"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
             android:layout_marginBottom="@dimen/md_keylines"
@@ -79,7 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_Name"
             android:text="Shop Name"
-            android:textColor="?attr/colorPrimary" />
+            android:singleLine="true"
+            android:textColor="@color/button_grey" />
 
         <TextView
             android:id="@+id/share_button"

@@ -103,8 +103,9 @@ public class GiftsContentFragment1 extends Fragment {
                         ItemDataMode Gift_Item = new ItemDataMode();
                         Gift_Item.setId(item.getInt("id"));
                         Gift_Item.setName(item.getString("name"));
+                        Gift_Item.setShopName(item.getString("shop_name"));
                         Gift_Item.setDesc(item.getString("description"));
-                        // Gift_Item.setPrice(item.getString("price"));
+                        Gift_Item.setPrice("$"+item.getString("price"));
                         //Gift_Item.setImgUrl(item.getString("profile_pic"));
 
                         GiftItems.add(Gift_Item);
@@ -126,7 +127,8 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setId(item.getInt("id"));
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setDesc(item.getString("description"));
-                        // Gift_Item.setPrice(item.getString("price"));
+                        Gift_Item.setShopName(item.getString("shop_name"));
+                        Gift_Item.setPrice("$"+item.getString("price"));
                         //Gift_Item.setImgUrl(item.getString("profile_pic"));
 
                         GiftItems.add(Gift_Item);
@@ -148,7 +150,8 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setId(item.getInt("id"));
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setDesc(item.getString("description"));
-                        // Gift_Item.setPrice(item.getString("price"));
+                        Gift_Item.setShopName(item.getString("shop_name"));
+                        Gift_Item.setPrice("$"+item.getString("price"));
                         //Gift_Item.setImgUrl(item.getString("profile_pic"));
 
                         GiftItems.add(Gift_Item);
@@ -170,7 +173,8 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setId(item.getInt("id"));
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setDesc(item.getString("description"));
-                        // Gift_Item.setPrice(item.getString("price"));
+                        Gift_Item.setPrice("$"+item.getString("price"));
+                        Gift_Item.setShopName(item.getString("shop_name"));
                         //Gift_Item.setImgUrl(item.getString("profile_pic"));
 
                         GiftItems.add(Gift_Item);
@@ -219,7 +223,7 @@ public class GiftsContentFragment1 extends Fragment {
             if (GiftItems.size() != 0) {
                 Log.d("Araay size", String.valueOf(GiftItems.size()));
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
-                holder.ShopName.setText(GiftItems.get(absolutePosition).getDesc());
+                holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
 
             }
