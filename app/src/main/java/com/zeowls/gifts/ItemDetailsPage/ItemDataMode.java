@@ -20,7 +20,7 @@ public class ItemDataMode {
     }
 
     public String getImgUrl() {
-        return imgUrl;
+        return "http://bubble-zeowls.herokuapp.com/uploads/" + imgUrl;
     }
 
     public void setImgUrl(String imgUrl) {

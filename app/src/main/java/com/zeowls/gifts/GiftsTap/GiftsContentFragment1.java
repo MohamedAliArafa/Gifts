@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.SectionedREcycler.SpacesItemDecoration;
 import com.zeowls.gifts.BackEndOwl.Core;
@@ -36,6 +38,7 @@ public class GiftsContentFragment1 extends Fragment {
     static ArrayList<ItemDataMode> GiftItems = new ArrayList<>();
     public RecyclerView recyclerView;
     MainAdapter adapter;
+    static Context context;
 
 
     @Override
@@ -105,8 +108,8 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setShopName(item.getString("shop_name"));
                         Gift_Item.setDesc(item.getString("description"));
-                        Gift_Item.setPrice("$"+item.getString("price"));
-                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+                        Gift_Item.setPrice("$" + item.getString("price"));
+                        Gift_Item.setImgUrl(item.getString("image"));
 
                         GiftItems.add(Gift_Item);
                     }
@@ -128,8 +131,8 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setDesc(item.getString("description"));
                         Gift_Item.setShopName(item.getString("shop_name"));
-                        Gift_Item.setPrice("$"+item.getString("price"));
-                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+                        Gift_Item.setPrice("$" + item.getString("price"));
+                        Gift_Item.setImgUrl(item.getString("image"));
 
                         GiftItems.add(Gift_Item);
                     }
@@ -151,8 +154,8 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setDesc(item.getString("description"));
                         Gift_Item.setShopName(item.getString("shop_name"));
-                        Gift_Item.setPrice("$"+item.getString("price"));
-                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+                        Gift_Item.setPrice("$" + item.getString("price"));
+                        Gift_Item.setImgUrl(item.getString("image"));
 
                         GiftItems.add(Gift_Item);
                     }
@@ -173,9 +176,9 @@ public class GiftsContentFragment1 extends Fragment {
                         Gift_Item.setId(item.getInt("id"));
                         Gift_Item.setName(item.getString("name"));
                         Gift_Item.setDesc(item.getString("description"));
-                        Gift_Item.setPrice("$"+item.getString("price"));
+                        Gift_Item.setPrice("$" + item.getString("price"));
                         Gift_Item.setShopName(item.getString("shop_name"));
-                        //Gift_Item.setImgUrl(item.getString("profile_pic"));
+                        Gift_Item.setImgUrl(item.getString("image"));
 
                         GiftItems.add(Gift_Item);
                     }
@@ -225,6 +228,8 @@ public class GiftsContentFragment1 extends Fragment {
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
+                ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
+                Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).into(imageView);
             }
 
 
@@ -259,6 +264,7 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
+            context = parent.getContext();
             int layout;
             switch (viewType) {
                 case VIEW_TYPE_HEADER:
