@@ -13,9 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
@@ -34,6 +36,8 @@ public class ShopsContentFragment extends Fragment {
     static ArrayList<ShopDataModel> shops = new ArrayList<>();
     RecyclerView recyclerView;
     ContentAdapter adapter;
+    ImageView imageView;
+    static Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,6 +127,8 @@ public class ShopsContentFragment extends Fragment {
                             Snackbar.LENGTH_LONG).show();
                 }
             });
+
+
         }
     }
 
@@ -135,6 +141,7 @@ public class ShopsContentFragment extends Fragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            context = parent.getContext();
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
         }
 
@@ -144,8 +151,10 @@ public class ShopsContentFragment extends Fragment {
             if (shops.size() != 0) {
                 TextView name = (TextView) holder.itemView.findViewById(R.id.card_title);
                 TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
+                ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
                 name.setText(shops.get(position).getName());
                 text.setText(shops.get(position).getDescription());
+                Picasso.with(context).load(shops.get(position).getPictureUrl()).into(imageView);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -40,7 +40,7 @@ public class ShopDataModel {
     }
 
     public String getPictureUrl() {
-        return pictureUrl;
+        return "http://bubble-zeowls.herokuapp.com/uploads/"+pictureUrl;
     }
 
     public void setPictureUrl(String pictureUrl) {

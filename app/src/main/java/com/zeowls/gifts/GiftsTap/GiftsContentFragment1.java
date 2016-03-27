@@ -225,7 +225,6 @@ public class GiftsContentFragment1 extends Fragment {
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
-
             }
 
 

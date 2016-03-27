@@ -1,5 +1,6 @@
 package com.zeowls.gifts.ItemDetailsPage;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,10 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +30,7 @@ public class Item_Detail_Fragment extends Fragment {
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
     TextView name, description, price, shopName;
+    Button visitShop;
 
 
     @Nullable
@@ -53,6 +57,8 @@ public class Item_Detail_Fragment extends Fragment {
        description = (TextView) view.findViewById(R.id.Item_Description);
         price = (TextView) view.findViewById(R.id.description2);
         shopName = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
+        visitShop = (Button) view.findViewById(R.id.Item_Detail_Shop_Visit);
+
 
     }
 
@@ -77,6 +83,21 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
+
+                visitShop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), Shop_Detail_Activity.class);
+                        try {
+                            intent.putExtra("id",itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id") );
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        getContext().startActivity(intent);
+                    }
+                });
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
