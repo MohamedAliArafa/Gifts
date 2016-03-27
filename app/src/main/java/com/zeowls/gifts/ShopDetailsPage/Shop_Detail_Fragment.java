@@ -10,8 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 
@@ -27,6 +29,7 @@ public class Shop_Detail_Fragment extends Fragment {
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
     TextView Shop_Name, Shop_Slogan;
+    ImageView Shop_Pic,ShopHeader_Pic;
 
 
     @Nullable
@@ -51,6 +54,8 @@ public class Shop_Detail_Fragment extends Fragment {
 
         Shop_Name  = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         Shop_Slogan  = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
+        Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
+        ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
 
 
         collapsingToolbar.setTitle(getString(R.string.item_title));
@@ -80,6 +85,8 @@ public class Shop_Detail_Fragment extends Fragment {
                 Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
                 Shop_Name.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
+                Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(ShopHeader_Pic);
+                Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
