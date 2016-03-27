@@ -4,8 +4,16 @@ package com.zeowls.gifts.ShopsTap;
  * Created by nora on 3/23/2016.
  */
 public class ShopDataModel {
-    int id;
+    int id, ParentCatID;
     String name, description, owner, pictureUrl;
+
+    public int getParentCatID() {
+        return ParentCatID;
+    }
+
+    public void setParentCatID(int parentCatID) {
+        ParentCatID = parentCatID;
+    }
 
     public int getId() {
         return id;
@@ -40,7 +48,7 @@ public class ShopDataModel {
     }
 
     public String getPictureUrl() {
-        return "http://bubble-zeowls.herokuapp.com/uploads/"+pictureUrl;
+        return "http://bubble-zeowls.herokuapp.com/uploads/" + pictureUrl;
     }
 
     public void setPictureUrl(String pictureUrl) {

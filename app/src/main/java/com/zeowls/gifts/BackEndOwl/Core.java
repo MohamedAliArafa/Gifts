@@ -184,6 +184,27 @@ public class Core {
         return json;
     }
 
+    public JSONObject getSubCategoriesByCatID(int id){
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/GetSubCategoriesById/"+id+"/JSON");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("getAllShops", response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
+
+
+
     public JSONObject getAllCategories(){
         JSONObject json = null;
         try {
