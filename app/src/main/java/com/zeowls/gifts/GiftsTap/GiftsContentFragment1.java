@@ -231,15 +231,20 @@ public class GiftsContentFragment1 extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Context context = v.getContext();
-//                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
-//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-//                    context.startActivity(intent);  Context context = v.getContext();
-//                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
-//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-//                    context.startActivity(intent);
+
+                    Context context = v.getContext();
+                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
+                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+                    context.startActivity(intent);
+
+                    //Context context = v.getContext();
+                    //Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
+                    //Intent intent = new Intent(context, ItemDetailActivity_2.class);
+                    //intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+                    //context.startActivity(intent);
+
+
                 }
             });
 
