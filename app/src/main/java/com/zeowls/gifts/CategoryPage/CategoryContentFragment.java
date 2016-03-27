@@ -5,26 +5,23 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -137,9 +134,9 @@ public class CategoryContentFragment extends Fragment {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
 
-        ItemsByCategoryIdFragment fragment;
-        FragmentManager fragmentManager;
-        FragmentTransaction fragmentTransaction;
+//        ItemsByCategoryIdFragment fragment;
+//        FragmentManager fragmentManager;
+//        FragmentTransaction fragmentTransaction;
 
 
         @Override
@@ -162,21 +159,22 @@ public class CategoryContentFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragmentManager = getFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    if (fragment != null) {
-                        fragmentTransaction.remove(fragment);
-                    }
-                    fragment = new ItemsByCategoryIdFragment();
-                    fragment.setId(categories.get(position).getId());
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.category1, fragment);
-                    fragmentTransaction.commit();
-//                    Context context = v.getContext();
-//                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, ItemDetailActivity.class);
-//                    intent.putExtra("id", shops.get(position).getId());
-//                    context.startActivity(intent);
+//                    fragmentManager = getFragmentManager();
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    if (fragment != null) {
+//                        fragmentTransaction.remove(fragment);
+//                    }
+//                    fragment = new ItemsByCategoryIdFragment();
+//                    fragment.setId(categories.get(position).getId());
+//                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.replace(R.id.category1, fragment);
+//                    fragmentTransaction.commit();
+//
+                    Context context = v.getContext();
+                    Toast.makeText(context, "id: " + categories.get(position).getId(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ItemsByCategoryIdActivity.class);
+                    intent.putExtra("id", categories.get(position).getId());
+                    context.startActivity(intent);
 
                 }
             });

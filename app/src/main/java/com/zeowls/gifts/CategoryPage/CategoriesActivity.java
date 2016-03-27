@@ -9,7 +9,7 @@ import com.zeowls.gifts.R;
 
 public class CategoriesActivity extends AppCompatActivity {
 
-    CategoryContentFragment fragment;
+    ItemsByCategoryIdFragment fragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
@@ -24,7 +24,7 @@ public class CategoriesActivity extends AppCompatActivity {
         if (fragment != null) {
             fragmentTransaction.remove(fragment);
         }
-        fragment = new CategoryContentFragment();
+        fragment = new ItemsByCategoryIdFragment();
        // fragment.setId(id);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.category1, fragment);

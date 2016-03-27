@@ -1,8 +1,6 @@
 package com.zeowls.gifts.CategoryPage;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -21,10 +19,8 @@ import android.widget.TextView;
 
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
-import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
 import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
-import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -182,7 +178,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
                     fragment = new Item_Detail_Fragment();
                     fragment.setId(items.get(position).getId());
                     fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.category1, fragment);
+                    fragmentTransaction.replace(R.id.item1, fragment);
                     fragmentTransaction.commit();
 //                    Context context = v.getContext();
 //                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
