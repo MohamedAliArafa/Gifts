@@ -36,6 +36,7 @@ public class CategoryContentFragment1 extends Fragment {
     static ArrayList<ShopDataModel> SubCategoreis = new ArrayList<>();
 
 
+
     public RecyclerView recyclerView;
     MainAdapter2 adapter;
 
