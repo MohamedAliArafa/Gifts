@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             super(manager);
         }
 
+
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
