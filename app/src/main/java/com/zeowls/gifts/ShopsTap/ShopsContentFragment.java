@@ -78,7 +78,10 @@ public class ShopsContentFragment extends Fragment {
                         ShopDataModel shop = new ShopDataModel();
                         shop.setId(item.getInt("id"));
                         shop.setName(item.getString("name"));
-                        shop.setDescription(item.getString("description"));
+                        if(item.getString("description").equals("null"))
+                            shop.setDescription("");
+                        else
+                            shop.setDescription(item.getString("description"));
                         shop.setOwner(item.getString("owner"));
                         shop.setPictureUrl(item.getString("profile_pic"));
 
