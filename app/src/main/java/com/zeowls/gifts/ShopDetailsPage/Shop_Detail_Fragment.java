@@ -1,10 +1,17 @@
 package com.zeowls.gifts.ShopDetailsPage;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -12,13 +19,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.ImageSLider2.SlidingImage_Adapter;
+import com.zeowls.gifts.ImageSlider.ScreenSlidePageFragment;
 import com.zeowls.gifts.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Nezar Saleh on 3/24/2016.
@@ -29,16 +43,37 @@ public class Shop_Detail_Fragment extends Fragment {
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
     TextView Shop_Name, Shop_Slogan;
-    ImageView Shop_Pic,ShopHeader_Pic;
+    ImageView Shop_Pic, ShopHeader_Pic;
+    ViewPager viewPager;
+    private PagerAdapter mPagerAdapter;
+    // private static final int NUM_PAGES = 5;
+
+    protected FragmentActivity myContext;
+
+    ScreenSlidePageFragment fr;
+
+
+    private static ViewPager mPager;
+    private static int currentPage = 0;
+    private static int NUM_PAGES = 0;
+    private static final Integer[] IMAGES = {R.drawable.paris, R.drawable.paris_avatar, R.drawable.rightarrow, R.drawable.navback};
+    private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         new loadingData().execute();
         return inflater.inflate(R.layout.shop_details_in_fragment1, container, false);
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        myContext = (FragmentActivity) activity;
+        super.onAttach(activity);
     }
 
     @Override
@@ -52,16 +87,118 @@ public class Shop_Detail_Fragment extends Fragment {
                 (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
 
-        Shop_Name  = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
-        Shop_Slogan  = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
+        Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
+        Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
+
+        mPager = (ViewPager) view.findViewById(R.id.pager);
+        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
+        mPager.setAdapter(mPagerAdapter);
+
+        init();
+
+
+//
+//        mPagerAdapter = new ScreenSlidePagerAdapter(myContext.getSupportFragmentManager());
+//        viewPager.setAdapter(mPagerAdapter);
+//
+//        fr =  new ScreenSlidePageFragment();
 
 
         collapsingToolbar.setTitle(getString(R.string.item_title));
 
 
+    }
 
+
+    private void init() {
+
+
+        for (int i = 0; i < IMAGES.length; i++)
+            ImagesArray.add(IMAGES[i]);
+
+//
+//        CirclePageIndicator indicator = (CirclePageIndicator)
+//                findViewById(R.id.indicator);
+//
+//        indicator.setViewPager(mPager);
+
+        final float density = getResources().getDisplayMetrics().density;
+
+//Set circle indicator radius
+        // indicator.setRadius(5 * density);
+
+        NUM_PAGES = IMAGES.length;
+        mPagerAdapter.notifyDataSetChanged();
+        // Auto start of viewpager
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+                if (currentPage == NUM_PAGES) {
+                    currentPage = 0;
+                }
+                mPager.setCurrentItem(currentPage++, true);
+            }
+        };
+        Timer swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, 3000, 3000);
+
+        // Pager listener over indicator
+//        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                currentPage = position;
+//
+//            }
+//
+//            @Override
+//            public void onPageScrolled(int pos, float arg1, int arg2) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int pos) {
+//
+//            }
+//        });
+
+    }
+
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            Toast.makeText(myContext, "Hi " + position, Toast.LENGTH_SHORT).show();
+            fr.setName("Ali");
+
+            if (position == 1) {
+                fr.setName("Ali");
+            } else if (position == 3) {
+                fr.setName("Ali  3");
+            }
+
+            return new ScreenSlidePageFragment();
+
+
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
     }
 
 
@@ -105,11 +242,6 @@ public class Shop_Detail_Fragment extends Fragment {
             return null;
         }
     }
-
-
-
-
-
 
 
 }

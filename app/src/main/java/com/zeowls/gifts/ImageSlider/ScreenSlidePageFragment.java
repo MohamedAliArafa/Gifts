@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zeowls.gifts.R;
 
@@ -14,6 +15,10 @@ import com.zeowls.gifts.R;
 public class ScreenSlidePageFragment extends Fragment {
 
 
+    TextView textView;
+
+    String name;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -22,6 +27,22 @@ public class ScreenSlidePageFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        textView = (TextView) view.findViewById(R.id.SlideText);
+        textView.setText(name);
+    }
+
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+
 
 
 }
