@@ -3,9 +3,13 @@ package com.zeowls.gifts.ItemDetailsPage;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,11 +21,18 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.ImageSLider2.SlidingImage_Adapter;
+import com.zeowls.gifts.ImageSlider.ScreenSlidePageFragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 /**
  * Created by Nezar Saleh on 3/24/2016.
@@ -34,6 +45,17 @@ public class Item_Detail_Fragment extends Fragment {
     TextView name, description, price, shopName;
     Button visitShop;
     ImageView Item_Pic;
+    private PagerAdapter mPagerAdapter;
+    // private static final int NUM_PAGES = 5;
+
+//    protected FragmentActivity myContext;
+
+//    ScreenSlidePageFragment fr;
+    private static ViewPager mPager;
+    private static int currentPage = 0;
+    private static int NUM_PAGES = 0;
+    private static final Integer[] IMAGES = {R.drawable.paris, R.drawable.paris_avatar, R.drawable.rightarrow, R.drawable.navback};
+    private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
 
     @Nullable
@@ -63,6 +85,71 @@ public class Item_Detail_Fragment extends Fragment {
         visitShop = (Button) view.findViewById(R.id.Item_Detail_Shop_Visit);
         Item_Pic= (ImageView) view.findViewById(R.id.image);
 
+        mPager = (ViewPager) view.findViewById(R.id.pager);
+        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
+        mPager.setAdapter(mPagerAdapter);
+
+        init();
+
+
+    }
+
+    private void init() {
+
+
+        for (int i = 0; i < IMAGES.length; i++)
+            ImagesArray.add(IMAGES[i]);
+
+//
+//        CirclePageIndicator indicator = (CirclePageIndicator)
+//                findViewById(R.id.indicator);
+//
+//        indicator.setViewPager(mPager);
+
+        final float density = getResources().getDisplayMetrics().density;
+
+//Set circle indicator radius
+        // indicator.setRadius(5 * density);
+
+        NUM_PAGES = IMAGES.length;
+        mPagerAdapter.notifyDataSetChanged();
+        // Auto start of viewpager
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+                if (currentPage == NUM_PAGES) {
+                    currentPage = 0;
+                }
+                mPager.setCurrentItem(currentPage++, true);
+            }
+        };
+        Timer swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, 3000, 3000);
+
+        // Pager listener over indicator
+//        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                currentPage = position;
+//
+//            }
+//
+//            @Override
+//            public void onPageScrolled(int pos, float arg1, int arg2) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int pos) {
+//
+//            }
+//        });
 
     }
 
