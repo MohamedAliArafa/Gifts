@@ -40,6 +40,7 @@ public class GiftsContentFragment1 extends Fragment {
     static Context context;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
