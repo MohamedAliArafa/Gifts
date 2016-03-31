@@ -89,6 +89,8 @@ public class Item_Detail_Fragment extends Fragment {
         mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
         mPager.setAdapter(mPagerAdapter);
 
+        //TODO
+
         init();
 
 
