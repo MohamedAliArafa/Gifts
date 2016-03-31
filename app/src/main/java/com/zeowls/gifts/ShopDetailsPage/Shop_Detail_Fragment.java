@@ -92,11 +92,11 @@ public class Shop_Detail_Fragment extends Fragment {
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
 
-        mPager = (ViewPager) view.findViewById(R.id.pager);
-        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
-        mPager.setAdapter(mPagerAdapter);
-
-        init();
+//        mPager = (ViewPager) view.findViewById(R.id.pager);
+//        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
+//        mPager.setAdapter(mPagerAdapter);
+//
+//        init();
 
 
 //

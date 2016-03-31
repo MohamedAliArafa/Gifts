@@ -56,8 +56,7 @@ public class GiftsContentFragment1 extends Fragment {
 
         adapter = new MainAdapter();
 
-        GridLayoutManager manager = new GridLayoutManager(getActivity(),
-                getResources().getInteger(R.integer.grid_span));
+        GridLayoutManager manager = new GridLayoutManager(getActivity(),getResources().getInteger(R.integer.grid_span));
         recyclerView.setLayoutManager(manager);
         adapter.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
@@ -289,7 +288,6 @@ public class GiftsContentFragment1 extends Fragment {
             return new MainVH(v);
         }
 
-
         public static class MainVH extends RecyclerView.ViewHolder {
 
 
@@ -303,7 +301,6 @@ public class GiftsContentFragment1 extends Fragment {
                 ShopName = (TextView) itemView.findViewById(R.id.card_Shop_name);
                 ItemName = (TextView) itemView.findViewById(R.id.card_Name);
                 ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
-
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
