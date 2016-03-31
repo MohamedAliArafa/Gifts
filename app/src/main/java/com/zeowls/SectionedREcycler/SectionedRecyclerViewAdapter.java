@@ -117,7 +117,7 @@ public abstract class SectionedRecyclerViewAdapter<VH extends RecyclerView.ViewH
     public final void onBindViewHolder(VH holder, int position) {
         StaggeredGridLayoutManager.LayoutParams layoutParams = null;
         if (holder.itemView.getLayoutParams() instanceof GridLayoutManager.LayoutParams)
-            layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         else if (holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams)
             layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
         if (isHeader(position)) {

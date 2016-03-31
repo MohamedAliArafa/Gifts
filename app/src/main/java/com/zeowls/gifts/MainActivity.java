@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        assert tabs != null;
         tabs.setupWithViewPager(viewPager);
         // Create Navigation drawer and inlfate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
 
         // Set behavior of Navigation drawer
+        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     // This method will trigger on item Click of navigation menu
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 });
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
