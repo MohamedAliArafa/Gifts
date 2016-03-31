@@ -130,8 +130,7 @@
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?attr/selectableItemBackground"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                android:foreground="?attr/selectableItemBackground">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -242,14 +241,25 @@
                 </TableLayout>
             </android.support.v7.widget.CardView>
 
-
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/view_all_otems_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?attr/selectableItemBackground">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View All Items"
+                    android:textSize="15sp"
+                    android:textColor="@color/colorPrimary"
+                    android:id="@+id/view_all_items"
+                    android:layout_gravity="center"/>
+            </android.support.v7.widget.CardView>
 
             <FrameLayout
                 android:id="@+id/Shop_Items_Frame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                >
+                android:layout_height="match_parent">
 
             </FrameLayout>
 

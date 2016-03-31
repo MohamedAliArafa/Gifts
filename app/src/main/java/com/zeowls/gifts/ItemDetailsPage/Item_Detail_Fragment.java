@@ -180,13 +180,13 @@ public class Item_Detail_Fragment extends Fragment {
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), Shop_Detail_Activity.class);
-                        try {
-                            intent.putExtra("id",itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id") );
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        getContext().startActivity(intent);
+//                        Intent intent = new Intent(getContext(), Shop_Detail_Activity.class);
+//                        try {
+//                            intent.putExtra("id",itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id") );
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                        getContext().startActivity(intent);
                     }
                 });
 

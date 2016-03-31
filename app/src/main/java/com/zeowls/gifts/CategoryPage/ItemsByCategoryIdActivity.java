@@ -31,7 +31,7 @@ public class ItemsByCategoryIdActivity extends AppCompatActivity {
         }
         fragment = new ItemsByCategoryIdFragment();
         fragment.setId(id);
-        fragmentTransaction.replace(R.id.item1, fragment);
+        fragmentTransaction.replace(R.id.fragment, fragment);
         fragmentTransaction.commit();
     }
 }

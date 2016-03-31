@@ -1,6 +1,8 @@
-package com.zeowls.gifts.CategoryPage;
+package com.zeowls.gifts.ShopDetailsPage;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -28,15 +30,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by nora on 3/26/2016.
- */
-public class ItemsByCategoryIdFragment extends Fragment{
+public class ShopAllItemsFragment extends Fragment {
+
     static ArrayList<ItemDataMode> items = new ArrayList<>();
     RecyclerView recyclerView;
     ContentAdapter adapter;
 
-    int id =0;
+    int id = 0;
 
     protected FragmentActivity myContext;
 
@@ -46,9 +46,18 @@ public class ItemsByCategoryIdFragment extends Fragment{
         super.onAttach(activity);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         adapter = new ContentAdapter();
@@ -61,11 +70,11 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
 
         return recyclerView;
+//        return inflater.inflate(R.layout.fragment_shop_all_items, container, false);
     }
     public void setId(int id) {
         this.id = id;
     }
-
     private class loadingData extends AsyncTask {
 
         @Override
@@ -83,9 +92,9 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
             try {
                 Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getItemsByCategoryId(id);
-                if (core.getItemsByCategoryId(id) != null &&  itemsJSON.getJSONArray("Items").length() != 0 ){
-                    Log.d("json",core.getItemsByCategoryId(id).toString());
+                JSONObject itemsJSON = core.getShopItems(id);
+                if (core.getShopItems(id) != null &&  itemsJSON.getJSONArray("Items").length() != 0 ){
+                    Log.d("json", core.getShopItems(id).toString());
                     for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++){
                         JSONArray itemsarray = itemsJSON.getJSONArray("Items");
                         JSONObject item = itemsarray.getJSONObject(i);
@@ -107,7 +116,6 @@ public class ItemsByCategoryIdFragment extends Fragment{
             return null;
         }
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -135,13 +143,17 @@ public class ItemsByCategoryIdFragment extends Fragment{
                 }
             });
 
+            TextView price = (TextView) itemView.findViewById(R.id.price);
+            price.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(v, "Price is pressed",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            });
+
         }
     }
-
-
-    /**
-     * Adapter to display recycler view.
-     */
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;

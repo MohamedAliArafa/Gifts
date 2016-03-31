@@ -1,6 +1,7 @@
 package com.zeowls.gifts.ShopDetailsPage;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,6 +60,7 @@ public class Shop_Detail_Fragment extends Fragment {
     private static final Integer[] IMAGES = {R.drawable.paris, R.drawable.paris_avatar, R.drawable.rightarrow, R.drawable.navback};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
+    TextView viewAllItems;
 
     @Nullable
     @Override
@@ -92,11 +94,11 @@ public class Shop_Detail_Fragment extends Fragment {
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
 
-        mPager = (ViewPager) view.findViewById(R.id.pager);
-        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
-        mPager.setAdapter(mPagerAdapter);
-
-        init();
+//        mPager = (ViewPager) view.findViewById(R.id.pager);
+//        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
+//        mPager.setAdapter(mPagerAdapter);
+//
+//        init();
 
 
 //
@@ -108,6 +110,27 @@ public class Shop_Detail_Fragment extends Fragment {
 
         collapsingToolbar.setTitle(getString(R.string.item_title));
 
+
+        viewAllItems = (TextView) view.findViewById(R.id.view_all_items);
+        viewAllItems.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShopAllItemsFragment fragment = null;
+                final FragmentManager fragmentManager;
+                final android.support.v4.app.FragmentTransaction fragmentTransaction;
+                fragmentManager = getFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                if (fragment != null) {
+                    fragmentTransaction.remove(fragment);
+                }
+
+                fragment = new ShopAllItemsFragment();
+                fragment.setId(id);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.fragment, fragment);
+                fragmentTransaction.commit();
+            }
+        });
 
     }
 
