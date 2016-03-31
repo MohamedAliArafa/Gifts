@@ -133,7 +133,7 @@ public class ShopAllItemsFragment extends Fragment {
                             Snackbar.LENGTH_LONG).show();
                 }
             });
-            TextView textView = (TextView) itemView.findViewById(R.id.textView);
+            TextView textView = (TextView) itemView.findViewById(R.id.name);
 
             textView.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -171,7 +171,7 @@ public class ShopAllItemsFragment extends Fragment {
             // no-op
             if (items.size() != 0) {
                 ImageView image = (ImageView) holder.itemView.findViewById(R.id.imageView);
-                TextView name = (TextView) holder.itemView.findViewById(R.id.textView);
+                TextView name = (TextView) holder.itemView.findViewById(R.id.name);
                 //TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
                 name.setText(items.get(position).getName());
                 //text.setText(shops.get(position).getDescription());

@@ -1,10 +1,13 @@
 package com.zeowls.gifts.CategoryPage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
@@ -151,7 +155,7 @@ public class CategoryContentFragment1 extends Fragment {
 //                    context.startActivity(new Intent(context, ItemsByCategoryIdActivity.class));
                 }
             });
-            TextView textView = (TextView) itemView.findViewById(R.id.textView);
+            TextView textView = (TextView) itemView.findViewById(R.id.name);
 
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -234,25 +238,34 @@ public class CategoryContentFragment1 extends Fragment {
             }
 
 //
-//            holder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+//                    ItemsByCategoryIdFragment fragment = null;
+//                    FragmentManager fragmentManager;
+//                    FragmentTransaction fragmentTransaction;
+//                    fragmentManager = myContext.getSupportFragmentManager();
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    if (fragment != null) {
+//                        fragmentTransaction.remove(fragment);
+//                    }
 //
-//                    Context context = v.getContext();
+//                    fragment = new ItemsByCategoryIdFragment();
+//                    fragment.setId(SubCategoreis.get(absolutePosition).getId());
+//                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.replace(R.id.fragment, fragment);
+//                    fragmentTransaction.commit();
+
+                    Context context = v.getContext();
 //                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
-//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-//                    context.startActivity(intent);
-//
-//                    //Context context = v.getContext();
-//                    //Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-//                    //Intent intent = new Intent(context, ItemDetailActivity_2.class);
-//                    //intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-//                    //context.startActivity(intent);
-//
-//
-//                }
-//            });
+                    Intent intent = new Intent(context, ItemsByCategoryIdActivity.class);
+                    intent.putExtra("id", SubCategoreis.get(absolutePosition).getId());
+                    context.startActivity(intent);
+
+
+                }
+            });
 //
 //
 
@@ -303,34 +316,37 @@ public class CategoryContentFragment1 extends Fragment {
                 Main_Category_Name = (TextView) itemView.findViewById(R.id.Main_Category_Name);
 
 
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+//                itemView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//
+//
+//
+////                        Context context = v.getContext();
+////                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
+////                        context.startActivity(intent);
+//
+//                    }
+//                });
 
+//
+//                Sub_Category_Item_Image.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
 //                        Context context = v.getContext();
-//                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
-//                        context.startActivity(intent);
-
-                    }
-                });
-
-
-                Sub_Category_Item_Image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Context context = v.getContext();
-                        //Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-                Sub_Category_Item_Name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Context context = v.getContext();
-                       // Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                        //Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//
+//
+//                Sub_Category_Item_Name.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Context context = v.getContext();
+//                       // Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
 
             }

@@ -1,13 +1,11 @@
 package com.zeowls.gifts.ItemDetailsPage;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,9 +20,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ImageSLider2.SlidingImage_Adapter;
-import com.zeowls.gifts.ImageSlider.ScreenSlidePageFragment;
 import com.zeowls.gifts.R;
-import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +50,7 @@ public class Item_Detail_Fragment extends Fragment {
     private static ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
-    private static final Integer[] IMAGES = {R.drawable.paris, R.drawable.paris_avatar, R.drawable.rightarrow, R.drawable.navback};
+    private static final Integer[] IMAGES = { R.drawable.android, R.drawable.android1};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
 
@@ -173,7 +169,7 @@ public class Item_Detail_Fragment extends Fragment {
         protected void onPostExecute(Object o) {
             try {
                 description.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("description"));
-                price.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
+                price.setText("$"+itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
                 Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).into(Item_Pic);

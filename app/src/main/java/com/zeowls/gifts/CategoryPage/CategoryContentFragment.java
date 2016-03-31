@@ -113,7 +113,7 @@ public class CategoryContentFragment extends Fragment {
 //                    context.startActivity(new Intent(context, ItemsByCategoryIdActivity.class));
                 }
             });
-            TextView textView = (TextView) itemView.findViewById(R.id.textView);
+            TextView textView = (TextView) itemView.findViewById(R.id.name);
 
             textView.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -148,7 +148,7 @@ public class CategoryContentFragment extends Fragment {
             // no-op
             if (categories.size() != 0) {
                 ImageView image = (ImageView) holder.itemView.findViewById(R.id.imageView);
-                TextView name = (TextView) holder.itemView.findViewById(R.id.textView);
+                TextView name = (TextView) holder.itemView.findViewById(R.id.name);
                 //TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
                 name.setText(categories.get(position).getName());
                 //text.setText(shops.get(position).getDescription());

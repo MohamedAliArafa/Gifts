@@ -1,6 +1,7 @@
 package com.zeowls.gifts.CategoryPage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
 import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
@@ -35,6 +37,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
     static ArrayList<ItemDataMode> items = new ArrayList<>();
     RecyclerView recyclerView;
     ContentAdapter adapter;
+    Context context;
 
     int id =0;
 
@@ -97,7 +100,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
                         item1.setPrice(item.getString("price"));
                         item1.setShopId(item.getInt("shop_id"));
                         item1.setShortDesc(item.getString("short_description"));
-
+                        item1.setImgUrl(item.getString("image"));
                         items.add(item1);
                     }
                 }
@@ -115,25 +118,25 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
 
             // Adding Snackbar to Action Button inside card
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            imageView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-//                    Context context =  v.getContext();
-//                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
-                    Snackbar.make(v, "Image is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-            TextView textView = (TextView) itemView.findViewById(R.id.textView);
-
-            textView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Text is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
+//            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+//            imageView.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+////                    Context context =  v.getContext();
+////                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
+//                    Snackbar.make(v, "Image is pressed",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+//            TextView textView = (TextView) itemView.findViewById(R.id.name);
+//
+//            textView.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    Snackbar.make(v, "Text is pressed",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
 
         }
     }
@@ -151,6 +154,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            context = parent.getContext();
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
         }
 
@@ -159,10 +163,13 @@ public class ItemsByCategoryIdFragment extends Fragment{
             // no-op
             if (items.size() != 0) {
                 ImageView image = (ImageView) holder.itemView.findViewById(R.id.imageView);
-                TextView name = (TextView) holder.itemView.findViewById(R.id.textView);
-                //TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
+                TextView name = (TextView) holder.itemView.findViewById(R.id.name);
+                TextView desc = (TextView) holder.itemView.findViewById(R.id.description);
+                TextView price = (TextView) holder.itemView.findViewById(R.id.price);
                 name.setText(items.get(position).getName());
-                //text.setText(shops.get(position).getDescription());
+                desc.setText(items.get(position).getDesc());
+                price.setText("$"+items.get(position).getPrice());
+                Picasso.with(context).load(items.get(position).getImgUrl()).into(image);
             }
 
 
