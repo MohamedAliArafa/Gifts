@@ -1,11 +1,16 @@
 package com.zeowls.gifts.ItemDetailsPage;
 
+import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ImageSLider2.SlidingImage_Adapter;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +48,11 @@ public class Item_Detail_Fragment extends Fragment {
     Button visitShop;
     ImageView Item_Pic;
     private PagerAdapter mPagerAdapter;
+    Shop_Detail_Fragment Detail_Fragment;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
     // private static final int NUM_PAGES = 5;
-
+    Activity activity;
 //    protected FragmentActivity myContext;
 
 //    ScreenSlidePageFragment fr;
@@ -53,6 +62,12 @@ public class Item_Detail_Fragment extends Fragment {
     private static final Integer[] IMAGES = { R.drawable.android, R.drawable.android1};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        this.activity = activity;
+        super.onAttach(activity);
+    }
 
     @Nullable
     @Override
@@ -172,19 +187,25 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText("$"+itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).into(Item_Pic);
+                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).into(Item_Pic);
 
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent(getContext(), Shop_Detail_Activity.class);
-//                        try {
-//                            intent.putExtra("id",itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id") );
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                        getContext().startActivity(intent);
+                        fragmentManager = getFragmentManager();
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        if (Detail_Fragment != null) {
+                            fragmentTransaction.remove(Detail_Fragment);
+                        }
+                        Detail_Fragment = new Shop_Detail_Fragment();
+                        try {
+                            Detail_Fragment.setId(itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        fragmentTransaction.replace(R.id.fragment, Detail_Fragment);
+                        fragmentTransaction.commit();
                     }
                 });
 

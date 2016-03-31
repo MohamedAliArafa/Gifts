@@ -184,7 +184,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
                     fragment = new Item_Detail_Fragment();
                     fragment.setId(items.get(position).getId());
-                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.fragment, fragment);
                     fragmentTransaction.commit();
 //                    Context context = v.getContext();
