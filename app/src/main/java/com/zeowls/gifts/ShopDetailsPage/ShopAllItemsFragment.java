@@ -195,6 +195,7 @@ public class ShopAllItemsFragment extends Fragment {
                         fragmentTransaction.remove(fragment);
                     }
 
+
                     fragment = new Item_Detail_Fragment();
                     fragment.setId(items.get(position).getId());
 //                    fragmentTransaction.addToBackStack(null);
