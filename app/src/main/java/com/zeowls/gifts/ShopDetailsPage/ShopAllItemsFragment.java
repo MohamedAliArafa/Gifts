@@ -177,13 +177,10 @@ public class ShopAllItemsFragment extends Fragment {
                 TextView name = (TextView) holder.itemView.findViewById(R.id.name);
                 TextView description = (TextView) holder.itemView.findViewById(R.id.description);
                 TextView price = (TextView) holder.itemView.findViewById(R.id.price);
-
-
                 name.setText(items.get(position).getName());
                 description.setText(items.get(position).getDesc());
                 price.setText(items.get(position).getPrice());
                 Picasso.with(getContext()).load(items.get(position).getImgUrl()).into(image);
-
 
                 //text.setText(shops.get(position).getDescription());
             }
