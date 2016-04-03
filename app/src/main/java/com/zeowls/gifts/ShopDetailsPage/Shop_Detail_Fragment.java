@@ -126,7 +126,7 @@ public class Shop_Detail_Fragment extends Fragment {
 
                 fragment = new ShopAllItemsFragment();
                 fragment.setId(id);
-                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.replace(R.id.fragment, fragment);
                 fragmentTransaction.commit();
             }
@@ -245,8 +245,8 @@ public class Shop_Detail_Fragment extends Fragment {
                 Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
                 Shop_Name.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
-                Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(ShopHeader_Pic);
-                Picasso.with(getContext()).load("http://bubble-zeowls.herokuapp.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(Shop_Pic);
+                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(ShopHeader_Pic);
+                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
