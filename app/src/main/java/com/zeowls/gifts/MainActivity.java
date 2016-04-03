@@ -24,6 +24,7 @@ import com.zeowls.gifts.AddNewItemPage.newitem;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.CategoryPage.CategoryContentFragment1;
 import com.zeowls.gifts.GiftsTap.GiftsContentFragment1;
+import com.zeowls.gifts.LoginPage.LoginActivity;
 import com.zeowls.gifts.ShopsTap.ShopsContentFragment;
 
 import java.util.ArrayList;
@@ -74,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
 
 //                        // TODO: handle navigation
-//                        if (menuItem.getItemId() == R.id.navLoginBTN) {
-//                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                            startActivity(intent);
-//                            return true;
-//                        }
+                        if (menuItem.getItemId() == R.id.navLoginBTN) {
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
 
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();

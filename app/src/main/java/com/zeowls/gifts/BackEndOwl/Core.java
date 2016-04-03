@@ -255,4 +255,21 @@ public class Core {
 //        putMoviesDB(json);
         return json;
     }
+
+    public JSONObject getCredentials(String username, String password) throws JSONException {
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/login/" + username + "/" + password);
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("getShopItems", response);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
 }

@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -32,6 +33,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -41,10 +43,15 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -53,21 +60,6 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends FragmentActivity implements LoaderCallbacks<Cursor>, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, OnClickListener, ResultCallback<People.LoadPeopleResult> {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -98,7 +90,6 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -124,19 +115,19 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         mProgressView = findViewById(R.id.login_progress);
 
 
-        // Get references to all of the UI views
-        mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
-        mStatus = (TextView) findViewById(R.id.statuslabel);
+//        // Get references to all of the UI views
+//        mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
+//        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
+//        mStatus = (TextView) findViewById(R.id.statuslabel);
 
         // Add click listeners for the button
-        mSignInButton.setOnClickListener(this);
-        mSignOutButton.setOnClickListener(this);
+//        mSignInButton.setOnClickListener(this);
+//        mSignOutButton.setOnClickListener(this);
 
         // Build a GoogleApiClient
         mGoogleApiClient = buildGoogleApiClient();
 
-        mPersonData = (TextView) findViewById(R.id.person_data);
+//        mPersonData = (TextView) findViewById(R.id.person_data);
 
         mGoogleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
                 .addConnectionCallbacks(this)
@@ -166,49 +157,6 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         mGoogleApiClient.disconnect();
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -231,8 +179,12 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }else if (TextUtils.isEmpty(password)){
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -279,32 +231,34 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//
+//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//                }
+//            });
+//
+//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            mProgressView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//                }
+//            });
+//        } else {
+//            // The ViewPropertyAnimator APIs are not available, so simply show
+//            // and hide the relevant UI components.
+//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//        }
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -352,8 +306,8 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
     @Override
     public void onConnected(Bundle bundle) {
-        mSignInButton.setEnabled(false);
-        mSignOutButton.setEnabled(true);
+//        mSignInButton.setEnabled(false);
+//        mSignOutButton.setEnabled(true);
 
         // Indicate that the sign in process is complete.
         mSignInProgress = SIGNED_IN;
@@ -369,14 +323,14 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             Log.d("Exc",exceptionString);
             // Note that you should log these errors in a 'real' app to aid in debugging
         }
-        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            String personName = currentPerson.getDisplayName();
-            String personId = currentPerson.getId();
-            Person.Image personPhoto = currentPerson.getImage();
-            mPersonData.setText(personName+"\n"+personId+"\n"+personPhoto);
-            Log.d("person photo", personPhoto.getUrl());
-        }
+//        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+//            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+//            String personName = currentPerson.getDisplayName();
+//            String personId = currentPerson.getId();
+//            Person.Image personPhoto = currentPerson.getImage();
+//            mPersonData.setText(personName+"\n"+personId+"\n"+personPhoto);
+//            Log.d("person photo", personPhoto.getUrl());
+//        }
     }
 
     @Override
@@ -439,19 +393,19 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
     @Override
     public void onClick(View v) {
-        if (!mGoogleApiClient.isConnecting()) {
-            switch (v.getId()) {
-                case R.id.sign_in_button:
-                    mStatus.setText("Signing In");
-                    resolveSignInError();
-                    break;
-                case R.id.sign_out_button:
-                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                    mGoogleApiClient.disconnect();
-                    mGoogleApiClient.connect();
-                    break;
-            }
-        }
+//        if (!mGoogleApiClient.isConnecting()) {
+//            switch (v.getId()) {
+//                case R.id.sign_in_button:
+//                    mStatus.setText("Signing In");
+//                    resolveSignInError();
+//                    break;
+//                case R.id.sign_out_button:
+//                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+//                    mGoogleApiClient.disconnect();
+//                    mGoogleApiClient.connect();
+//                    break;
+//            }
+//        }
     }
 
     @Override
@@ -474,7 +428,9 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+
+    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mEmail;
         private final String mPassword;
@@ -485,39 +441,59 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+        protected Integer doInBackground(Void... params) {
+            int state = 0;
+            Core core = new Core(getApplicationContext());
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                JSONObject user = core.getCredentials(mEmail, mPassword);
+                if (user.getString("User").equals("no matching email")){
+                    state = 1;
+                    return state;
                 }
+                else if (user.getString("User").equals("wrong password")){
+                    state = 2;
+                    return state;
+                }else {
+                    SharedPreferences.Editor editor = getSharedPreferences("Credentials", MODE_PRIVATE).edit();
+                    editor.putString("email", user.getJSONArray("User").getJSONObject(0).getString("email"));
+                    editor.putInt("id", user.getJSONArray("User").getJSONObject(0).getInt("id"));
+//                Toast.makeText(LoginActivity.this, user.getJSONArray("User").getJSONObject(0).getString("email"), Toast.LENGTH_SHORT).show();
+                    Log.d("email", user.getJSONArray("User").getJSONObject(0).getString("email"));
+                    editor.commit();
+                    return state;
+                }
+            } catch (JSONException e) {
+//                Toast.makeText(LoginActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                state = 3;
+                Log.d("Error", e.getMessage());
+                e.printStackTrace();
+                return state;
             }
-
-            // TODO: register the new account here.
-            return true;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer state) {
             mAuthTask = null;
             showProgress(false);
+            switch (state){
+                case 1:
+                    mPasswordView.setError(getString(R.string.email_does_not_exist));
+                    mPasswordView.requestFocus();
+                    break;
+                case 2:
+                    mPasswordView.setError(getString(R.string.password_is_wrong));
+                    mPasswordView.requestFocus();
+                    break;
+                case 3:
+                    Toast.makeText(LoginActivity.this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    finish();
 
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
             }
+
+
+
         }
 
         @Override
