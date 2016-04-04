@@ -105,14 +105,14 @@ public class GiftsContentFragment1 extends Fragment {
             try {
                 Core core = new Core(getContext());
                 JSONArray catarray = core.getAllCategories().getJSONArray("Category");
-                for (int y = 1; y <= catarray.length() ; y++){
+                for (int y = 1; y < catarray.length() ; y++){
                     JSONArray subCatArray = core.getSubCategoriesByCatID(y).getJSONArray("Category");
-                    ItemDataMode category = new ItemDataMode();
-                    for (int z = 1; z <= subCatArray.length(); z++) {
+                    for (int z = 1; z < subCatArray.length(); z++) {
+                        ItemDataMode category = new ItemDataMode();
                         category.setName(subCatArray.getJSONObject(z).getString("name"));
                         Category.add(category);
                         JSONArray itemsarray = core.getItemsByCategoryId(z).getJSONArray("Items");
-                        if (core.getItemsByCategoryId(z) != null && itemsarray.length() != 0) {
+                        if (itemsarray.length() != 0) {
                             for (int i = 0; i < 4; i++) {
 
                                 JSONObject item = itemsarray.getJSONObject(i);
@@ -177,6 +177,7 @@ public class GiftsContentFragment1 extends Fragment {
                 ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
                 Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).into(imageView);
             }
+
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
