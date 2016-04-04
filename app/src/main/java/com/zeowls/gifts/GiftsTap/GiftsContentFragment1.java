@@ -178,7 +178,6 @@ public class GiftsContentFragment1 extends Fragment {
                 Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).into(imageView);
             }
 
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
