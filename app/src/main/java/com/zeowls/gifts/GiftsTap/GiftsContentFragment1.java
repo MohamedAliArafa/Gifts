@@ -105,16 +105,18 @@ public class GiftsContentFragment1 extends Fragment {
             try {
                 Core core = new Core(getContext());
                 JSONArray catarray = core.getAllCategories().getJSONArray("Category");
-                for (int y = 1; y < catarray.length() ; y++){
-                    JSONArray subCatArray = core.getSubCategoriesByCatID(y).getJSONArray("Category");
-                    for (int z = 1; z < subCatArray.length(); z++) {
+                for (int y = 0; y < catarray.length() ; y++){
+                    ItemDataMode mainCategory = new ItemDataMode();
+                    mainCategory.setId(catarray.getJSONObject(y).getInt("id"));
+                    JSONArray subCatArray = core.getSubCategoriesByCatID(mainCategory.getId()).getJSONArray("Category");
+                    for (int z = 0; z < subCatArray.length(); z++) {
                         ItemDataMode category = new ItemDataMode();
                         category.setName(subCatArray.getJSONObject(z).getString("name"));
-                        Category.add(category);
-                        JSONArray itemsarray = core.getItemsByCategoryId(z).getJSONArray("Items");
+                        category.setId(subCatArray.getJSONObject(z).getInt("id"));
+                        JSONArray itemsarray = core.getItemsByCategoryId(category.getId()).getJSONArray("Items");
                         if (itemsarray.length() != 0) {
+                            Category.add(category);
                             for (int i = 0; i < 4; i++) {
-
                                 JSONObject item = itemsarray.getJSONObject(i);
                                 ItemDataMode Gift_Item = new ItemDataMode();
                                 Gift_Item.setId(item.getInt("id"));
@@ -123,7 +125,6 @@ public class GiftsContentFragment1 extends Fragment {
                                 Gift_Item.setDesc(item.getString("description"));
                                 Gift_Item.setPrice("$" + item.getString("price"));
                                 Gift_Item.setImgUrl(item.getString("image"));
-
                                 GiftItems.add(Gift_Item);
                             }
                         }
@@ -244,9 +245,9 @@ public class GiftsContentFragment1 extends Fragment {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
-                        context.startActivity(intent);
+//                        Context context = v.getContext();
+//                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
+//                        context.startActivity(intent);
                     }
                 });
 
@@ -255,7 +256,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -264,7 +265,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        Toast.makeText(context, ItemName.getText(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, ItemName.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
 

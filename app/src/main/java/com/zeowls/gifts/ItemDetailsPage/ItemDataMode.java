@@ -30,7 +30,7 @@ public class ItemDataMode {
     String desc;
     String imgUrl;
 
-    int catId, id, shopId;
+    public int catId, id, shopId;
     String price, shortDesc, shopName;
 
     public String getShopName() {
