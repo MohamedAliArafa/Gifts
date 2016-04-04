@@ -13,12 +13,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/navheader_height"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
-    android:padding="@dimen/md_keylines"
+    android:padding="@dimen/md_keylines">
 
-    >
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/nameNavText"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:textColor="@color/white"
+        android:layout_marginTop="160dp"
+        android:elevation="13dp"
+        android:text="Guest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"/>
+</RelativeLayout>

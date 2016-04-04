@@ -44,6 +44,7 @@ import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.MainActivity;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.RegistrationActivity;
 
@@ -344,27 +345,27 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
     @Override
     public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
+//        mGoogleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (mSignInProgress != STATE_IN_PROGRESS) {
-            mSignInIntent = connectionResult.getResolution();
-            if (mSignInProgress == STATE_SIGNING_IN) {
-                resolveSignInError();
-            }
-        }
-        // Will implement shortly
-        onSignedOut();
+//        if (mSignInProgress != STATE_IN_PROGRESS) {
+//            mSignInIntent = connectionResult.getResolution();
+//            if (mSignInProgress == STATE_SIGNING_IN) {
+//                resolveSignInError();
+//            }
+//        }
+//        // Will implement shortly
+//        onSignedOut();
     }
 
-    private void onSignedOut() {
-        // Update the UI to reflect that the user is signed out.
-        mSignInButton.setEnabled(true);
-        mSignOutButton.setEnabled(false);
-        mStatus.setText("Signed out");
-    }
+//    private void onSignedOut() {
+//        // Update the UI to reflect that the user is signed out.
+//        mSignInButton.setEnabled(true);
+//        mSignOutButton.setEnabled(false);
+//        mStatus.setText("Signed out");
+//    }
 
     private void resolveSignInError() {
         if (mSignInIntent != null) {
@@ -383,20 +384,20 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RC_SIGN_IN:
-                if (resultCode == RESULT_OK) {
-                    mSignInProgress = STATE_SIGNING_IN;
-                } else {
-                    mSignInProgress = SIGNED_IN;
-                }
-
-                if (!mGoogleApiClient.isConnecting()) {
-                    mGoogleApiClient.connect();
-                }
-                break;
-        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (requestCode) {
+//            case RC_SIGN_IN:
+//                if (resultCode == RESULT_OK) {
+//                    mSignInProgress = STATE_SIGNING_IN;
+//                } else {
+//                    mSignInProgress = SIGNED_IN;
+//                }
+//
+//                if (!mGoogleApiClient.isConnecting()) {
+//                    mGoogleApiClient.connect();
+//                }
+//                break;
+//        }
     }
 
 
@@ -465,10 +466,11 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                 }else {
                     SharedPreferences.Editor editor = getSharedPreferences("Credentials", MODE_PRIVATE).edit();
                     editor.putString("email", user.getJSONArray("User").getJSONObject(0).getString("email"));
+                    editor.putString("name", user.getJSONArray("User").getJSONObject(0).getString("name"));
                     editor.putInt("id", user.getJSONArray("User").getJSONObject(0).getInt("id"));
 //                Toast.makeText(LoginActivity.this, user.getJSONArray("User").getJSONObject(0).getString("email"), Toast.LENGTH_SHORT).show();
                     Log.d("email", user.getJSONArray("User").getJSONObject(0).getString("email"));
-                    editor.commit();
+                    editor.apply();
                     return state;
                 }
             } catch (JSONException e) {
@@ -498,7 +500,6 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                     break;
                 default:
                     finish();
-
             }
 
 

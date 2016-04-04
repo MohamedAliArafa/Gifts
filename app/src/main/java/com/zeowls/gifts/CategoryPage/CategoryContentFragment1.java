@@ -58,7 +58,7 @@ public class CategoryContentFragment1 extends Fragment {
         adapter = new MainAdapter2();
 
         Section_ItemsCount=0;
-        new loadingData().execute();
+        new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -90,33 +90,20 @@ public class CategoryContentFragment1 extends Fragment {
 
             try {
                 Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getAllCategories();
-                if (core.getAllCategories() != null && itemsJSON.getJSONArray("Category").length() != 0) {
-                    for (int i = 0; i < itemsJSON.getJSONArray("Category").length(); i++) {
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Category");
+                JSONArray itemsarray = core.getAllCategories().getJSONArray("Category");
+                if (itemsarray.length() != 0) {
+                    for (int i = 0; i < itemsarray.length(); i++) {
                         JSONObject item = itemsarray.getJSONObject(i);
                         ShopDataModel category = new ShopDataModel();
                         category.setId(item.getInt("id"));
                         category.setName(item.getString("name"));
-
                         categories.add(category);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
-            try {
-
-                if (categories.size() != 0) {
-                    for (int x = 0; x < categories.size(); x++) {
-                        Core core = new Core(getContext());
-                        JSONObject itemsJSON = core.getSubCategoriesByCatID(categories.get(x).getId());
-                        if (core.getSubCategoriesByCatID(categories.get(x).getId()) != null && itemsJSON.getJSONArray("Category").length() != 0) {
-                            Log.d("json", core.getSubCategoriesByCatID(categories.get(x).getId()).toString());
-                            for (int i = 0; i < itemsJSON.getJSONArray("Category").length(); i++) {
-                                JSONArray itemsarray = itemsJSON.getJSONArray("Category");
-                                JSONObject item = itemsarray.getJSONObject(i);
+                        JSONArray itemsarray2 = core.getSubCategoriesByCatID(category.getId()).getJSONArray("Category");
+                        if (itemsarray2.length() != 0) {
+                            Log.d("json", itemsarray2.toString());
+                            for (int y = 0; y < itemsarray2.length(); y++) {
+                                item = itemsarray2.getJSONObject(y);
                                 ShopDataModel item1 = new ShopDataModel();
                                 item1.setId(item.getInt("id"));
                                 item1.setName(item.getString("name"));
@@ -129,6 +116,10 @@ public class CategoryContentFragment1 extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
+
+
 
 
             return null;
@@ -293,9 +284,7 @@ public class CategoryContentFragment1 extends Fragment {
                     break;
             }
 
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(layout, parent, false);
-
+            View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
             return new MainVH(v);
         }
 

@@ -127,7 +127,7 @@ public class Core {
             }else {
                 Log.d("getShopItems", response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -143,7 +143,7 @@ public class Core {
             }else {
                 Log.d("getShopItems", response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -159,7 +159,7 @@ public class Core {
             }else {
                 Log.d("get Items", response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -175,9 +175,7 @@ public class Core {
             }else {
                 Log.d("getAllShops", response);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -193,17 +191,12 @@ public class Core {
             }else {
                 Log.d("getAllShops", response);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
         return json;
     }
-
-
-
 
     public JSONObject getAllCategories(){
         JSONObject json = null;
@@ -214,9 +207,7 @@ public class Core {
             }else {
                 Log.d("getAllShops", response);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -232,9 +223,7 @@ public class Core {
             }else {
                 Log.d("get Items By Cat id", response);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -249,7 +238,7 @@ public class Core {
         JSONObject json = null;
         try {
             postRequest(name,Quantity);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -265,11 +254,44 @@ public class Core {
             }else {
                 Log.d("getShopItems", response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        putMoviesDB(json);
         return json;
+    }
+
+
+    public JSONObject addToCart(int userId, int itemId) throws JSONException {
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/addToShopCart/" + userId + "/" + itemId);
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("addToShopCart", response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    public int cartCount(int userId) {
+        JSONObject json;
+        int count = 0;
+        try {
+            String response = getRequest(Domain + "/getUserShopCart/" + userId + "/");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+                count = json.getJSONArray("Cart").length();
+            }else {
+                Log.d("addToShopCart", response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
 }

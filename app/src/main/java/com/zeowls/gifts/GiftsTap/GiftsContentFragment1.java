@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 public class GiftsContentFragment1 extends Fragment {
 
     static ArrayList<ItemDataMode> GiftItems = new ArrayList<>();
+    static ArrayList<ItemDataMode> Category = new ArrayList<>();
     public RecyclerView recyclerView;
     MainAdapter adapter;
     static Context context;
@@ -48,7 +50,7 @@ public class GiftsContentFragment1 extends Fragment {
                 R.layout.recycler_view, container, false);
 
 
-        new loadingData().execute();
+        new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
@@ -102,95 +104,35 @@ public class GiftsContentFragment1 extends Fragment {
 
             try {
                 Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getItemsByCategoryId(1);
-                if (core.getItemsByCategoryId(1) != null && itemsJSON.getJSONArray("Items").length() != 0) {
-                    for (int i = 0; i < 4; i++) {
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
-                        JSONObject item = itemsarray.getJSONObject(i);
-                        ItemDataMode Gift_Item = new ItemDataMode();
-                        Gift_Item.setId(item.getInt("id"));
-                        Gift_Item.setName(item.getString("name"));
-                        Gift_Item.setShopName(item.getString("shop_name"));
-                        Gift_Item.setDesc(item.getString("description"));
-                        Gift_Item.setPrice("$" + item.getString("price"));
-                        Gift_Item.setImgUrl(item.getString("image"));
+                JSONArray catarray = core.getAllCategories().getJSONArray("Category");
+                for (int y = 1; y <= catarray.length() ; y++){
+                    JSONArray subCatArray = core.getSubCategoriesByCatID(y).getJSONArray("Category");
+                    ItemDataMode category = new ItemDataMode();
+                    for (int z = 1; z <= subCatArray.length(); z++) {
+                        category.setName(subCatArray.getJSONObject(z).getString("name"));
+                        Category.add(category);
+                        JSONArray itemsarray = core.getItemsByCategoryId(z).getJSONArray("Items");
+                        if (core.getItemsByCategoryId(z) != null && itemsarray.length() != 0) {
+                            for (int i = 0; i < 4; i++) {
 
-                        GiftItems.add(Gift_Item);
+                                JSONObject item = itemsarray.getJSONObject(i);
+                                ItemDataMode Gift_Item = new ItemDataMode();
+                                Gift_Item.setId(item.getInt("id"));
+                                Gift_Item.setName(item.getString("name"));
+                                Gift_Item.setShopName(item.getString("shop_name"));
+                                Gift_Item.setDesc(item.getString("description"));
+                                Gift_Item.setPrice("$" + item.getString("price"));
+                                Gift_Item.setImgUrl(item.getString("image"));
+
+                                GiftItems.add(Gift_Item);
+                            }
+                        }
                     }
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-            try {
-                Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getItemsByCategoryId(2);
-                if (core.getItemsByCategoryId(2) != null && itemsJSON.getJSONArray("Items").length() != 0) {
-                    for (int i = 0; i < 4; i++) {
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
-                        JSONObject item = itemsarray.getJSONObject(i);
-                        ItemDataMode Gift_Item = new ItemDataMode();
-                        Gift_Item.setId(item.getInt("id"));
-                        Gift_Item.setName(item.getString("name"));
-                        Gift_Item.setDesc(item.getString("description"));
-                        Gift_Item.setShopName(item.getString("shop_name"));
-                        Gift_Item.setPrice("$" + item.getString("price"));
-                        Gift_Item.setImgUrl(item.getString("image"));
-
-                        GiftItems.add(Gift_Item);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-            try {
-                Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getItemsByCategoryId(3);
-                if (core.getItemsByCategoryId(3) != null && itemsJSON.getJSONArray("Items").length() != 0) {
-                    for (int i = 0; i < 4; i++) {
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
-                        JSONObject item = itemsarray.getJSONObject(i);
-                        ItemDataMode Gift_Item = new ItemDataMode();
-                        Gift_Item.setId(item.getInt("id"));
-                        Gift_Item.setName(item.getString("name"));
-                        Gift_Item.setDesc(item.getString("description"));
-                        Gift_Item.setShopName(item.getString("shop_name"));
-                        Gift_Item.setPrice("$" + item.getString("price"));
-                        Gift_Item.setImgUrl(item.getString("image"));
-
-                        GiftItems.add(Gift_Item);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-            try {
-                Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getItemsByCategoryId(4);
-                if (core.getItemsByCategoryId(4) != null && itemsJSON.getJSONArray("Items").length() != 0) {
-                    for (int i = 0; i < 4; i++) {
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
-                        JSONObject item = itemsarray.getJSONObject(i);
-                        ItemDataMode Gift_Item = new ItemDataMode();
-                        Gift_Item.setId(item.getInt("id"));
-                        Gift_Item.setName(item.getString("name"));
-                        Gift_Item.setDesc(item.getString("description"));
-                        Gift_Item.setPrice("$" + item.getString("price"));
-                        Gift_Item.setShopName(item.getString("shop_name"));
-                        Gift_Item.setImgUrl(item.getString("image"));
-
-                        GiftItems.add(Gift_Item);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
 
             return null;
         }
@@ -219,16 +161,16 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         public void onBindHeaderViewHolder(MainVH holder, int section) {
-            holder.ShopName.setText(String.format("Section %d", section));
-
+//            holder.ItemName.setText(String.format("Section %d", section));
+            holder.ItemName.setText(Category.get(section).getName());
         }
 
         @Override
         public void onBindViewHolder(MainVH holder, int section, int relativePosition, final int absolutePosition) {
-            holder.ShopName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
+            holder.ItemName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
 
             if (GiftItems.size() != 0) {
-                Log.d("Araay size", String.valueOf(GiftItems.size()));
+                Log.d("Array size", String.valueOf(GiftItems.size()));
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
@@ -236,13 +178,12 @@ public class GiftsContentFragment1 extends Fragment {
                 Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).into(imageView);
             }
 
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Context context = v.getContext();
-                //    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ItemDetailActivity_2.class);
                     intent.putExtra("id", GiftItems.get(absolutePosition).getId());
                     context.startActivity(intent);
@@ -252,8 +193,6 @@ public class GiftsContentFragment1 extends Fragment {
                     //Intent intent = new Intent(context, ItemDetailActivity_2.class);
                     //intent.putExtra("id", GiftItems.get(absolutePosition).getId());
                     //context.startActivity(intent);
-
-
                 }
             });
 
@@ -316,7 +255,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                     //   Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -325,7 +264,7 @@ public class GiftsContentFragment1 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                     //   Toast.makeText(context, "Item  name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, ItemName.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -342,6 +281,4 @@ public class GiftsContentFragment1 extends Fragment {
             }
         }
     }
-
-
 }

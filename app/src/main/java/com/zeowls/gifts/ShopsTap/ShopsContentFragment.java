@@ -45,7 +45,7 @@ public class ShopsContentFragment extends Fragment {
                 R.layout.recycler_view, container, false);
         adapter = new ContentAdapter();
 
-        new loadingData().execute();
+        new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         //recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -70,10 +70,9 @@ public class ShopsContentFragment extends Fragment {
 
             try {
                 Core core = new Core(getContext());
-                JSONObject itemsJSON = core.getAllShops();
-                if (core.getAllShops() != null &&  itemsJSON.getJSONArray("Shop").length() != 0 ){
-                    for (int i = 0; i < itemsJSON.getJSONArray("Shop").length(); i++){
-                        JSONArray itemsarray = itemsJSON.getJSONArray("Shop");
+                JSONArray itemsarray = core.getAllShops().getJSONArray("Shop");
+                if ( itemsarray.length() != 0 ){
+                    for (int i = 0; i < itemsarray.length(); i++){
                         JSONObject item = itemsarray.getJSONObject(i);
                         ShopDataModel shop = new ShopDataModel();
                         shop.setId(item.getInt("id"));
@@ -84,7 +83,6 @@ public class ShopsContentFragment extends Fragment {
                             shop.setDescription(item.getString("description"));
                         shop.setOwner(item.getString("owner"));
                         shop.setPictureUrl(item.getString("profile_pic"));
-
                         shops.add(shop);
                     }
                 }
