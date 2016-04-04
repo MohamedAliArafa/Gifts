@@ -102,7 +102,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center_vertical"
-                    android:text="@string/forget_my_password"
+                    android:text="@string/forget_your_password"
                     android:textSize="17sp" />
 
                 <Button
@@ -133,7 +133,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/register"
                     android:textColor="#4527A0"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:id="@+id/register"/>
             </LinearLayout>
 
 

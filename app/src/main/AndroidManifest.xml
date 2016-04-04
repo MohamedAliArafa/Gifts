@@ -44,7 +44,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".CategoryPage.CategoriesActivity" />
         <activity android:name=".CategoryPage.ItemsByCategoryIdActivity" />
-        <activity android:name=".ShoppingCartActivity"></activity>
+        <activity android:name=".ShoppingCartActivity" />
+        <activity android:name=".RegistrationActivity"></activity>
     </application>
 
 </manifest>

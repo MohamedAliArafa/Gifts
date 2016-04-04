@@ -31,7 +31,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="forget_my_password">Forget my password</string>
+    <string name="forget_your_password">Forget your password</string>
     <string name="do_not_have_an_account">Don\'t have an account?</string>
     <string name="register">Register</string>
     <string name="email_does_not_exist">Email doesn\'t exist</string>

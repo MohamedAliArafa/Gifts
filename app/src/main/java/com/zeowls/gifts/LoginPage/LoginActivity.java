@@ -45,6 +45,7 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.RegistrationActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +82,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
     private SignInButton mSignInButton;
     private Button mSignOutButton;
     private TextView mStatus;
+    private TextView register;
 
     private  TextView mPersonData;
 
@@ -133,6 +135,13 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+        register = (TextView) findViewById(R.id.register);
+        register.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
+            }
+        });
 
     }
 
