@@ -49,9 +49,7 @@ public class GiftsContentFragment1 extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-
         new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
@@ -142,6 +140,7 @@ public class GiftsContentFragment1 extends Fragment {
 
     public static class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
+        private Picasso picasso;
 
         @Override
         public int getSectionCount() {
@@ -176,7 +175,7 @@ public class GiftsContentFragment1 extends Fragment {
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
                 ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
-                Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).resize(250, 250).centerCrop().into(imageView);
+                picasso.load(GiftItems.get(absolutePosition).getImgUrl()).resize(250, 250).centerCrop().into(imageView);
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -208,6 +207,7 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
+            picasso = Picasso.with(context);
             context = parent.getContext();
             int layout;
             switch (viewType) {

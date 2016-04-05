@@ -154,7 +154,7 @@ public class ShopsContentFragment extends Fragment {
                 ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
                 name.setText(shops.get(position).getName());
                 text.setText(shops.get(position).getDescription());
-                Picasso.with(context).load(shops.get(position).getPictureUrl()).resize(500, 500).into(imageView);
+                Picasso.with(context).load(shops.get(position).getPictureUrl()).resize(300, 300).into(imageView);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
