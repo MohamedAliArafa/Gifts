@@ -2,6 +2,7 @@ package com.zeowls.gifts.ShopDetailsPage;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -229,9 +230,11 @@ public class Shop_Detail_Fragment extends Fragment {
     private class loadingData extends AsyncTask {
 
         JSONObject itemsJSON;
-
+        Picasso picasso;
         @Override
         protected void onPreExecute() {
+            Context context = getContext();
+            picasso = Picasso.with(getContext());
 
         }
 
@@ -243,8 +246,8 @@ public class Shop_Detail_Fragment extends Fragment {
                 Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
                 Shop_Name.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
-                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).resize(500, 500).into(ShopHeader_Pic);
-                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).resize(200, 200).centerInside().into(Shop_Pic);
+                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).fit().into(ShopHeader_Pic);
+                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).fit().centerInside().into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

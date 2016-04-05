@@ -1,6 +1,7 @@
 package com.zeowls.gifts.ItemDetailsPage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -182,9 +184,12 @@ public class Item_Detail_Fragment extends Fragment {
     private class loadingData extends AsyncTask {
 
         JSONObject itemsJSON;
+        Picasso picasso;
 
         @Override
         protected void onPreExecute() {
+            Context context = getContext();
+            picasso = Picasso.with(context);
         }
 
         @Override
@@ -194,7 +199,7 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).resize(500, 500).into(Item_Pic);
+                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -267,6 +272,16 @@ public class Item_Detail_Fragment extends Fragment {
             return state;
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        }
+        return false;
+    }
+
 
 
 }

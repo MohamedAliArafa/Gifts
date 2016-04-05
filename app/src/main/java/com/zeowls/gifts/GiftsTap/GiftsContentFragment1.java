@@ -40,6 +40,7 @@ public class GiftsContentFragment1 extends Fragment {
     public RecyclerView recyclerView;
     MainAdapter adapter;
     static Context context;
+    private Picasso picasso;
 
 
 
@@ -48,12 +49,12 @@ public class GiftsContentFragment1 extends Fragment {
                              Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-
-        new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        context = getContext();
+        new loadingData().execute();
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
-
+        picasso = Picasso.with(context);
         adapter = new MainAdapter();
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(),getResources().getInteger(R.integer.grid_span));
@@ -69,17 +70,12 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         protected void onPreExecute() {
-
             GiftItems.clear();
-
-            pDialog = new ProgressDialog(getContext());
+            pDialog = new ProgressDialog(context);
             pDialog.setMessage(getString(R.string.loading) + "...");
             pDialog.setIndeterminate(false);
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog.show();
-
-
-
         }
 
         private void hidePDialog() {
@@ -91,7 +87,6 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-
             hidePDialog();
             recyclerView.setAdapter(adapter);
             Log.d("Gifts Array", GiftItems.toString());
@@ -101,7 +96,7 @@ public class GiftsContentFragment1 extends Fragment {
         protected Object doInBackground(Object[] params) {
 
             try {
-                Core core = new Core(getContext());
+                Core core = new Core(context);
                 JSONArray catarray = core.getAllCategories().getJSONArray("Category");
                 for (int y = 0; y < catarray.length() ; y++){
                     ItemDataMode mainCategory = new ItemDataMode();
@@ -138,9 +133,9 @@ public class GiftsContentFragment1 extends Fragment {
     }
 
 
-    public static class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
+    public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
-        private Picasso picasso;
+
 
         @Override
         public int getSectionCount() {
@@ -175,14 +170,13 @@ public class GiftsContentFragment1 extends Fragment {
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
                 ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
-                picasso.load(GiftItems.get(absolutePosition).getImgUrl()).resize(250, 250).centerCrop().into(imageView);
+                picasso.load(GiftItems.get(absolutePosition).getImgUrl()).fit().centerCrop().into(imageView);
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Context context = v.getContext();
                     //Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ItemDetailActivity_2.class);
                     intent.putExtra("id", GiftItems.get(absolutePosition).getId());
@@ -207,8 +201,6 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            picasso = Picasso.with(context);
-            context = parent.getContext();
             int layout;
             switch (viewType) {
                 case VIEW_TYPE_HEADER:
@@ -222,13 +214,12 @@ public class GiftsContentFragment1 extends Fragment {
                     break;
             }
 
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(layout, parent, false);
+            View v = LayoutInflater.from(context).inflate(layout, parent, false);
 
             return new MainVH(v);
         }
 
-        public static class MainVH extends RecyclerView.ViewHolder {
+        public class MainVH extends RecyclerView.ViewHolder {
 
 
             final TextView ShopName;
@@ -245,7 +236,6 @@ public class GiftsContentFragment1 extends Fragment {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Context context = v.getContext();
 //                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
 //                        context.startActivity(intent);
                     }
@@ -255,7 +245,6 @@ public class GiftsContentFragment1 extends Fragment {
                 ShopName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Context context = v.getContext();
 //                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -264,7 +253,6 @@ public class GiftsContentFragment1 extends Fragment {
                 ItemName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Context context = v.getContext();
 //                        Toast.makeText(context, ItemName.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -273,7 +261,6 @@ public class GiftsContentFragment1 extends Fragment {
                 ItemPrice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Context context = v.getContext();
                      //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
                     }
                 });

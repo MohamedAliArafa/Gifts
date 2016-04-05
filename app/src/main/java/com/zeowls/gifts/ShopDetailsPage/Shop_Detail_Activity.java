@@ -25,8 +25,6 @@ public class Shop_Detail_Activity extends AppCompatActivity {
         id = intent.getIntExtra("id", 0);
 
 
-
-
         fragmentManager = getSupportFragmentManager();
 
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -37,8 +35,6 @@ public class Shop_Detail_Activity extends AppCompatActivity {
         Detail_Fragment.setId(id);
         fragmentTransaction.replace(R.id.fragment, Detail_Fragment);
         fragmentTransaction.commit();
-
-
-
     }
+
 }

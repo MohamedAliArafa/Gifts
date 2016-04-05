@@ -36,7 +36,9 @@ public class ShopsContentFragment extends Fragment {
     RecyclerView recyclerView;
     ContentAdapter adapter;
     ImageView imageView;
-    static Context context;
+    Context context;
+    Picasso picasso;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,11 +46,11 @@ public class ShopsContentFragment extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         adapter = new ContentAdapter();
-
-        new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+        context = getContext();
+        new loadingData().execute();
+        picasso = Picasso.with(context);
         //recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
     }
@@ -97,8 +99,6 @@ public class ShopsContentFragment extends Fragment {
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_card, parent, false));
-
-
             // Adding Snackbar to Action Button inside card
             Button button = (Button) itemView.findViewById(R.id.action_button);
             button.setOnClickListener(new View.OnClickListener(){
@@ -135,7 +135,7 @@ public class ShopsContentFragment extends Fragment {
     /**
      * Adapter to display recycler view.
      */
-    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
 
@@ -154,7 +154,7 @@ public class ShopsContentFragment extends Fragment {
                 ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
                 name.setText(shops.get(position).getName());
                 text.setText(shops.get(position).getDescription());
-                Picasso.with(context).load(shops.get(position).getPictureUrl()).resize(300, 300).into(imageView);
+                picasso.load(shops.get(position).getPictureUrl()).fit().centerCrop().into(imageView);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

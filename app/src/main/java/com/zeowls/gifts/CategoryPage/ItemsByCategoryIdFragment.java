@@ -151,10 +151,12 @@ public class ItemsByCategoryIdFragment extends Fragment{
         Item_Detail_Fragment fragment;
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
+        Picasso picasso;
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             context = parent.getContext();
+            picasso = Picasso.with(context);
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
         }
 
@@ -169,7 +171,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
                 name.setText(items.get(position).getName());
                 desc.setText(items.get(position).getDesc());
                 price.setText("$"+items.get(position).getPrice());
-                Picasso.with(context).load(items.get(position).getImgUrl()).into(image);
+                picasso.load(items.get(position).getImgUrl()).into(image);
             }
 
 
