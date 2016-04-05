@@ -194,7 +194,7 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).into(Item_Pic);
+                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).resize(500, 500).into(Item_Pic);
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override

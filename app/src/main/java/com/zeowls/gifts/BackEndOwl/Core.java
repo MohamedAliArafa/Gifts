@@ -17,11 +17,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.AbstractMap;
@@ -66,13 +69,13 @@ public class Core {
 
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void postRequest(final String name, final int Quantity) throws IOException {
+    public void postRequest(final String name) throws IOException {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Domain + "/newShopItem/3/",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Domain + "/data",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                      //  Toast.makeText(context,response,Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,response,Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -85,7 +88,6 @@ public class Core {
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<>();
                 params.put("name",name);
-                params.put("quantity", String.valueOf(Quantity));
 //                params.put(KEY_EMAIL, email);
                 return params;
             }
@@ -149,6 +151,51 @@ public class Core {
 //        putMoviesDB(json);
         return json;
     }
+
+
+    public String sendPrams() {
+        URL url;
+        HttpURLConnection connection;
+        String res = "no Data";
+        try {
+            //Create connection
+            url = new URL(Domain + "/data");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            String urlParameters = "send=" + URLEncoder.encode("android", "UTF-8");
+
+            connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
+            connection.setRequestProperty("Content-Language", "en-US");
+
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            //Send request
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            //Get Response
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            res =  response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 
     public JSONObject getItem(int id) throws JSONException {
         JSONObject json = null;
@@ -237,7 +284,7 @@ public class Core {
     public JSONObject newItem(String name,int Quantity) throws JSONException {
         JSONObject json = null;
         try {
-            postRequest(name,Quantity);
+            postRequest(name);
         } catch (Exception e) {
             e.printStackTrace();
         }

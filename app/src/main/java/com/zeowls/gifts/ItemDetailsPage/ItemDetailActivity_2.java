@@ -41,8 +41,6 @@ public class ItemDetailActivity_2 extends AppCompatActivity {
         Detail_Fragment.setId(id);
         fragmentTransaction.replace(R.id.fragment, Detail_Fragment);
         fragmentTransaction.commit();
-
-
     }
 
 

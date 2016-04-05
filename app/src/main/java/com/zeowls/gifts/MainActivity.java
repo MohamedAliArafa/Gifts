@@ -18,9 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,16 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
-import com.zeowls.gifts.AddNewItemPage.newitem;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.CategoryPage.CategoryContentFragment1;
 import com.zeowls.gifts.GiftsTap.GiftsContentFragment1;
 import com.zeowls.gifts.LoginPage.LoginActivity;
 import com.zeowls.gifts.ShopsTap.ShopsContentFragment;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -222,6 +216,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public class sendItems extends AsyncTask<Void, Void, String> {
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            Core core = new Core(getBaseContext());
+            return core.sendPrams();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -230,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            new sendItems().execute();
 //            Intent intent = new Intent(MainActivity.this, newitem.class);
 //            startActivity(intent);
             return true;

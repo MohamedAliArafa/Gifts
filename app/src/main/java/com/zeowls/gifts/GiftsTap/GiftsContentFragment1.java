@@ -176,7 +176,7 @@ public class GiftsContentFragment1 extends Fragment {
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
                 ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
-                Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).into(imageView);
+                Picasso.with(context).load(GiftItems.get(absolutePosition).getImgUrl()).resize(250, 250).centerCrop().into(imageView);
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

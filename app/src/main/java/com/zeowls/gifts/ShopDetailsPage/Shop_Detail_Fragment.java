@@ -58,15 +58,13 @@ public class Shop_Detail_Fragment extends Fragment {
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
     private static final Integer[] IMAGES = {R.drawable.paris, R.drawable.paris_avatar, R.drawable.rightarrow, R.drawable.navback};
-    private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
+    private ArrayList<Integer> ImagesArray = new ArrayList<>();
 
     TextView viewAllItems;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
         new loadingData().execute();
         return inflater.inflate(R.layout.shop_details_in_fragment1, container, false);
 
@@ -85,9 +83,7 @@ public class Shop_Detail_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set Collapsing Toolbar layout to the screen
-        collapsingToolbar =
-                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-
+        collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
         Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
@@ -239,14 +235,16 @@ public class Shop_Detail_Fragment extends Fragment {
 
         }
 
+
+
         @Override
         protected void onPostExecute(Object o) {
             try {
                 Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
                 Shop_Name.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
-                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(ShopHeader_Pic);
-                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).into(Shop_Pic);
+                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).resize(500, 500).into(ShopHeader_Pic);
+                Picasso.with(getContext()).load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).resize(200, 200).centerInside().into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
