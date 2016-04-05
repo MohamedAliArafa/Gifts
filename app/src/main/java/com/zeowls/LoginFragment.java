@@ -1,17 +1,14 @@
 package com.zeowls;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zeowls.MaterialLoginLib.MaterialLoginView;
 import com.zeowls.gifts.R;
 
 
@@ -29,7 +26,12 @@ public class LoginFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final MaterialLoginView login = (MaterialLoginView) view.findViewById(R.id.login);
 
+    }
 
     @Override
     public void onAttach(Context context) {
