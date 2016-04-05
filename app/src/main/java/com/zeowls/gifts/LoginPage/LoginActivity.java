@@ -480,6 +480,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                 e.printStackTrace();
                 return state;
             }
+
         }
 
         @Override
