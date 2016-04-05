@@ -1,5 +1,6 @@
 package com.zeowls.gifts;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.CategoryPage.CategoryContentFragment1;
@@ -241,6 +243,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            LoginFragment loginFragment = new LoginFragment();
+            loginFragment.show(getFragmentManager(),"sign in dialog");
+
+
             new sendItems().execute();
 //            Intent intent = new Intent(MainActivity.this, newitem.class);
 //            startActivity(intent);
