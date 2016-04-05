@@ -23,13 +23,9 @@ public class ItemDetailActivity_2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_detail_main);
 
-
         // Set title of Detail page
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
-
-
-
 
         fragmentManager = getSupportFragmentManager();
 
@@ -41,6 +37,12 @@ public class ItemDetailActivity_2 extends AppCompatActivity {
         Detail_Fragment.setId(id);
         fragmentTransaction.replace(R.id.fragment, Detail_Fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
     }
 
 

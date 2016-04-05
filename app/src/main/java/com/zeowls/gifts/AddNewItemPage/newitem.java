@@ -26,7 +26,9 @@ public class newitem extends AppCompatActivity {
     ListView listItems;
     ArrayList<String> items = new ArrayList<>();
     EditText nameEdit, quantity;
-    ArrayAdapter adapter;
+    ArrayAdapter<String> adapter;
+    Button submit;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class newitem extends AppCompatActivity {
         nameEdit = (EditText) findViewById(R.id.nameEdit);
         listItems = (ListView) findViewById(R.id.itemsList);
         quantity = (EditText) findViewById(R.id.QuEdit);
-        Button submit = (Button) findViewById(R.id.submitBTN);
+        submit = (Button) findViewById(R.id.submitBTN);
         setSupportActionBar(toolbar);
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
@@ -53,7 +55,7 @@ public class newitem extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
