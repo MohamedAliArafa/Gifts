@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -67,7 +68,7 @@ public class Shop_Detail_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         new loadingData().execute();
-        return inflater.inflate(R.layout.shop_details_in_fragment1, container, false);
+        return inflater.inflate(R.layout.shop_details_in_fragment, container, false);
 
     }
 
@@ -81,8 +82,11 @@ public class Shop_Detail_Fragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
+
+        ActionBar toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        toolbar.setDisplayHomeAsUpEnabled(true);
+
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
@@ -106,28 +110,28 @@ public class Shop_Detail_Fragment extends Fragment {
 
 
         collapsingToolbar.setTitle(getString(R.string.item_title));
-
-
-        viewAllItems = (TextView) view.findViewById(R.id.view_all_items);
-        viewAllItems.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShopAllItemsFragment fragment = null;
-                final FragmentManager fragmentManager;
-                final android.support.v4.app.FragmentTransaction fragmentTransaction;
-                fragmentManager = getFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment);
-                }
-
-                fragment = new ShopAllItemsFragment();
-                fragment.setId(id);
-//                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.fragment, fragment);
-                fragmentTransaction.commit();
-            }
-        });
+//        toolbar.setIcon(R.drawable.android1);
+//        toolbar.setLogo(R.drawable.android);
+//        viewAllItems = (TextView) view.findViewById(R.id.view_all_items);
+//        viewAllItems.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ShopAllItemsFragment fragment = null;
+//                final FragmentManager fragmentManager;
+//                final android.support.v4.app.FragmentTransaction fragmentTransaction;
+//                fragmentManager = getFragmentManager();
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                if (fragment != null) {
+//                    fragmentTransaction.remove(fragment);
+//                }
+//
+//                fragment = new ShopAllItemsFragment();
+//                fragment.setId(id);
+////                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.replace(R.id.fragment, fragment);
+//                fragmentTransaction.commit();
+//            }
+//        });
 
     }
 
@@ -245,6 +249,7 @@ public class Shop_Detail_Fragment extends Fragment {
             try {
                 Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
+
                 Shop_Name.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
                 picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).fit().into(ShopHeader_Pic);
                 picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).fit().centerInside().into(Shop_Pic);
