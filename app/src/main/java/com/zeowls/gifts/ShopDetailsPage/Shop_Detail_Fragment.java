@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,7 +21,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,19 +40,27 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by Nezar Saleh on 3/24/2016.
- */
-public class Shop_Detail_Fragment extends Fragment {
+public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
 
 
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
-    TextView Shop_Name, Shop_Slogan;
+    TextView Shop_Name, Shop_Name_before, Shop_Slogan;
     ImageView Shop_Pic, ShopHeader_Pic;
     ViewPager viewPager;
+
     private PagerAdapter mPagerAdapter;
     // private static final int NUM_PAGES = 5;
+
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION              = 200;
+
+    private boolean mIsTheTitleVisible          = false;
+    private boolean mIsTheTitleContainerVisible = true;
+
+    private LinearLayout mTitleContainer;
+    private AppBarLayout mAppBarLayout;
 
     protected FragmentActivity myContext;
 
@@ -85,15 +96,23 @@ public class Shop_Detail_Fragment extends Fragment {
        ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
 
         ActionBar toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        toolbar.setDisplayHomeAsUpEnabled(true);
+//        toolbar.setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle("");
 
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
+        Shop_Name_before = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
         Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
+
+        mTitleContainer = (LinearLayout) view.findViewById(R.id.main_linearlayout_title);
+        mAppBarLayout   = (AppBarLayout) view.findViewById(R.id.main_appbar);
+
+        mAppBarLayout.addOnOffsetChangedListener(this);
+        startAlphaAnimation(Shop_Name, 0, View.INVISIBLE);
 
 //        mPager = (ViewPager) view.findViewById(R.id.pager);
 //        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
@@ -127,7 +146,7 @@ public class Shop_Detail_Fragment extends Fragment {
 //
 //                fragment = new ShopAllItemsFragment();
 //                fragment.setId(id);
-////                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.addToBackStack(null);
 //                fragmentTransaction.replace(R.id.fragment, fragment);
 //                fragmentTransaction.commit();
 //            }
@@ -151,7 +170,7 @@ public class Shop_Detail_Fragment extends Fragment {
         final float density = getResources().getDisplayMetrics().density;
 
 //Set circle indicator radius
-        // indicator.setRadius(5 * density);
+        //indicator.setRadius(5 * density);
 
         NUM_PAGES = IMAGES.length;
         mPagerAdapter.notifyDataSetChanged();
@@ -193,6 +212,58 @@ public class Shop_Detail_Fragment extends Fragment {
 //            }
 //        });
 
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+
+        handleAlphaOnTitle(percentage);
+        handleToolbarTitleVisibility(percentage);
+    }
+
+    private void handleToolbarTitleVisibility(float percentage) {
+        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+
+            if(!mIsTheTitleVisible) {
+                startAlphaAnimation(Shop_Name, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleVisible = true;
+            }
+
+        } else {
+
+            if (mIsTheTitleVisible) {
+                startAlphaAnimation(Shop_Name, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleVisible = false;
+            }
+        }
+    }
+
+    private void handleAlphaOnTitle(float percentage) {
+        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
+            if(mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleContainerVisible = false;
+            }
+
+        } else {
+
+            if (!mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleContainerVisible = true;
+            }
+        }
+    }
+
+    public static void startAlphaAnimation (View v, long duration, int visibility) {
+        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
+                ? new AlphaAnimation(0f, 1f)
+                : new AlphaAnimation(1f, 0f);
+
+        alphaAnimation.setDuration(duration);
+        alphaAnimation.setFillAfter(true);
+        v.startAnimation(alphaAnimation);
     }
 
 
@@ -250,9 +321,12 @@ public class Shop_Detail_Fragment extends Fragment {
                 Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
 
-                Shop_Name.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
-                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).fit().into(ShopHeader_Pic);
-                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic")).fit().centerInside().into(Shop_Pic);
+                String shopName = itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name");
+                Shop_Name_before.setText(shopName);
+                Shop_Name.setText(shopName);
+                String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
+                picasso.load(profilePic).fit().into(ShopHeader_Pic);
+                picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

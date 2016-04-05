@@ -113,7 +113,7 @@ public class CategoryContentFragment1 extends Fragment {
                         }
                     }
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

@@ -88,7 +88,7 @@ public class ShopsContentFragment extends Fragment {
                         shops.add(shop);
                     }
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;

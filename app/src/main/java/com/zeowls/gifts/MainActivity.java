@@ -251,8 +251,14 @@ public class MainActivity extends AppCompatActivity {
 //);
 //            startActivity(intent);
             return true;
-        } else if (id == android.R.id.home) {
+        }
+        if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+
+        if (id == R.id.action_cart) {
+            Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

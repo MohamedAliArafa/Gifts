@@ -341,4 +341,19 @@ public class Core {
         return count;
     }
 
+    public JSONObject getUserCart(int userId) {
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/getUserShopCart/" + userId + "/");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("addToShopCart", response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
 }

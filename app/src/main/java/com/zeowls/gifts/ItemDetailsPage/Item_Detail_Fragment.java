@@ -279,7 +279,7 @@ public class Item_Detail_Fragment extends Fragment {
             getActivity().finish();
             return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
 
