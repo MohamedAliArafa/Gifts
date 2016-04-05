@@ -35,9 +35,11 @@ public class ShopsContentFragment extends Fragment {
     static ArrayList<ShopDataModel> shops = new ArrayList<>();
     RecyclerView recyclerView;
     ContentAdapter adapter;
-    ImageView imageView;
+
     Context context;
     Picasso picasso;
+
+    loadingData loadingData;
 
 
     @Override
@@ -47,12 +49,21 @@ public class ShopsContentFragment extends Fragment {
                 R.layout.recycler_view, container, false);
         adapter = new ContentAdapter();
         context = getContext();
-        new loadingData().execute();
         picasso = Picasso.with(context);
         //recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        loadingData = new loadingData();
         return recyclerView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private class loadingData extends AsyncTask {
@@ -97,44 +108,54 @@ public class ShopsContentFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_card, parent, false));
-            // Adding Snackbar to Action Button inside card
-            Button button = (Button) itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Action is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
+        final ImageView imageView;
+        final TextView name,text;
 
-            ImageButton favoriteImageButton =
-                    (ImageButton) itemView.findViewById(R.id.favorite_button);
-            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Added to Favorite",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-
-            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-            shareImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Share article",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-
-
+        public ViewHolder(View view) {
+            super(view);
+            name = (TextView) view.findViewById(R.id.card_title);
+            text = (TextView) view.findViewById(R.id.card_text);
+            imageView = (ImageView) view.findViewById(R.id.card_image);
         }
+//        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
+//            super(inflater.inflate(R.layout.item_card, parent, false));
+            // Adding Snackbar to Action Button inside card
+//            Button button = (Button) itemView.findViewById(R.id.action_button);
+//            button.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    Snackbar.make(v, "Action is pressed",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+//
+//            ImageButton favoriteImageButton =
+//                    (ImageButton) itemView.findViewById(R.id.favorite_button);
+//            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    Snackbar.make(v, "Added to Favorite",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+//
+//            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
+//            shareImageButton.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    Snackbar.make(v, "Share article",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+
+
+//        }
     }
 
     /**
      * Adapter to display recycler view.
      */
+
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
@@ -142,25 +163,22 @@ public class ShopsContentFragment extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             context = parent.getContext();
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false));
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, final int position) {
             // no-op
             if (shops.size() != 0) {
-                TextView name = (TextView) holder.itemView.findViewById(R.id.card_title);
-                TextView text = (TextView) holder.itemView.findViewById(R.id.card_text);
-                ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
-                name.setText(shops.get(position).getName());
-                text.setText(shops.get(position).getDescription());
-                picasso.load(shops.get(position).getPictureUrl()).fit().centerCrop().into(imageView);
+                holder.name.setText(shops.get(position).getName());
+                holder.text.setText(shops.get(position).getDescription());
+                picasso.load(shops.get(position).getPictureUrl()).fit().centerCrop().into(holder.imageView);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                  //  Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, Shop_Detail_Activity.class);
                     intent.putExtra("id", shops.get(position).getId());
                     context.startActivity(intent);
@@ -172,5 +190,13 @@ public class ShopsContentFragment extends Fragment {
         public int getItemCount() {
             return shops.size();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+            loadingData.cancel(true);
+        }
+        super.onDestroy();
     }
 }

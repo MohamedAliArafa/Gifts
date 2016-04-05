@@ -50,22 +50,29 @@ public class CategoryContentFragment1 extends Fragment {
 
     Context context;
 
+    loadingData loadingData;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = container.getContext();
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         adapter = new MainAdapter2();
-
         Section_ItemsCount=0;
-        new loadingData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        loadingData = new loadingData();
         return recyclerView;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -342,5 +349,12 @@ public class CategoryContentFragment1 extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+            loadingData.cancel(true);
+        }
+        super.onPause();
+    }
 
 }

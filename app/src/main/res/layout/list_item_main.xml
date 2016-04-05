@@ -33,8 +33,7 @@
             android:id="@+id/card_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_image_height"
-            android:scaleType="centerCrop"
-            android:src="@drawable/paris" />
+            android:scaleType="centerCrop" />
 
         <ImageView
             android:id="@+id/card_more_items"

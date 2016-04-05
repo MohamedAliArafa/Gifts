@@ -69,10 +69,15 @@ public class Item_Detail_Fragment extends Fragment {
 
     int userId = 0;
 
+    loadingData loadingData;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        new loadingData().execute();
+        loadingData = new loadingData();
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.execute();
+        }
         return inflater.inflate(R.layout.item_detail_in_fragment, container, false);
     }
 
@@ -282,6 +287,12 @@ public class Item_Detail_Fragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onDestroy() {
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+            loadingData.cancel(true);
+        }
+        super.onDestroy();
+    }
 
 }

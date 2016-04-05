@@ -42,7 +42,7 @@ public class GiftsContentFragment1 extends Fragment {
     static Context context;
     private Picasso picasso;
 
-
+    loadingData loadingData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,8 +50,6 @@ public class GiftsContentFragment1 extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         context = getContext();
-        new loadingData().execute();
-
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         picasso = Picasso.with(context);
@@ -61,9 +59,17 @@ public class GiftsContentFragment1 extends Fragment {
         recyclerView.setLayoutManager(manager);
         adapter.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+        loadingData = new loadingData();
         return recyclerView;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     private class loadingData extends AsyncTask {
         ProgressDialog pDialog;
@@ -268,5 +274,13 @@ public class GiftsContentFragment1 extends Fragment {
 
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+            loadingData.cancel(true);
+        }
+        super.onPause();
     }
 }

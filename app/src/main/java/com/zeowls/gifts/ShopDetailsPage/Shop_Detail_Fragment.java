@@ -49,6 +49,8 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     ImageView Shop_Pic, ShopHeader_Pic;
     ViewPager viewPager;
 
+    Picasso picasso;
+
     private PagerAdapter mPagerAdapter;
     // private static final int NUM_PAGES = 5;
 
@@ -75,12 +77,16 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     TextView viewAllItems;
 
+    loadingData loadingData;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        new loadingData().execute();
+        loadingData = new loadingData();
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.execute();
+        }
         return inflater.inflate(R.layout.shop_details_in_fragment, container, false);
-
     }
 
     @Override
@@ -113,6 +119,8 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
         mAppBarLayout.addOnOffsetChangedListener(this);
         startAlphaAnimation(Shop_Name, 0, View.INVISIBLE);
+
+        picasso = Picasso.with(getContext());
 
 //        mPager = (ViewPager) view.findViewById(R.id.pager);
 //        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
@@ -155,42 +163,42 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     }
 
 
-    private void init() {
-
-
-        for (int i = 0; i < IMAGES.length; i++)
-            ImagesArray.add(IMAGES[i]);
-
+//    private void init() {
 //
-//        CirclePageIndicator indicator = (CirclePageIndicator)
-//                findViewById(R.id.indicator);
 //
-//        indicator.setViewPager(mPager);
-
-        final float density = getResources().getDisplayMetrics().density;
-
-//Set circle indicator radius
-        //indicator.setRadius(5 * density);
-
-        NUM_PAGES = IMAGES.length;
-        mPagerAdapter.notifyDataSetChanged();
-        // Auto start of viewpager
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-                if (currentPage == NUM_PAGES) {
-                    currentPage = 0;
-                }
-                mPager.setCurrentItem(currentPage++, true);
-            }
-        };
-        Timer swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 3000, 3000);
+//        for (int i = 0; i < IMAGES.length; i++)
+//            ImagesArray.add(IMAGES[i]);
+//
+////
+////        CirclePageIndicator indicator = (CirclePageIndicator)
+////                findViewById(R.id.indicator);
+////
+////        indicator.setViewPager(mPager);
+//
+//        final float density = getResources().getDisplayMetrics().density;
+//
+////Set circle indicator radius
+//        //indicator.setRadius(5 * density);
+//
+//        NUM_PAGES = IMAGES.length;
+//        mPagerAdapter.notifyDataSetChanged();
+//        // Auto start of viewpager
+//        final Handler handler = new Handler();
+//        final Runnable Update = new Runnable() {
+//            public void run() {
+//                if (currentPage == NUM_PAGES) {
+//                    currentPage = 0;
+//                }
+//                mPager.setCurrentItem(currentPage++, true);
+//            }
+//        };
+//        Timer swipeTimer = new Timer();
+//        swipeTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                handler.post(Update);
+//            }
+//        }, 3000, 3000);
 
         // Pager listener over indicator
 //        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -212,7 +220,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 //            }
 //        });
 
-    }
+//    }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -267,34 +275,34 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     }
 
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            Toast.makeText(myContext, "Hi " + position, Toast.LENGTH_SHORT).show();
-            fr.setName("Ali");
-
-            if (position == 1) {
-                fr.setName("Ali");
-            } else if (position == 3) {
-                fr.setName("Ali  3");
-            }
-
-            return new ScreenSlidePageFragment();
-
-
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
-    }
+//    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+//
+//        public ScreenSlidePagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//
+//            Toast.makeText(myContext, "Hi " + position, Toast.LENGTH_SHORT).show();
+//            fr.setName("Ali");
+//
+//            if (position == 1) {
+//                fr.setName("Ali");
+//            } else if (position == 3) {
+//                fr.setName("Ali  3");
+//            }
+//
+//            return new ScreenSlidePageFragment();
+//
+//
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return NUM_PAGES;
+//        }
+//    }
 
 
     public void setId(int id) {
@@ -302,18 +310,21 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     }
 
 
-    private class loadingData extends AsyncTask {
+    private class loadingData extends AsyncTask<Void, Void, Object> {
 
         JSONObject itemsJSON;
-        Picasso picasso;
+
         @Override
-        protected void onPreExecute() {
-            Context context = getContext();
-            picasso = Picasso.with(getContext());
+        protected Object doInBackground(Void... params) {
+            Core core = new Core(getContext());
+            try {
+                itemsJSON = core.getShop(id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
+            return null;
         }
-
-
 
         @Override
         protected void onPostExecute(Object o) {
@@ -331,20 +342,13 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                 e.printStackTrace();
             }
         }
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-
-            Core core = new Core(getContext());
-            try {
-                itemsJSON = core.getShop(id);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
     }
 
-
+    @Override
+    public void onDestroy() {
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+            loadingData.cancel(true);
+        }
+        super.onDestroy();
+    }
 }
