@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
 
-            //    Snackbar.make(v, fireOwl.addItem(MainActivity.this) + " Added", Snackbar.LENGTH_LONG).show();
-                Snackbar.make(v,"Hello To bubble",Snackbar.LENGTH_LONG).show();
+                //    Snackbar.make(v, fireOwl.addItem(MainActivity.this) + " Added", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v, "Hello To bubble", Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -128,16 +128,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
         String restoredText = prefs.getString("name", null);
-        if (restoredText != null){
+        if (restoredText != null) {
             String name = prefs.getString("name", "No name defined");
             userId = prefs.getInt("id", 0);
-            if (userId != 0){
+            if (userId != 0) {
                 new cartCount().execute();
             }
             navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(false);
             navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(true);
             usernameNav.setText(name);
-        }else {
+        } else {
             navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(true);
             navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(false);
             usernameNav.setText("Guest");
@@ -244,11 +244,11 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
 
             LoginFragment loginFragment = new LoginFragment();
-            loginFragment.show(getFragmentManager(),"sign in dialog");
+            loginFragment.show(getFragmentManager(), "sign in dialog");
 
-
-            new sendItems().execute();
-//            Intent intent = new Intent(MainActivity.this, newitem.class);
+//            new sendItems().execute();
+//            Intent intent = new Intent(MainActivity.this, newitem.class
+//);
 //            startActivity(intent);
             return true;
         } else if (id == android.R.id.home) {
