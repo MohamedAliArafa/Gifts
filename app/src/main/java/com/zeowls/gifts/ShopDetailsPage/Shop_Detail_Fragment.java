@@ -7,12 +7,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.Toolbar;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,14 +86,14 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
             transText = bundle.getString("TRANS_TEXT");
         }
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setTitle("");
-        }
+//        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+//        supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+//        if (supportActionBar != null) {
+//            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+//            supportActionBar.setDisplayHomeAsUpEnabled(true);
+//            supportActionBar.setTitle("");
+//        }
 
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
@@ -107,10 +105,12 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
 
         Shop_Pic.setImageBitmap(imageBitmap);
+        ShopHeader_Pic.setImageBitmap(imageBitmap);
+        Shop_Name_before.setText(actionTitle);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Shop_Name_before.setTransitionName(transitionName);
-            Shop_Pic.setTransitionName(transText);
+            ShopHeader_Pic.setTransitionName(transText);
         }
 
         mTitleContainer = (LinearLayout) view.findViewById(R.id.main_linearlayout_title);
@@ -205,7 +205,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 //                Shop_Name_before.setText(shopName);
                 Shop_Name.setText(shopName);
                 String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
-                picasso.load(profilePic).fit().into(ShopHeader_Pic);
+//                picasso.load(profilePic).fit().into(ShopHeader_Pic);
 //                picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
