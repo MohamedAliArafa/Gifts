@@ -23,7 +23,7 @@ import java.util.List;
 
 public class HomePageFragment extends Fragment {
 
-    ActionBar supportActionBar;
+//    ActionBar supportActionBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,14 +40,14 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setTitle("Bubble");
-        }
+//        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+//        supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+//        if (supportActionBar != null) {
+//            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+//            supportActionBar.setDisplayHomeAsUpEnabled(true);
+//            supportActionBar.setTitle("Bubble");
+//        }
         // Setting ViewPager for each Tabs
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
