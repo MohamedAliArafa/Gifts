@@ -66,10 +66,21 @@ public class newitem extends AppCompatActivity {
     }
 
 
-    private class postData extends AsyncTask {
+    private class postData extends AsyncTask<Void, Void, Object> {
 
         String name;
         int Quantity;
+
+        @Override
+        protected Object doInBackground(Void... params) {
+
+            try {
+                new Core(newitem.this).newItem(name, Quantity);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -82,16 +93,6 @@ public class newitem extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
 
-        @Override
-        protected Object doInBackground(Object[] params) {
-
-            try {
-                new Core(newitem.this).newItem(name, Quantity);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 
 

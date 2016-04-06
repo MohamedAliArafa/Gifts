@@ -28,7 +28,6 @@ public class ItemDetailActivity_2 extends AppCompatActivity {
         id = intent.getIntExtra("id", 0);
 
         fragmentManager = getSupportFragmentManager();
-
         fragmentTransaction = fragmentManager.beginTransaction();
         if (Detail_Fragment != null) {
             fragmentTransaction.remove(Detail_Fragment);

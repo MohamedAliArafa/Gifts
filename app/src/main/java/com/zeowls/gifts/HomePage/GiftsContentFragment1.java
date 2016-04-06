@@ -1,4 +1,4 @@
-package com.zeowls.gifts.GiftsTap;
+package com.zeowls.gifts.HomePage;
 
 import android.app.ProgressDialog;
 import android.content.Context;

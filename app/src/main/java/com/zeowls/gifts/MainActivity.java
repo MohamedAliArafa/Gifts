@@ -2,20 +2,16 @@ package com.zeowls.gifts;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -25,58 +21,48 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
 import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.BackEndOwl.FireOwl;
-import com.zeowls.gifts.CategoryPage.CategoryContentFragment1;
-import com.zeowls.gifts.GiftsTap.GiftsContentFragment1;
+import com.zeowls.gifts.HomePage.HomePageFragment;
 import com.zeowls.gifts.LoginPage.LoginActivity;
-import com.zeowls.gifts.ShopsTap.ShopsContentFragment;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-    Firebase myFirebaseRef;
-    FireOwl fireOwl = new FireOwl();
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    public ActionBar supportActionBar;
+
     NavigationView navigationView;
     TextView usernameNav;
+
     static Button cartCount;
     static int mCartCount = 0;
     static int userId = 0;
+
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
+    HomePageFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Setting ViewPager for each Tabs
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-        // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-        assert tabs != null;
-        tabs.setupWithViewPager(viewPager);
-        // Create Navigation drawer and inlfate layout
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        // Adding menu icon to Toolbar
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
-        Firebase.setAndroidContext(this);
-        myFirebaseRef = new Firebase("https://giftshop.firebaseio.com/");
-        myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragment = new HomePageFragment();
+        fragmentTransaction.replace(R.id.fragment_main, fragment);
+        fragmentTransaction.commit();
 
+        configureToolbar();
+        configureNavigationView();
+        configureDrawer();
+    }
+
+    private void configureNavigationView() {
         // Set behavior of Navigation drawer
         assert navigationView != null;
         View header = navigationView.getHeaderView(0);
@@ -111,17 +97,53 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
-        // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+    }
 
-                //    Snackbar.make(v, fireOwl.addItem(MainActivity.this) + " Added", Snackbar.LENGTH_LONG).show();
-                Snackbar.make(v, "Hello To bubble", Snackbar.LENGTH_LONG).show();
+
+    private void configureToolbar() {
+        // Adding Toolbar to Main screen
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Create Navigation drawer and inlfate layout
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        // Adding menu icon to Toolbar
+        supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void configureDrawer() {
+        // Configure drawer
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.string.drawer_open,
+                R.string.drawer_closed) {
+
+            public void onDrawerClosed(View view) {
+                supportInvalidateOptionsMenu();
             }
-        });
+
+            public void onDrawerOpened(View drawerView) {
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -145,45 +167,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    // Add Fragments to Tabs
-    private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new GiftsContentFragment1(), "Gifts");
-        adapter.addFragment(new ShopsContentFragment(), "Shops");
-        adapter.addFragment(new CategoryContentFragment1(), "Catogries");
-        viewPager.setAdapter(adapter);
-    }
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -193,6 +176,14 @@ public class MainActivity extends AppCompatActivity {
         MenuItemCompat.setActionView(item, R.layout.card_update_count);
         cartCount = (Button) MenuItemCompat.getActionView(item);
         cartCount.setText(String.valueOf(mCartCount));
+        cartCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Cart", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Associate searchable configuration with the SearchView
 //        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -252,14 +243,14 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(intent);
             return true;
         }
-        if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
+//        if (id == android.R.id.home) {
+//            mDrawerLayout.openDrawer(GravityCompat.START);
+//        }
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
 
-        if (id == R.id.action_cart) {
-            Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
-            startActivity(intent);
-        }
         return super.onOptionsItemSelected(item);
     }
 }

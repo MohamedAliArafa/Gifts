@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:ignore="RtlHardcoded"
+    android:background="@color/white"
     >
 
     <android.support.design.widget.CoordinatorLayout
@@ -47,7 +48,6 @@
                     android:orientation="vertical"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.3"
-
                     >
 
                     <LinearLayout
@@ -279,7 +279,9 @@
             android:id="@+id/item_Detail_SHop_Image"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_width"
-            android:layout_gravity="center_horizontal"
+            android:src="@drawable/paris_avatar"
+            android:layout_marginTop="110dp"
+            android:layout_gravity="top"
             app:border_color="@android:color/white"
             app:border_width="2dp"
             app:layout_behavior="com.zeowls.gifts.AvatarImageBehavior"

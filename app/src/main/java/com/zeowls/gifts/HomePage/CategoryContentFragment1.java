@@ -1,4 +1,4 @@
-package com.zeowls.gifts.CategoryPage;
+package com.zeowls.gifts.HomePage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.CategoryPage.ItemsByCategoryIdActivity;
 import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;

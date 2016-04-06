@@ -20,11 +20,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_shopping_cart);
 
         itemName = (TextView) findViewById(R.id.cart_item_name);
         price = (TextView) findViewById(R.id.cart_item_price);
 
-        setContentView(R.layout.activity_shopping_cart);
         SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
         String restoredText = prefs.getString("name", null);
         if (restoredText != null) {
@@ -41,17 +41,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            try {
-                itemName.setText(itemsJSON.getJSONArray("Cart").getJSONObject(0).getString("item_name"));
-                price.setText(itemsJSON.getJSONArray("Cart").getJSONObject(0).getString( "$" + "item_price"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
         protected void onPostExecute(Object o) {
-
+            try {
+                itemName.setText(itemsJSON.getJSONArray("Cart").getJSONObject(0).getString("item_name"));
+                price.setText( "$" + itemsJSON.getJSONArray("Cart").getJSONObject(0).getString("item_price"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

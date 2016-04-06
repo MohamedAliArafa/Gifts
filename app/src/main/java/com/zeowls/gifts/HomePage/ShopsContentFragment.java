@@ -1,13 +1,17 @@
-package com.zeowls.gifts.ShopsTap;
+package com.zeowls.gifts.HomePage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +24,8 @@ import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
+import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,43 +119,10 @@ public class ShopsContentFragment extends Fragment {
 
         public ViewHolder(View view) {
             super(view);
-            name = (TextView) view.findViewById(R.id.card_title);
-            text = (TextView) view.findViewById(R.id.card_text);
-            imageView = (ImageView) view.findViewById(R.id.card_image);
+            name = (TextView) view.findViewById(R.id.list_title);
+            text = (TextView) view.findViewById(R.id.list_desc);
+            imageView = (ImageView) view.findViewById(R.id.list_avatar);
         }
-//        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-//            super(inflater.inflate(R.layout.item_card, parent, false));
-            // Adding Snackbar to Action Button inside card
-//            Button button = (Button) itemView.findViewById(R.id.action_button);
-//            button.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    Snackbar.make(v, "Action is pressed",
-//                            Snackbar.LENGTH_LONG).show();
-//                }
-//            });
-//
-//            ImageButton favoriteImageButton =
-//                    (ImageButton) itemView.findViewById(R.id.favorite_button);
-//            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    Snackbar.make(v, "Added to Favorite",
-//                            Snackbar.LENGTH_LONG).show();
-//                }
-//            });
-//
-//            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-//            shareImageButton.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    Snackbar.make(v, "Share article",
-//                            Snackbar.LENGTH_LONG).show();
-//                }
-//            });
-
-
-//        }
     }
 
     /**
@@ -159,29 +132,67 @@ public class ShopsContentFragment extends Fragment {
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
+        String imageTransitionName = "";
+        String textTransitionName = "";
+        Bundle bundle = new Bundle();
+        final Shop_Detail_Fragment endFragment = new Shop_Detail_Fragment();
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             context = parent.getContext();
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false));
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, final int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.name.setTransitionName("transtext" + position);
+                holder.imageView.setTransitionName("transition" + position);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setSharedElementReturnTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(R.transition.change_image_trans));
+                setExitTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(android.R.transition.fade));
+
+                endFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(R.transition.change_image_trans));
+                endFragment.setEnterTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(android.R.transition.fade));
+
+                imageTransitionName = holder.imageView.getTransitionName();
+                textTransitionName = holder.name.getTransitionName();
+            }
+
             // no-op
             if (shops.size() != 0) {
                 holder.name.setText(shops.get(position).getName());
                 holder.text.setText(shops.get(position).getDescription());
-                picasso.load(shops.get(position).getPictureUrl()).fit().centerCrop().into(holder.imageView);
+                picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
+                    bundle.putString("TRANS_NAME", imageTransitionName);
+                    bundle.putString("TRANS_TEXT", textTransitionName);
+                    bundle.putString("ACTION", holder.name.getText().toString());
+                    bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    endFragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    endFragment.setId(shops.get(position).getId());
+                    fragmentManager.beginTransaction()
+                            .add(R.id.fragment_main, endFragment)
+                            .addToBackStack(null)
+                            .addSharedElement(holder.imageView, imageTransitionName)
+                            .addSharedElement(holder.name, textTransitionName)
+                            .commit();
                     //  Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, Shop_Detail_Activity.class);
-                    intent.putExtra("id", shops.get(position).getId());
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, Shop_Detail_Activity.class);
+//                    intent.putExtra("id", shops.get(position).getId());
+//                    context.startActivity(intent);
                 }
             });
         }
