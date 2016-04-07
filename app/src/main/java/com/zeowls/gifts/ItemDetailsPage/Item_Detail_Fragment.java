@@ -91,7 +91,6 @@ public class Item_Detail_Fragment extends Fragment {
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
         collapsingToolbar.setTitle(getString(R.string.item_title));
-
         description = (TextView) view.findViewById(R.id.Item_Description);
         price = (TextView) view.findViewById(R.id.description2);
         shopName = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
@@ -204,7 +203,7 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
+//                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
