@@ -9,9 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +21,14 @@ import java.util.List;
 public class HomePageFragment extends Fragment {
 
 //    ActionBar supportActionBar;
+    String imageTransitionName = "";
+    String textTransitionName = "";
+    Bundle bundle = new Bundle();
+    ViewPager viewPager;
+    TabLayout tabs;
+    final ShopsContentFragment endFragment = new ShopsContentFragment();
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,12 +54,9 @@ public class HomePageFragment extends Fragment {
 //            supportActionBar.setTitle("Bubble");
 //        }
         // Setting ViewPager for each Tabs
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs);
-        assert tabs != null;
-        tabs.setupWithViewPager(viewPager);
+        tabs = (TabLayout) view.findViewById(R.id.tabs);
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         assert fab != null;
@@ -74,6 +76,14 @@ public class HomePageFragment extends Fragment {
         adapter.addFragment(new ShopsContentFragment(), "Shops");
         adapter.addFragment(new CategoryContentFragment1(), "Catogries");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        setupViewPager(viewPager);
+        assert tabs != null;
+        tabs.setupWithViewPager(viewPager);
+        super.onResume();
     }
 
     static class Adapter extends FragmentPagerAdapter {

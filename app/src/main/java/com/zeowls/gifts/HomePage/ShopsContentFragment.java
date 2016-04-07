@@ -1,12 +1,10 @@
 package com.zeowls.gifts.HomePage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,20 +13,16 @@ import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
-import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Activity;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -132,9 +126,6 @@ public class ShopsContentFragment extends Fragment {
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
-        String imageTransitionName = "";
-        String textTransitionName = "";
-        Bundle bundle = new Bundle();
         final Shop_Detail_Fragment endFragment = new Shop_Detail_Fragment();
 
         @Override
@@ -144,14 +135,15 @@ public class ShopsContentFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
+        public void onBindViewHolder( final ViewHolder holder, final int position) {
+
+            final String imageTransitionName = "transition" + position;
+            final String textTransitionName = "transtext" + position;
+            final Bundle bundle = new Bundle();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.name.setTransitionName("transtext" + position);
-                holder.imageView.setTransitionName("transition" + position);
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.name.setTransitionName(textTransitionName);
+                holder.imageView.setTransitionName(imageTransitionName);
                 setSharedElementReturnTransition(TransitionInflater.from(
                         getActivity()).inflateTransition(R.transition.change_image_trans));
                 setExitTransition(TransitionInflater.from(
@@ -161,9 +153,6 @@ public class ShopsContentFragment extends Fragment {
                         getActivity()).inflateTransition(R.transition.change_image_trans));
                 endFragment.setEnterTransition(TransitionInflater.from(
                         getActivity()).inflateTransition(android.R.transition.fade));
-
-                imageTransitionName = holder.imageView.getTransitionName();
-                textTransitionName = holder.name.getTransitionName();
             }
 
             // no-op
