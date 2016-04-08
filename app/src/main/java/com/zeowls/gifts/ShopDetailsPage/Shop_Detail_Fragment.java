@@ -11,6 +11,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.MainActivity;
 import com.zeowls.gifts.R;
 
 import org.json.JSONException;
@@ -51,6 +53,12 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     protected FragmentActivity myContext;
 
     loadingData loadingData;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -215,6 +223,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     @Override
     public void onDestroy() {
+        ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
         if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
             loadingData.cancel(true);
         }

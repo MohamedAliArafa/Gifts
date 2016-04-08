@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     public ActionBar supportActionBar;
+    public AppBarLayout appBarLayout;
+    public Toolbar toolbar;
 
     NavigationView navigationView;
     TextView usernameNav;
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
             fragment = new HomePageFragment1();
-            fragmentTransaction.replace(R.id.fragment_main, fragment);
+            fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
             fragmentTransaction.commit();
         }
 
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         configureDrawer();
     }
 
-    private void configureNavigationView() {
+    public void configureNavigationView() {
         // Set behavior of Navigation drawer
         assert navigationView != null;
         View header = navigationView.getHeaderView(0);
@@ -109,9 +112,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void configureToolbar() {
+    public void configureToolbar() {
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         // Create Navigation drawer and inlfate layout
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -123,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void configureDrawer() {
+    public void configureDrawer() {
         // Configure drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 

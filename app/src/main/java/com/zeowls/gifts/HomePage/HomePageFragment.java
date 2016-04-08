@@ -6,17 +6,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 
 import com.zeowls.gifts.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zeowls.gifts.views.adapters.SamplePagerAdapter;
 
 public class HomePageFragment extends Fragment {
 
@@ -27,6 +26,9 @@ public class HomePageFragment extends Fragment {
     ViewPager viewPager;
     TabLayout tabs;
     final ShopsContentFragment endFragment = new ShopsContentFragment();
+
+    boolean fab_show_icons = false;
+    FloatingActionButton fab,fab1,fab2,fab3;
 
 
 
@@ -58,12 +60,74 @@ public class HomePageFragment extends Fragment {
         // Set Tabs inside Toolbar
         tabs = (TabLayout) view.findViewById(R.id.tabs);
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) view.findViewById(R.id.fab_1);
+        fab2 = (FloatingActionButton) view.findViewById(R.id.fab_2);
+        fab3 = (FloatingActionButton) view.findViewById(R.id.fab_3);
+
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Snackbar.make(v, "Hello To bubble", Snackbar.LENGTH_LONG).show();
+
+//                //Animations
+//                Animation show_fab_1 = AnimationUtils.loadAnimation(getContext(), R.anim.fab1_show);
+//                Animation hide_fab_1 = AnimationUtils.loadAnimation(getContext(), R.anim.fab1_hide);
+//
+//                Animation show_fab_2 = AnimationUtils.loadAnimation(getContext(), R.anim.fab2_show);
+//                Animation hide_fab_2 = AnimationUtils.loadAnimation(getContext(), R.anim.fab2_hide);
+//
+//                Animation show_fab_3 = AnimationUtils.loadAnimation(getContext(), R.anim.fab3_show);
+//                Animation hide_fab_3 = AnimationUtils.loadAnimation(getContext(), R.anim.fab3_hide);
+//                if (!fab_show_icons){
+//                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab1.getLayoutParams();
+//                    layoutParams.rightMargin += (int) (fab1.getWidth() * 1.7);
+//                    layoutParams.bottomMargin += (int) (fab1.getHeight() * 0.25);
+//                    fab1.setLayoutParams(layoutParams);
+//                    fab1.startAnimation(show_fab_1);
+//                    fab1.setClickable(true);
+//
+//                    FrameLayout.LayoutParams layoutParams1 = (FrameLayout.LayoutParams) fab2.getLayoutParams();
+//                    layoutParams1.rightMargin += (int) (fab2.getWidth() * 1.7);
+//                    layoutParams1.bottomMargin += (int) (fab2.getHeight() * 0.25);
+//                    fab2.setLayoutParams(layoutParams1);
+//                    fab2.startAnimation(show_fab_2);
+//                    fab2.setClickable(true);
+//
+//                    FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) fab3.getLayoutParams();
+//                    layoutParams2.rightMargin += (int) (fab3.getWidth() * 1.7);
+//                    layoutParams2.bottomMargin += (int) (fab3.getHeight() * 0.25);
+//                    fab3.setLayoutParams(layoutParams2);
+//                    fab3.startAnimation(show_fab_3);
+//                    fab3.setClickable(true);
+//
+//                    fab_show_icons = true;
+//                }else {
+//                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab1.getLayoutParams();
+//                    layoutParams.rightMargin -= (int) (fab1.getWidth() * 1.7);
+//                    layoutParams.bottomMargin -= (int) (fab1.getHeight() * 0.25);
+//                    fab1.setLayoutParams(layoutParams);
+//                    fab1.startAnimation(hide_fab_1);
+//                    fab1.setClickable(false);
+//
+//                    FrameLayout.LayoutParams layoutParams1 = (FrameLayout.LayoutParams) fab2.getLayoutParams();
+//                    layoutParams1.rightMargin -= (int) (fab2.getWidth() * 1.7);
+//                    layoutParams1.bottomMargin -= (int) (fab2.getHeight() * 0.25);
+//                    fab2.setLayoutParams(layoutParams1);
+//                    fab2.startAnimation(hide_fab_2);
+//                    fab2.setClickable(false);
+//
+//                    FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) fab1.getLayoutParams();
+//                    layoutParams2.rightMargin -= (int) (fab3.getWidth() * 1.7);
+//                    layoutParams2.bottomMargin -= (int) (fab3.getHeight() * 0.25);
+//                    fab3.setLayoutParams(layoutParams2);
+//                    fab3.startAnimation(hide_fab_3);
+//                    fab3.setClickable(false);
+//                    fab_show_icons = false;
+//                }
+
+
+//                Snackbar.make(v, "Hello To bubble", Snackbar.LENGTH_LONG).show();
             }
         });
         super.onViewCreated(view, savedInstanceState);
@@ -71,7 +135,7 @@ public class HomePageFragment extends Fragment {
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getFragmentManager());
+        SamplePagerAdapter adapter = new SamplePagerAdapter(getFragmentManager());
         adapter.addFragment(new GiftsContentFragment1(), "Gifts");
         adapter.addFragment(new ShopsContentFragment(), "Shops");
         adapter.addFragment(new CategoryContentFragment1(), "Catogries");
@@ -86,35 +150,6 @@ public class HomePageFragment extends Fragment {
         super.onResume();
     }
 
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {

@@ -3,7 +3,9 @@ package com.zeowls.gifts.ItemDetailsPage;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -79,8 +81,21 @@ public class Item_Detail_Fragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Bundle bundle = getArguments();
+        String actionTitle = "";
+        Bitmap imageBitmap = null;
+        String transText = "";
+        String transitionName = "";
+
+        if (bundle != null) {
+            transitionName = bundle.getString("TRANS_NAME");
+            actionTitle = bundle.getString("ACTION");
+            imageBitmap = bundle.getParcelable("IMAGE");
+            transText = bundle.getString("TRANS_TEXT");
+        }
+
+//        ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
@@ -90,11 +105,18 @@ public class Item_Detail_Fragment extends Fragment {
         shopName = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         visitShop = (Button) view.findViewById(R.id.Item_Detail_Shop_Visit);
         addToCart = (Button) view.findViewById(R.id.addToCartBTN);
-        Item_Pic = (ImageView) view.findViewById(R.id.image);
+        Item_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
 
         mPager = (ViewPager) view.findViewById(R.id.pager);
         mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
         mPager.setAdapter(mPagerAdapter);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Shop_Name_before.setTransitionName(transitionName);
+            Item_Pic.setTransitionName(transText);
+        }
+
+        Item_Pic.setImageBitmap(imageBitmap);
 
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override

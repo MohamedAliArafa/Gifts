@@ -1,13 +1,17 @@
 package com.zeowls.gifts.HomePage;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +26,9 @@ import com.zeowls.SectionedREcycler.SpacesItemDecoration;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
 import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
+import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,7 +51,7 @@ public class GiftsContentFragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            GiftItems = savedInstanceState.getParcelableArray("items");
+//            GiftItems = savedInstanceState.getParcelableArray("items");
         }else {
             loadingData = new loadingData();
             if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
@@ -129,6 +135,7 @@ public class GiftsContentFragment1 extends Fragment {
 
     public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
+        final Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
 
         @Override
         public int getSectionCount() {
@@ -157,22 +164,56 @@ public class GiftsContentFragment1 extends Fragment {
         public void onBindViewHolder(final MainVH holder, int section, int relativePosition, final int absolutePosition) {
             holder.ItemName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
 
+            final String imageTransitionName = "transition" + absolutePosition;
+            final String textTransitionName = "transtext" + absolutePosition;
+            final Bundle bundle = new Bundle();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.ItemName.setTransitionName(textTransitionName);
+                holder.imageView.setTransitionName(imageTransitionName);
+//                setSharedElementReturnTransition(TransitionInflater.from(
+//                        getActivity()).inflateTransition(R.transition.change_image_trans));
+                setExitTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(android.R.transition.fade));
+
+                endFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(R.transition.change_image_trans));
+                endFragment.setSharedElementReturnTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(R.transition.change_image_trans));
+                endFragment.setEnterTransition(TransitionInflater.from(
+                        getActivity()).inflateTransition(android.R.transition.fade));
+            }
+
             if (GiftItems.size() != 0) {
                 Log.d("Array size", String.valueOf(GiftItems.size()));
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
-                ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.card_image);
-                picasso.load(GiftItems.get(absolutePosition).getImgUrl()).fit().centerCrop().into(imageView);
+                picasso.load(GiftItems.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     holder.cardView.setCardElevation(20);
-                    Intent intent = new Intent(getActivity(), ItemDetailActivity_2.class);
-                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-                    getActivity().startActivity(intent);
+                    bundle.putString("TRANS_NAME", imageTransitionName);
+                    bundle.putString("TRANS_TEXT", textTransitionName);
+                    bundle.putString("ACTION", holder.ItemName.getText().toString());
+                    bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    endFragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    endFragment.setId(GiftItems.get(absolutePosition).getId());
+                    fragmentManager.beginTransaction()
+                            .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+                            .add(R.id.fragment_main, endFragment)
+//                            .replace(R.id.fragment_main, endFragment)
+                            .addToBackStack(null)
+                            .addSharedElement(holder.imageView, imageTransitionName)
+                            .addSharedElement(holder.ItemName, textTransitionName)
+                            .commit();
+//                    Intent intent = new Intent(getActivity(), ItemDetailActivity_2.class);
+//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+//                    getActivity().startActivity(intent);
 
                 }
             });
@@ -209,10 +250,11 @@ public class GiftsContentFragment1 extends Fragment {
         public class MainVH extends RecyclerView.ViewHolder {
 
 
-            final TextView ShopName;
-            final TextView ItemName;
-            final TextView ItemPrice;
-            final CardView cardView;
+            TextView ShopName;
+            TextView ItemName;
+            TextView ItemPrice;
+            CardView cardView;
+            ImageView imageView;
 
             public MainVH(View itemView) {
                 super(itemView);
@@ -221,6 +263,7 @@ public class GiftsContentFragment1 extends Fragment {
                 ItemName = (TextView) itemView.findViewById(R.id.card_Name);
                 ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
                 cardView = (CardView) itemView.findViewById(R.id.card_view);
+                imageView = (ImageView) itemView.findViewById(R.id.card_image);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

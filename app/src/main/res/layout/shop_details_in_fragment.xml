@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    tools:ignore="RtlHardcoded"
     android:background="@color/white"
-    android:fitsSystemWindows="true"
     >
 
     <android.support.design.widget.CoordinatorLayout
@@ -34,6 +34,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/android1"
                     android:tint="#11000000"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.9"
@@ -51,11 +52,11 @@
                     >
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/tile_padding"
                         android:id="@+id/main.linearlayout.title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="4dp"
                         android:orientation="vertical"
                         >
 
@@ -91,7 +92,6 @@
             android:scrollbars="none"
             app:behavior_overlapTop="30dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-
             >
 
             <LinearLayout
@@ -237,7 +237,6 @@
             </LinearLayout>
 
 
-
         </android.support.v4.widget.NestedScrollView>
 
         <android.support.v7.widget.Toolbar
@@ -267,6 +266,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/quila_name2"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
@@ -275,22 +275,30 @@
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_Detail_SHop_Image"
+        <FrameLayout
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_width"
-            android:src="@drawable/paris_avatar"
-            android:layout_marginTop="110dp"
-            android:layout_gravity="top"
-            app:border_color="@android:color/white"
-            app:border_width="2dp"
             app:layout_behavior="com.zeowls.gifts.AvatarImageBehavior"
+            android:layout_gravity="center_horizontal"
             app:finalYPosition="2dp"
             app:finalHeight="@dimen/image_final_width"
             app:startToolbarPosition="2dp"
             app:startHeight="2dp"
             app:startXPosition="2dp"
-            />
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/item_Detail_SHop_Image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/paris_avatar"
+                app:border_color="@android:color/white"
+                app:border_width="2dp"
+                />
+
+        </FrameLayout>
+
+
 
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

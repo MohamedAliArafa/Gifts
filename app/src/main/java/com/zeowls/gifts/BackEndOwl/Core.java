@@ -207,6 +207,7 @@ public class Core {
                 Log.d("get Items", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -239,6 +240,7 @@ public class Core {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -255,6 +257,7 @@ public class Core {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -271,6 +274,7 @@ public class Core {
                 Log.d("get Items By Cat id", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -286,6 +290,7 @@ public class Core {
         try {
             postRequest(name);
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -302,6 +307,7 @@ public class Core {
                 Log.d("getShopItems", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -319,6 +325,7 @@ public class Core {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return json;
@@ -336,6 +343,7 @@ public class Core {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return count;
@@ -351,6 +359,7 @@ public class Core {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
+            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return json;

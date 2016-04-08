@@ -168,7 +168,6 @@ public class ShopsContentFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
                     bundle.putString("TRANS_NAME", imageTransitionName);
                     bundle.putString("TRANS_TEXT", textTransitionName);
                     bundle.putString("ACTION", holder.name.getText().toString());
@@ -177,15 +176,13 @@ public class ShopsContentFragment extends Fragment {
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(shops.get(position).getId());
                     fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_main, endFragment)
+                            .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+                            .add(R.id.fragment_main, endFragment)
+//                            .replace(R.id.fragment_main, endFragment)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
                             .addSharedElement(holder.name, textTransitionName)
                             .commit();
-                    //  Toast.makeText(context,"id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, Shop_Detail_Activity.class);
-//                    intent.putExtra("id", shops.get(position).getId());
-//                    context.startActivity(intent);
                 }
             });
         }
