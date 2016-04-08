@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,9 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by nora on 3/26/2016.
- */
 public class ItemsByCategoryIdFragment extends Fragment{
     static ArrayList<ItemDataMode> items = new ArrayList<>();
     RecyclerView recyclerView;
@@ -116,28 +111,6 @@ public class ItemsByCategoryIdFragment extends Fragment{
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.category_item_card, parent, false));
 
-
-            // Adding Snackbar to Action Button inside card
-//            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-//            imageView.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-////                    Context context =  v.getContext();
-////                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
-//                    Snackbar.make(v, "Image is pressed",
-//                            Snackbar.LENGTH_LONG).show();
-//                }
-//            });
-//            TextView textView = (TextView) itemView.findViewById(R.id.name);
-//
-//            textView.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    Snackbar.make(v, "Text is pressed",
-//                            Snackbar.LENGTH_LONG).show();
-//                }
-//            });
-
         }
     }
 
@@ -146,11 +119,6 @@ public class ItemsByCategoryIdFragment extends Fragment{
      * Adapter to display recycler view.
      */
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        // Set numbers of Card in RecyclerView.
-        private static final int LENGTH = 18;
-        Item_Detail_Fragment fragment;
-        FragmentManager fragmentManager;
-        FragmentTransaction fragmentTransaction;
         Picasso picasso;
 
         @Override
@@ -178,22 +146,13 @@ public class ItemsByCategoryIdFragment extends Fragment{
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragmentManager = myContext.getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    if (fragment != null) {
-                        fragmentTransaction.remove(fragment);
-                    }
-
-                    fragment = new Item_Detail_Fragment();
-                    fragment.setId(items.get(position).getId());
-//                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.fragment, fragment);
-                    fragmentTransaction.commit();
-//                    Context context = v.getContext();
-//                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, ItemDetailActivity.class);
-//                    intent.putExtra("id", shops.get(position).getId());
-//                    context.startActivity(intent);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    Item_Detail_Fragment endFragment= new Item_Detail_Fragment();
+                    endFragment.setId(items.get(position).getId());
+                    fragmentManager.beginTransaction()
+                            .add(R.id.fragment_main, endFragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
         }

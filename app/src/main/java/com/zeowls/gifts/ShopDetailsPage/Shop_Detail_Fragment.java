@@ -93,16 +93,6 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
             imageBitmap = bundle.getParcelable("IMAGE");
             transText = bundle.getString("TRANS_TEXT");
         }
-
-//        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-//        supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-//        if (supportActionBar != null) {
-//            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-//            supportActionBar.setDisplayHomeAsUpEnabled(true);
-//            supportActionBar.setTitle("");
-//        }
-
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
@@ -210,11 +200,11 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
 
                 String shopName = itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name");
-//                Shop_Name_before.setText(shopName);
+                Shop_Name_before.setText(shopName);
                 Shop_Name.setText(shopName);
                 String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
-//                picasso.load(profilePic).fit().into(ShopHeader_Pic);
-//                picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
+                picasso.load(profilePic).fit().into(ShopHeader_Pic);
+                picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -222,11 +212,11 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     }
 
     @Override
-    public void onDestroy() {
+    public void onPause() {
         ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
         if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
             loadingData.cancel(true);
         }
-        super.onDestroy();
+        super.onPause();
     }
 }

@@ -1,11 +1,11 @@
 package com.zeowls.gifts.HomePage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.CategoryPage.ItemsByCategoryIdActivity;
+import com.zeowls.gifts.CategoryPage.ItemsByCategoryIdFragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
@@ -159,6 +159,7 @@ public class CategoryContentFragment1 extends Fragment {
 
     public class MainAdapter2 extends SectionedRecyclerViewAdapter<MainAdapter2.MainVH> {
 
+        final ItemsByCategoryIdFragment endFragment = new ItemsByCategoryIdFragment();
 
         @Override
         public int getSectionCount() {
@@ -243,9 +244,17 @@ public class CategoryContentFragment1 extends Fragment {
 
                     Context context = v.getContext();
 //                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, ItemsByCategoryIdActivity.class);
-                    intent.putExtra("id", SubCategoreis.get(absolutePosition).getId());
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, ItemsByCategoryIdActivity.class);
+//                    intent.putExtra("id", SubCategoreis.get(absolutePosition).getId());
+//                    context.startActivity(intent);
+
+                    FragmentManager fragmentManager = getFragmentManager();
+                    endFragment.setId(SubCategoreis.get(absolutePosition).getId());
+                    fragmentManager.beginTransaction()
+                            .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+                            .add(R.id.fragment_main, endFragment)
+                            .addToBackStack(null)
+                            .commit();
 
 
                 }

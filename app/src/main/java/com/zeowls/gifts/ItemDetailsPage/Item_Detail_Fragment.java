@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,7 +55,7 @@ public class Item_Detail_Fragment extends Fragment {
     Button visitShop, addToCart;
     ImageView Item_Pic;
     private PagerAdapter mPagerAdapter;
-    Shop_Detail_Fragment Detail_Fragment;
+    Shop_Detail_Fragment endFragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     private static ViewPager mPager;
@@ -219,24 +221,44 @@ public class Item_Detail_Fragment extends Fragment {
                 price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-//                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
+                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
+                endFragment = new Shop_Detail_Fragment();
 
+                final Bundle bundle = new Bundle();
+                final String imageTransitionName = "transition";
+                final String textTransitionName = "transtext";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    shopName.setTransitionName(textTransitionName);
+//                    holder.imageView.setTransitionName(imageTransitionName);
+//                setSharedElementReturnTransition(TransitionInflater.from(
+//                        getActivity()).inflateTransition(R.transition.change_image_trans));
+                    setExitTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(android.R.transition.fade));
+
+                    endFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(R.transition.change_image_trans));
+                    endFragment.setSharedElementReturnTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(R.transition.change_image_trans));
+                    endFragment.setEnterTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(android.R.transition.fade));
+                }
+                bundle.putString("TRANS_NAME", imageTransitionName);
+                bundle.putString("TRANS_TEXT", textTransitionName);
+                bundle.putString("ACTION", shopName.getText().toString());
+//                bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        fragmentManager = getFragmentManager();
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        if (Detail_Fragment != null) {
-                            fragmentTransaction.remove(Detail_Fragment);
-                        }
-                        Detail_Fragment = new Shop_Detail_Fragment();
+                        FragmentManager fragmentManager = getFragmentManager();
                         try {
-                            Detail_Fragment.setId(itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id"));
+                            endFragment.setId(itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        fragmentTransaction.replace(R.id.fragment, Detail_Fragment);
-                        fragmentTransaction.commit();
+                        fragmentManager.beginTransaction()
+                                .add(R.id.fragment_main, endFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
                 });
 

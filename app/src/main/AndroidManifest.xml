@@ -26,24 +26,12 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".ItemDetailsPage.ItemDetailActivity_2"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zeowls.gifts.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ShopDetailsPage.Shop_Detail_Activity"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".LoginPage.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".AddNewItemPage.newitem"
             android:label="@string/title_activity_newitem"
             android:theme="@style/AppTheme" />
-        <activity android:name=".CategoryPage.CategoriesActivity" />
-        <activity android:name=".CategoryPage.ItemsByCategoryIdActivity" />
         <activity android:name=".ShoppingCartActivity" />
         <activity android:name=".RegistrationActivity"></activity>
     </application>

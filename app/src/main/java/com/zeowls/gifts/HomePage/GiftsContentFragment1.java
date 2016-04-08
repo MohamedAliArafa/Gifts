@@ -1,11 +1,9 @@
 package com.zeowls.gifts.HomePage;
 
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
@@ -25,10 +23,8 @@ import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.SectionedREcycler.SpacesItemDecoration;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
-import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
 import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
-import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -199,14 +195,15 @@ public class GiftsContentFragment1 extends Fragment {
                     bundle.putString("TRANS_NAME", imageTransitionName);
                     bundle.putString("TRANS_TEXT", textTransitionName);
                     bundle.putString("ACTION", holder.ItemName.getText().toString());
-                    bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    if ( holder.imageView.getDrawable() != null) {
+                        bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    }
                     endFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(GiftItems.get(absolutePosition).getId());
                     fragmentManager.beginTransaction()
                             .hide(getFragmentManager().findFragmentByTag("homeFragment"))
                             .add(R.id.fragment_main, endFragment)
-//                            .replace(R.id.fragment_main, endFragment)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
                             .addSharedElement(holder.ItemName, textTransitionName)
