@@ -6,8 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,17 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.CategoryPage.ItemsByCategoryIdActivity;
-import com.zeowls.gifts.ItemDetailsPage.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -35,50 +32,36 @@ import java.util.ArrayList;
  */
 public class CategoryContentFragment1 extends Fragment {
 
-
     static ArrayList<ShopDataModel> categories = new ArrayList<>();
     static ArrayList<ShopDataModel> SubCategoreis = new ArrayList<>();
 
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
-
-    public RecyclerView recyclerView;
     MainAdapter2 adapter;
-
-    static int Section_ItemsCount;
-
-
-    int id = 0;
-
-    Context context;
-
+    int Section_ItemsCount;
     loadingData loadingData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        context = container.getContext();
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        adapter = new MainAdapter2();
-        Section_ItemsCount=0;
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
         loadingData = new loadingData();
-        return recyclerView;
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        return inflater.inflate(R.layout.content_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
-            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        adapter = new MainAdapter2();
+        Section_ItemsCount = 0;
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(adapter);
         super.onViewCreated(view, savedInstanceState);
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
 
     private class loadingData extends AsyncTask {
 
@@ -90,7 +73,9 @@ public class CategoryContentFragment1 extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            recyclerView.setAdapter(adapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setAdapter(adapter);
         }
 
         @Override
@@ -172,7 +157,7 @@ public class CategoryContentFragment1 extends Fragment {
      */
 
 
-    public static class MainAdapter2 extends SectionedRecyclerViewAdapter<MainAdapter2.MainVH> {
+    public class MainAdapter2 extends SectionedRecyclerViewAdapter<MainAdapter2.MainVH> {
 
 
         @Override
@@ -297,7 +282,7 @@ public class CategoryContentFragment1 extends Fragment {
         }
 
 
-        public static class MainVH extends RecyclerView.ViewHolder {
+        public class MainVH extends RecyclerView.ViewHolder {
 
 
             final ImageView Sub_Category_Item_Image;
@@ -307,45 +292,9 @@ public class CategoryContentFragment1 extends Fragment {
 
             public MainVH(View itemView) {
                 super(itemView);
-
                 Sub_Category_Item_Image = (ImageView) itemView.findViewById(R.id.Sub_Category_Item_Image);
                 Sub_Category_Item_Name = (TextView) itemView.findViewById(R.id.Sub_Category_Item_Name);
                 Main_Category_Name = (TextView) itemView.findViewById(R.id.Main_Category_Name);
-
-
-//                itemView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//
-//
-//
-////                        Context context = v.getContext();
-////                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
-////                        context.startActivity(intent);
-//
-//                    }
-//                });
-
-//
-//                Sub_Category_Item_Image.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Context context = v.getContext();
-//                        //Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//
-//
-//                Sub_Category_Item_Name.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Context context = v.getContext();
-//                       // Toast.makeText(context, Sub_Category_Item_Name.getText().toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
-
             }
         }
     }

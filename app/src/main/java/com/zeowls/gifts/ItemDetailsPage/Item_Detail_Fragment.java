@@ -1,18 +1,16 @@
 package com.zeowls.gifts.ItemDetailsPage;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -56,10 +54,6 @@ public class Item_Detail_Fragment extends Fragment {
     Shop_Detail_Fragment Detail_Fragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-    // private static final int NUM_PAGES = 5;
-//    protected FragmentActivity myContext;
-
-    //    ScreenSlidePageFragment fr;
     private static ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;

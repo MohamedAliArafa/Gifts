@@ -1,11 +1,11 @@
 package com.zeowls.gifts.HomePage;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,8 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
@@ -25,76 +25,64 @@ import com.zeowls.gifts.ItemDetailsPage.ItemDetailActivity_2;
 import com.zeowls.gifts.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Provides UI for the view with Cards.
- */
 public class GiftsContentFragment1 extends Fragment {
 
     static ArrayList<ItemDataMode> GiftItems = new ArrayList<>();
     static ArrayList<ItemDataMode> Category = new ArrayList<>();
-    public RecyclerView recyclerView;
+
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
+
     MainAdapter adapter;
-    static Context context;
     private Picasso picasso;
 
     loadingData loadingData;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        context = getContext();
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
-        picasso = Picasso.with(context);
-        adapter = new MainAdapter();
-
-        GridLayoutManager manager = new GridLayoutManager(getActivity(),getResources().getInteger(R.integer.grid_span));
-        recyclerView.setLayoutManager(manager);
-        adapter.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-        loadingData = new loadingData();
-        return recyclerView;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            GiftItems = savedInstanceState.getParcelableArray("items");
+        }else {
+            loadingData = new loadingData();
+            if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
+                loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }
+        return inflater.inflate(R.layout.content_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
-            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        picasso = Picasso.with(getActivity());
+        adapter = new MainAdapter();
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_span));
+        mRecyclerView.setLayoutManager(manager);
+        adapter.setLayoutManager(manager);
+        mRecyclerView.setAdapter(adapter);
         super.onViewCreated(view, savedInstanceState);
     }
 
     private class loadingData extends AsyncTask {
-        ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
             GiftItems.clear();
-            pDialog = new ProgressDialog(context);
-            pDialog.setMessage(getString(R.string.loading) + "...");
-            pDialog.setIndeterminate(false);
-            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.show();
-        }
-
-        private void hidePDialog() {
-            if (pDialog != null) {
-                pDialog.dismiss();
-                pDialog = null;
-            }
         }
 
         @Override
         protected void onPostExecute(Object o) {
-            hidePDialog();
-            recyclerView.setAdapter(adapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setAdapter(adapter);
             Log.d("Gifts Array", GiftItems.toString());
         }
 
@@ -102,9 +90,9 @@ public class GiftsContentFragment1 extends Fragment {
         protected Object doInBackground(Object[] params) {
 
             try {
-                Core core = new Core(context);
+                Core core = new Core(getActivity());
                 JSONArray catarray = core.getAllCategories().getJSONArray("Category");
-                for (int y = 0; y < catarray.length() ; y++){
+                for (int y = 0; y < catarray.length(); y++) {
                     ItemDataMode mainCategory = new ItemDataMode();
                     mainCategory.setId(catarray.getJSONObject(y).getInt("id"));
                     JSONArray subCatArray = core.getSubCategoriesByCatID(mainCategory.getId()).getJSONArray("Category");
@@ -142,11 +130,10 @@ public class GiftsContentFragment1 extends Fragment {
     public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
 
-
         @Override
         public int getSectionCount() {
             if (GiftItems.size() != 0) {
-                return GiftItems.size()/4;
+                return GiftItems.size() / 4;
             }
 
             return 0;
@@ -167,7 +154,7 @@ public class GiftsContentFragment1 extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(MainVH holder, int section, int relativePosition, final int absolutePosition) {
+        public void onBindViewHolder(final MainVH holder, int section, int relativePosition, final int absolutePosition) {
             holder.ItemName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
 
             if (GiftItems.size() != 0) {
@@ -182,17 +169,11 @@ public class GiftsContentFragment1 extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, ItemDetailActivity_2.class);
+                    holder.cardView.setCardElevation(20);
+                    Intent intent = new Intent(getActivity(), ItemDetailActivity_2.class);
                     intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-                    context.startActivity(intent);
+                    getActivity().startActivity(intent);
 
-                    //Context context = v.getContext();
-                    //Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-                    //Intent intent = new Intent(context, ItemDetailActivity_2.class);
-                    //intent.putExtra("id", GiftItems.get(absolutePosition).getId());
-                    //context.startActivity(intent);
                 }
             });
 
@@ -220,7 +201,7 @@ public class GiftsContentFragment1 extends Fragment {
                     break;
             }
 
-            View v = LayoutInflater.from(context).inflate(layout, parent, false);
+            View v = LayoutInflater.from(getActivity()).inflate(layout, parent, false);
 
             return new MainVH(v);
         }
@@ -231,6 +212,7 @@ public class GiftsContentFragment1 extends Fragment {
             final TextView ShopName;
             final TextView ItemName;
             final TextView ItemPrice;
+            final CardView cardView;
 
             public MainVH(View itemView) {
                 super(itemView);
@@ -238,6 +220,7 @@ public class GiftsContentFragment1 extends Fragment {
                 ShopName = (TextView) itemView.findViewById(R.id.card_Shop_name);
                 ItemName = (TextView) itemView.findViewById(R.id.card_Name);
                 ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
+                cardView = (CardView) itemView.findViewById(R.id.card_view);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -267,7 +250,7 @@ public class GiftsContentFragment1 extends Fragment {
                 ItemPrice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                     //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -277,8 +260,15 @@ public class GiftsContentFragment1 extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+       // outState.putParcelableArray("items", GiftItems);
+        //Save the fragment's state here
+    }
+
+    @Override
     public void onPause() {
-        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
         super.onPause();

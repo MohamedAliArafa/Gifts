@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -23,7 +24,7 @@ import android.widget.Toast;
 
 import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.HomePage.HomePageFragment;
+import com.zeowls.gifts.HomePage.HomePageFragment1;
 import com.zeowls.gifts.LoginPage.LoginActivity;
 
 import java.util.Objects;
@@ -42,20 +43,28 @@ public class MainActivity extends AppCompatActivity {
     static int mCartCount = 0;
     static int userId = 0;
 
+    Fragment mContent;
+
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-    HomePageFragment fragment;
+    HomePageFragment1 fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new HomePageFragment();
-        fragmentTransaction.replace(R.id.fragment_main, fragment);
-        fragmentTransaction.commit();
+        if (savedInstanceState != null) {
+            //Restore the fragment's instance
+            Fragment mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+        }else {
+
+            fragmentManager = getSupportFragmentManager();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragment = new HomePageFragment1();
+            fragmentTransaction.replace(R.id.fragment_main, fragment);
+            fragmentTransaction.commit();
+        }
 
         configureToolbar();
         configureNavigationView();
@@ -252,5 +261,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's instance
+        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
     }
 }

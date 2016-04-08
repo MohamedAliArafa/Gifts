@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -33,7 +34,9 @@ import java.util.ArrayList;
 public class ShopsContentFragment extends Fragment {
 
     static ArrayList<ShopDataModel> shops = new ArrayList<>();
-    RecyclerView recyclerView;
+
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
     ContentAdapter adapter;
 
     Context context;
@@ -45,24 +48,23 @@ public class ShopsContentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        adapter = new ContentAdapter();
-        context = getContext();
-        picasso = Picasso.with(context);
-        //recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         loadingData = new loadingData();
-        return recyclerView;
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        return inflater.inflate(R.layout.content_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
-            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
+        mRecyclerView = (RecyclerView) view.findViewById( R.id.recycler_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        adapter = new ContentAdapter();
+        context = getContext();
+        picasso = Picasso.with(context);
+        //recyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -75,7 +77,9 @@ public class ShopsContentFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            recyclerView.setAdapter(adapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setAdapter(adapter);
         }
 
         @Override
@@ -173,7 +177,7 @@ public class ShopsContentFragment extends Fragment {
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(shops.get(position).getId());
                     fragmentManager.beginTransaction()
-                            .add(R.id.fragment_main, endFragment)
+                            .replace(R.id.fragment_main, endFragment)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
                             .addSharedElement(holder.name, textTransitionName)
