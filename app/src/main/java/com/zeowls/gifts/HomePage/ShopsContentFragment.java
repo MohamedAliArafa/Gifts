@@ -171,7 +171,11 @@ public class ShopsContentFragment extends Fragment {
                     bundle.putString("TRANS_NAME", imageTransitionName);
                     bundle.putString("TRANS_TEXT", textTransitionName);
                     bundle.putString("ACTION", holder.name.getText().toString());
-                    bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    try {
+                        bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     endFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(shops.get(position).getId());
