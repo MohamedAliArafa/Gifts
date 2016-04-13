@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             app:errorTextAppearance="@style/MaterialLoginTheme.TextAppearanceLoginError"
-            app:theme="@style/MaterialLoginTheme.TextAppearanceLogin">
+            android:theme="@style/MaterialLoginTheme.TextAppearanceLogin">
 
             <EditText
                 android:layout_width="match_parent"

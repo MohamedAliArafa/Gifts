@@ -245,7 +245,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:layout_anchor="@id/main.framelayout.title"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
             app:title=""
             >
 
