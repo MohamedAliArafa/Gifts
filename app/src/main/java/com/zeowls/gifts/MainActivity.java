@@ -92,44 +92,44 @@ public class MainActivity extends AppCompatActivity {
 //                if (restoredText != null) {
 //                    String name = prefs.getString("name", "No name defined");
 //                    userId = prefs.getInt("id", 0);
-                    if (userId != 0) {
-                        //do something
-                        Firebase ref = new Firebase("https://giftshop.firebaseio.com/orders/User");
-                        Query queryRef = ref.orderByChild("shop_id");
-                        queryRef.addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (userId != 0) {
+                    //do something
+                    Firebase ref = new Firebase("https://giftshop.firebaseio.com/orders/User");
+                    Query queryRef = ref.orderByChild("shop_id");
+                    queryRef.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 //                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
 //                                Log.d("item id", String.valueOf(order.item_id));
-                                System.out.println(dataSnapshot.getValue());
-                            }
+                            System.out.println(dataSnapshot.getValue());
+                        }
 
-                            @Override
-                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-                                Log.d("item id", String.valueOf(order.item_id));
-                                System.out.println(dataSnapshot.getValue());
-                            }
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+                            Log.d("item id", String.valueOf(order.item_id));
+                            System.out.println(dataSnapshot.getValue());
+                        }
 
-                            @Override
-                            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-                                Log.d("item id", String.valueOf(order.item_id));
-                                System.out.println(dataSnapshot.getValue());
-                            }
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+                            Log.d("item id", String.valueOf(order.item_id));
+                            System.out.println(dataSnapshot.getValue());
+                        }
 
-                            @Override
-                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-                                Log.d("item id", String.valueOf(order.item_id));
-                                System.out.println(dataSnapshot.getValue());
-                            }
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                            FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+                            Log.d("item id", String.valueOf(order.item_id));
+                            System.out.println(dataSnapshot.getValue());
+                        }
 
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
 
-                            }
-                        });
+                        }
+                    });
 //
                 }
                 h.postDelayed(this, delay);
@@ -157,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
         MenuItem logout = navigationView.getMenu().findItem(R.id.navLogoutBTN);
         MenuItem fav = navigationView.getMenu().findItem(R.id.navFavBTN);
 
-        if (userId == 0){
+        if (userId == 0) {
             fav.setVisible(false);
             login.setVisible(true);
             logout.setVisible(false);
-        }else {
+        } else {
             fav.setVisible(true);
             login.setVisible(false);
             logout.setVisible(true);
