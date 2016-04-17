@@ -126,33 +126,35 @@ public class ShopAllItemsFragment extends Fragment {
 
             // Adding Snackbar to Action Button inside card
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Context context =  v.getContext();
-//                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
-                    Snackbar.make(v, "Image is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
             TextView textView = (TextView) itemView.findViewById(R.id.name);
-
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Text is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-
             TextView price = (TextView) itemView.findViewById(R.id.price);
-            price.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Price is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
+//            imageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+////                    Context context =  v.getContext();
+////                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
+//                    Snackbar.make(v, "Image is pressed",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+
+
+//            textView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Snackbar.make(v, "Text is pressed",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+
+
+//            price.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Snackbar.make(v, "Price is pressed",
+//                            Snackbar.LENGTH_LONG).show();
+//                }
+//            });
 
         }
     }
@@ -199,7 +201,7 @@ public class ShopAllItemsFragment extends Fragment {
                     fragment = new Item_Detail_Fragment();
                     fragment.setId(items.get(position).getId());
 //                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.fragment, fragment);
+                    fragmentTransaction.replace(R.id.fragment_main, fragment);
                     fragmentTransaction.commit();
 //                    Context context = v.getContext();
 //                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();

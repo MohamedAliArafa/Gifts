@@ -47,6 +47,7 @@ public class ShopsContentFragment extends Fragment {
     Picasso picasso;
 
     loadingData loadingData;
+    LinearLayout mErrorText;
 
 
     @Override
@@ -87,7 +88,7 @@ public class ShopsContentFragment extends Fragment {
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
                 mRecyclerView.setAdapter(adapter);
-            }else {
+            } else {
                 mErrorText.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
             }
@@ -105,7 +106,7 @@ public class ShopsContentFragment extends Fragment {
                         ShopDataModel shop = new ShopDataModel();
                         shop.setId(item.getInt("id"));
                         shop.setName(item.getString("name"));
-                        if(item.getString("description").equals("null") || item.getString("description").isEmpty())
+                        if (item.getString("description").equals("null") || item.getString("description").isEmpty())
                             shop.setDescription("No Description Available");
                         else
                             shop.setDescription(item.getString("description"));
@@ -195,7 +196,7 @@ public class ShopsContentFragment extends Fragment {
                     picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
                 }
                 if (shops.get(position).getPictureUrl().equals("http://bubble.zeowls.com/uploads/null")) {
-                    holder.imageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    holder.imageView.setImageResource(R.drawable.giftintro);
                 } else {
                     picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
                 }
@@ -209,9 +210,8 @@ public class ShopsContentFragment extends Fragment {
                     bundle.putString("ACTION", holder.name.getText().toString());
                     try {
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
-                    } catch (Exception e) {
                         endFragment.setArguments(bundle);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     FragmentManager fragmentManager = getFragmentManager();

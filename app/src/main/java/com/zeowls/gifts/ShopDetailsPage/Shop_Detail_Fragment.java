@@ -10,6 +10,8 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +43,9 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     Picasso picasso;
     public ActionBar supportActionBar;
+    Button Shop_Items_btn;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
     // private static final int NUM_PAGES = 5;
 
@@ -55,6 +61,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     protected FragmentActivity myContext;
 
     loadingData loadingData;
+    ShopAllItemsFragment shopAllItemsFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,6 +102,8 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
             imageBitmap = bundle.getParcelable("IMAGE");
             transText = bundle.getString("TRANS_TEXT");
         }
+
+        Shop_Items_btn = (Button) view.findViewById(R.id.Shop_Items_btn);
         // Set Collapsing Toolbar layout to the screen
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
@@ -122,6 +131,19 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         startAlphaAnimation(Shop_Name, 0, View.INVISIBLE);
         picasso = Picasso.with(getContext());
         collapsingToolbar.setTitle(getString(R.string.item_title));
+
+
+        Shop_Items_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager = getFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                shopAllItemsFragment =  new ShopAllItemsFragment();
+                shopAllItemsFragment.setId(id);
+                fragmentTransaction.replace(R.id.fragment_main, shopAllItemsFragment);
+                fragmentTransaction.commit();
+            }
+        });
 
     }
 
