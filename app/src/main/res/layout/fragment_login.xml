@@ -22,4 +22,5 @@
         app:registerRepeatPasswordHint="Last name"
         app:registerTextColor="@color/colorAccent"
         app:registerTitle="Join us" />
+
 </FrameLayout>

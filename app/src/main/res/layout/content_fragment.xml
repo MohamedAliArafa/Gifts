@@ -10,6 +10,34 @@
         android:layout_gravity="center"
         />
 
+    <LinearLayout
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@android:drawable/stat_notify_error"
+            android:tint="@color/button_grey"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:text="Ooops, That is awkward something Wrong Happened\n(Check Internet Connection)"
+            />
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

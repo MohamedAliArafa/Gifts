@@ -4,34 +4,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.ImageSLider2.SlidingImage_Adapter;
 import com.zeowls.gifts.LoginPage.LoginActivity;
+import com.zeowls.gifts.MainActivity;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
 
@@ -46,12 +49,15 @@ import java.util.TimerTask;
 /**
  * Created by Nezar Saleh on 3/24/2016.
  */
-public class Item_Detail_Fragment extends Fragment {
+public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
 
 
-    int id = 0;
+    int item_id = 0;
+    int shop_id = 0;
+    int user_id = 0;
+
     CollapsingToolbarLayout collapsingToolbar;
-    TextView name, description, price, shopName;
+    TextView name, description, price, item_name_toolbar, shop_name;
     Button visitShop, addToCart;
     ImageView Item_Pic;
     private PagerAdapter mPagerAdapter;
@@ -64,10 +70,22 @@ public class Item_Detail_Fragment extends Fragment {
     private static final Integer[] IMAGES = {R.drawable.android, R.drawable.android1};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION = 1000;
 
-    int userId = 0;
+    private boolean mIsTheTitleVisible = false;
+    private boolean mIsTheTitleContainerVisible = true;
+
+    private LinearLayout mTitleContainer;
 
     loadingData loadingData;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -102,12 +120,14 @@ public class Item_Detail_Fragment extends Fragment {
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
         collapsingToolbar.setTitle(getString(R.string.item_title));
+        name = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
         description = (TextView) view.findViewById(R.id.Item_Description);
         price = (TextView) view.findViewById(R.id.description2);
-        shopName = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
+        item_name_toolbar = (TextView) view.findViewById(R.id.item_Detail_toolbar_title);
+        shop_name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         visitShop = (Button) view.findViewById(R.id.Item_Detail_Shop_Visit);
         addToCart = (Button) view.findViewById(R.id.addToCartBTN);
-        Item_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
+        Item_Pic = (ImageView) view.findViewById(R.id.item_Detail_Image);
 
         mPager = (ViewPager) view.findViewById(R.id.pager);
         mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
@@ -119,12 +139,20 @@ public class Item_Detail_Fragment extends Fragment {
         }
 
         Item_Pic.setImageBitmap(imageBitmap);
+        mTitleContainer = (LinearLayout) view.findViewById(R.id.main_linearlayout_title);
+        AppBarLayout mAppBarLayout = (AppBarLayout) view.findViewById(R.id.main_appbar);
+        mAppBarLayout.addOnOffsetChangedListener(this);
+        startAlphaAnimation(item_name_toolbar, 0, View.INVISIBLE);
 
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (userId != 0 && id != 0) {
-                    new addToCart().execute();
+                if (user_id != 0) {
+                    if (item_id != 0 && shop_id != 0) {
+                        new addToCart().execute();
+                    }else {
+                        Log.d("Id Empty","Item And Shop Ids are Empty");
+                    }
                 }else {
                     Intent in = new Intent(getActivity(), LoginActivity.class);
                     startActivity(in);
@@ -137,9 +165,61 @@ public class Item_Detail_Fragment extends Fragment {
     }
 
     @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+
+        handleAlphaOnTitle(percentage);
+        handleToolbarTitleVisibility(percentage);
+    }
+
+    private void handleToolbarTitleVisibility(float percentage) {
+        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+
+            if (!mIsTheTitleVisible) {
+                startAlphaAnimation(item_name_toolbar, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleVisible = true;
+            }
+
+        } else {
+
+            if (mIsTheTitleVisible) {
+                startAlphaAnimation(item_name_toolbar, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleVisible = false;
+            }
+        }
+    }
+
+    private void handleAlphaOnTitle(float percentage) {
+        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
+            if (mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleContainerVisible = false;
+            }
+
+        } else {
+
+            if (!mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleContainerVisible = true;
+            }
+        }
+    }
+
+    public static void startAlphaAnimation(View v, long duration, int visibility) {
+        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
+                ? new AlphaAnimation(0f, 1f)
+                : new AlphaAnimation(1f, 0f);
+
+        alphaAnimation.setDuration(duration);
+        alphaAnimation.setFillAfter(true);
+        v.startAnimation(alphaAnimation);
+    }
+
+    @Override
     public void onResume() {
         SharedPreferences prefs = getActivity().getSharedPreferences("Credentials", getActivity().MODE_PRIVATE);
-        userId= prefs.getInt("id", 0);
+        user_id = prefs.getInt("id", 0);
         super.onResume();
     }
 
@@ -199,7 +279,7 @@ public class Item_Detail_Fragment extends Fragment {
 
 
     public void setId(int id) {
-        this.id = id;
+        this.item_id = id;
     }
 
 
@@ -219,8 +299,11 @@ public class Item_Detail_Fragment extends Fragment {
             try {
                 description.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("description"));
                 price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
-                shopName.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
+                item_name_toolbar.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
+                shop_name.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
+                shop_id= itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id");
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
+                name.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
                 picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
                 endFragment = new Shop_Detail_Fragment();
 
@@ -228,7 +311,7 @@ public class Item_Detail_Fragment extends Fragment {
                 final String imageTransitionName = "transition";
                 final String textTransitionName = "transtext";
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    shopName.setTransitionName(textTransitionName);
+                    name.setTransitionName(textTransitionName);
 //                    holder.imageView.setTransitionName(imageTransitionName);
 //                setSharedElementReturnTransition(TransitionInflater.from(
 //                        getActivity()).inflateTransition(R.transition.change_image_trans));
@@ -244,7 +327,7 @@ public class Item_Detail_Fragment extends Fragment {
                 }
                 bundle.putString("TRANS_NAME", imageTransitionName);
                 bundle.putString("TRANS_TEXT", textTransitionName);
-                bundle.putString("ACTION", shopName.getText().toString());
+                bundle.putString("ACTION", name.getText().toString());
 //                bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -273,7 +356,7 @@ public class Item_Detail_Fragment extends Fragment {
 
             Core core = new Core(getContext());
             try {
-                itemsJSON = core.getItem(id);
+                itemsJSON = core.getItem(item_id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -305,10 +388,12 @@ public class Item_Detail_Fragment extends Fragment {
         protected Object doInBackground(Object[] params) {
             Boolean state = false;
             Core core = new Core(getContext());
+            FireOwl fireOwl = new FireOwl(getContext());
             try {
-                itemsJSON = core.addToCart(userId,id);
+                fireOwl.addOrder(shop_id,item_id, user_id);
+//                itemsJSON = core.addToCart(user_id,id);
                 state = true;
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return state;
@@ -325,11 +410,12 @@ public class Item_Detail_Fragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+    public void onPause() {
+        ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
-        super.onDestroy();
+        super.onPause();
     }
 
 }

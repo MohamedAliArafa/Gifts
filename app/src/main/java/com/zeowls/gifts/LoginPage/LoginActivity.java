@@ -455,21 +455,19 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             int state = 0;
             Core core = new Core(getApplicationContext());
             try {
-                JSONObject user = core.getCredentials(mEmail, mPassword);
-                if (user.getString("User").equals("no matching email")){
+                int user_id = core.getCredentials(mEmail, mPassword);
+                if (user_id == -2){
                     state = 1;
                     return state;
                 }
-                else if (user.getString("User").equals("wrong password")){
+                else if (user_id == -1){
                     state = 2;
                     return state;
                 }else {
                     SharedPreferences.Editor editor = getSharedPreferences("Credentials", MODE_PRIVATE).edit();
-                    editor.putString("email", user.getJSONArray("User").getJSONObject(0).getString("email"));
-                    editor.putString("name", user.getJSONArray("User").getJSONObject(0).getString("name"));
-                    editor.putInt("id", user.getJSONArray("User").getJSONObject(0).getInt("id"));
+                    editor.putInt("id", user_id);
 //                Toast.makeText(LoginActivity.this, user.getJSONArray("User").getJSONObject(0).getString("email"), Toast.LENGTH_SHORT).show();
-                    Log.d("email", user.getJSONArray("User").getJSONObject(0).getString("email"));
+                    Log.d("user Id", String.valueOf(user_id));
                     editor.apply();
                     return state;
                 }

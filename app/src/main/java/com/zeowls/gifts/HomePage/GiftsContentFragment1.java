@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class GiftsContentFragment1 extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+    private LinearLayout mErrorText;
 
     MainAdapter adapter;
     private Picasso picasso;
@@ -62,6 +64,7 @@ public class GiftsContentFragment1 extends Fragment {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mErrorText = (LinearLayout) view.findViewById(R.id.error);
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         picasso = Picasso.with(getActivity());
@@ -82,9 +85,14 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-            mRecyclerView.setAdapter(adapter);
+            if (GiftItems.size() != 0) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(adapter);
+            }else {
+                mErrorText.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+            }
             Log.d("Gifts Array", GiftItems.toString());
         }
 

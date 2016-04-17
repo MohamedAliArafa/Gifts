@@ -34,8 +34,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:maxWidth="300dp"
-        android:text="Awlad el 7ag kofta w s7abo ll blastik bel sala 3al naby" />
+        android:maxWidth="300dp"/>
 
 
     <Button

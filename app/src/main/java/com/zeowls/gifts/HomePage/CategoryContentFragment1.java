@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class CategoryContentFragment1 extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+    private LinearLayout mErrorText;
 
     MainAdapter2 adapter;
     int Section_ItemsCount;
@@ -55,6 +57,7 @@ public class CategoryContentFragment1 extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mErrorText = (LinearLayout) view.findViewById(R.id.error);
         adapter = new MainAdapter2();
         Section_ItemsCount = 0;
         mRecyclerView.setHasFixedSize(false);
@@ -73,9 +76,14 @@ public class CategoryContentFragment1 extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-            mRecyclerView.setAdapter(adapter);
+            if (categories.size() != 0) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(adapter);
+            }else {
+                mErrorText.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
 
         @Override

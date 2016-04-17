@@ -22,8 +22,7 @@
             android:id="@+id/navLogoutBTN"
             android:icon="@drawable/ic_bookmark_border_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Logout"
-            android:visible="false"/>
+            android:title="Logout"/>
 
 
     </group>

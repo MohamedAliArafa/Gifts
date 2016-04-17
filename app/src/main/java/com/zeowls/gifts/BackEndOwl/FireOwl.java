@@ -1,51 +1,33 @@
 package com.zeowls.gifts.BackEndOwl;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.firebase.client.Firebase;
-import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
 
 public class FireOwl {
 
-    public final String FirebaseURL = "https://giftshop.firebaseio.com/";
-    public Firebase firebaseRef;
+    private String FirebaseURL = "https://giftshop.firebaseio.com/";
+    private Firebase firebaseRef;
 
-    public String addItem(Context context){
-        firebaseRef = new Firebase(FirebaseURL);
+    public FireOwl(Context context){
         Firebase.setAndroidContext(context);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Title");
-        LinearLayout linearLayout = new LinearLayout(context);
-        final EditText name = new EditText(context);
-        name.setHint("Enter Product Name");
-        final EditText desc = new EditText(context);
-        desc.setHint("Enter Product Description");
-        linearLayout.addView(name);
-        linearLayout.addView(desc);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        builder.setView(linearLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String nameTxt = name.getText().toString();
-                String descTxt = desc.getText().toString();
-                ItemDataMode item = new ItemDataMode();
-                item.setName(nameTxt);
-                item.setDesc(descTxt);
-                firebaseRef.child("items").push().setValue(item);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-        return name.getText().toString();
+        firebaseRef = new Firebase(FirebaseURL);
+    }
+
+    public void addOrder(int shop_id, int item_id, int user_id){
+        firebaseRef.child("orders").child(String.valueOf("Shop")).child(String.valueOf(shop_id)).child("item:"+item_id+",user:"+user_id).setValue(new orderDataModel(shop_id,item_id,user_id));
+        firebaseRef.child("orders").child(String.valueOf("User")).child(String.valueOf(user_id)).child("item:"+item_id+",shop:"+shop_id).setValue(new orderDataModel(shop_id,item_id,user_id));
+    }
+
+    public class orderDataModel {
+        public int item_id;
+        public int shop_id;
+        public int user_id;
+
+        public orderDataModel(int shop_id, int item_id, int user_id) {
+            this.item_id = item_id;
+            this.shop_id = shop_id;
+            this.user_id = user_id;
+        }
     }
 }

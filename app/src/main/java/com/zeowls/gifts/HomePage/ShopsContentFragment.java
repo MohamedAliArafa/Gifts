@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,6 +38,8 @@ public class ShopsContentFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+    private LinearLayout mErrorText;
+
     ContentAdapter adapter;
 
     Context context;
@@ -59,6 +62,8 @@ public class ShopsContentFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) view.findViewById( R.id.recycler_view);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mErrorText = (LinearLayout) view.findViewById(R.id.error);
+
         adapter = new ContentAdapter();
         context = getContext();
         picasso = Picasso.with(context);
@@ -77,9 +82,14 @@ public class ShopsContentFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-            mRecyclerView.setAdapter(adapter);
+            if (shops.size() != 0) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(adapter);
+            }else {
+                mErrorText.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -94,12 +104,14 @@ public class ShopsContentFragment extends Fragment {
                         ShopDataModel shop = new ShopDataModel();
                         shop.setId(item.getInt("id"));
                         shop.setName(item.getString("name"));
-                        if(item.getString("description").equals("null"))
-                            shop.setDescription("");
+                        if(item.getString("description").equals("null") || item.getString("description").isEmpty())
+                            shop.setDescription("No Description Available");
                         else
                             shop.setDescription(item.getString("description"));
-                        shop.setOwner(item.getString("owner"));
-                        shop.setPictureUrl(item.getString("profile_pic"));
+//                        shop.setOwner(item.getString("owner"));
+                        if (!item.getString("profile_pic").equals("null")) {
+                            shop.setPictureUrl(item.getString("profile_pic"));
+                        }
                         shops.add(shop);
                     }
                 }
@@ -139,7 +151,7 @@ public class ShopsContentFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder( final ViewHolder holder, final int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
 
             final String imageTransitionName = "transition" + position;
             final String textTransitionName = "transtext" + position;
@@ -163,7 +175,9 @@ public class ShopsContentFragment extends Fragment {
             if (shops.size() != 0) {
                 holder.name.setText(shops.get(position).getName());
                 holder.text.setText(shops.get(position).getDescription());
-                picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
+                if (shops.get(position).getPictureUrl() != null) {
+                    picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
+                }
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -173,10 +187,10 @@ public class ShopsContentFragment extends Fragment {
                     bundle.putString("ACTION", holder.name.getText().toString());
                     try {
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                        endFragment.setArguments(bundle);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                    endFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(shops.get(position).getId());
                     fragmentManager.beginTransaction()

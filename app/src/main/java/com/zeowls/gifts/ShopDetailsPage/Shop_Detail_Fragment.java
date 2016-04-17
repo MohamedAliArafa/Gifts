@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,17 +36,18 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     CollapsingToolbarLayout collapsingToolbar;
     TextView Shop_Name, Shop_Name_before, Shop_Slogan;
     ImageView Shop_Pic, ShopHeader_Pic;
+    CardView Shop_Slogan_Card;
 
     Picasso picasso;
     public ActionBar supportActionBar;
 
     // private static final int NUM_PAGES = 5;
 
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
-    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
-    private static final int ALPHA_ANIMATIONS_DURATION              = 1000;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION = 1000;
 
-    private boolean mIsTheTitleVisible          = false;
+    private boolean mIsTheTitleVisible = false;
     private boolean mIsTheTitleContainerVisible = true;
 
     private LinearLayout mTitleContainer;
@@ -65,7 +67,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.execute();
         }
         return inflater.inflate(R.layout.shop_details_in_fragment, container, false);
@@ -98,15 +100,18 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
         Shop_Name_before = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
         Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
+        Shop_Slogan_Card = (CardView) view.findViewById(R.id.item_Detail_Shop_Slogan_card);
         Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
 
-        Shop_Pic.setImageBitmap(imageBitmap);
-        ShopHeader_Pic.setImageBitmap(imageBitmap);
+        if (imageBitmap != null) {
+            Shop_Pic.setImageBitmap(imageBitmap);
+            ShopHeader_Pic.setImageBitmap(imageBitmap);
+        }
         Shop_Name_before.setText(actionTitle);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Shop_Name_before.setTransitionName(transitionName);
             ShopHeader_Pic.setTransitionName(transText);
         }
@@ -132,7 +137,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     private void handleToolbarTitleVisibility(float percentage) {
         if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
 
-            if(!mIsTheTitleVisible) {
+            if (!mIsTheTitleVisible) {
                 startAlphaAnimation(Shop_Name, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
                 mIsTheTitleVisible = true;
             }
@@ -148,7 +153,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     private void handleAlphaOnTitle(float percentage) {
         if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
-            if(mIsTheTitleContainerVisible) {
+            if (mIsTheTitleContainerVisible) {
                 startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
                 mIsTheTitleContainerVisible = false;
             }
@@ -162,7 +167,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         }
     }
 
-    public static void startAlphaAnimation (View v, long duration, int visibility) {
+    public static void startAlphaAnimation(View v, long duration, int visibility) {
         AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
                 ? new AlphaAnimation(0f, 1f)
                 : new AlphaAnimation(1f, 0f);
@@ -196,15 +201,23 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         @Override
         protected void onPostExecute(Object o) {
             try {
-                Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
-                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
+                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").equals("null")) {
+                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").isEmpty()) {
+                        Shop_Slogan_Card.setVisibility(View.VISIBLE);
+                        Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
+                    }
+                }
 
+                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
                 String shopName = itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name");
                 Shop_Name_before.setText(shopName);
                 Shop_Name.setText(shopName);
-                String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
-                picasso.load(profilePic).fit().into(ShopHeader_Pic);
-                picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
+
+                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic").equals("null")) {
+                    String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
+                    picasso.load(profilePic).fit().into(ShopHeader_Pic);
+                    picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -214,7 +227,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     @Override
     public void onPause() {
         ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
-        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
         super.onPause();

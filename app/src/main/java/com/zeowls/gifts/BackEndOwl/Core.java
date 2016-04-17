@@ -21,6 +21,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -64,61 +65,39 @@ public class Core {
         return data;
     }
 
+    private String postRequest(String url,JSONObject params) throws IOException {
+        URL url1 = new URL(Domain + url);
+        HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
 
+        OutputStream stream = connection.getOutputStream();
+        DataOutputStream writer = new DataOutputStream(stream);
 
+        Log.d("WARN", params.toString());
+        // The LogCat prints out data like:
+        // ID:test,Email:test@gmail.com,Pwd:test
+        writer.writeBytes(params.toString());
+        writer.flush();
+        writer.close();
+        stream.close();
 
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public void postRequest(final String name) throws IOException {
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Domain + "/data",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(context,response,Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }){
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<>();
-                params.put("name",name);
-//                params.put(KEY_EMAIL, email);
-                return params;
-            }
-
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
-
-
-    private String getQuery(List<AbstractMap.SimpleEntry> params) throws UnsupportedEncodingException
-    {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-
-        for (AbstractMap.SimpleEntry pair : params)
-        {
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            result.append(URLEncoder.encode((String) pair.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode((String) pair.getValue(), "UTF-8"));
+        String data;
+        BufferedReader reader;
+        InputStream inputStream = connection.getInputStream();
+        StringBuilder stringBuffer = new StringBuilder();
+        assert inputStream != null;
+        reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = reader.readLine())!=null){
+            stringBuffer.append(line);
         }
-
-        return result.toString();
+        data = stringBuffer.toString();
+        Log.d("data", data);
+        return data;
     }
-
 
     public JSONObject getShopItems(int id) throws JSONException {
         JSONObject json = null;
@@ -152,51 +131,6 @@ public class Core {
         return json;
     }
 
-
-    public String sendPrams() {
-        URL url;
-        HttpURLConnection connection;
-        String res = "no Data";
-        try {
-            //Create connection
-            url = new URL(Domain + "/data");
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-            String urlParameters = "send=" + URLEncoder.encode("android", "UTF-8");
-
-            connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            //Send request
-            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-
-            //Get Response
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuilder response = new StringBuilder();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-            res =  response.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
-
-
     public JSONObject getItem(int id) throws JSONException {
         JSONObject json = null;
         try {
@@ -207,7 +141,7 @@ public class Core {
                 Log.d("get Items", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -240,7 +174,7 @@ public class Core {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -257,7 +191,7 @@ public class Core {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
@@ -274,46 +208,45 @@ public class Core {
                 Log.d("get Items By Cat id", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 //        putMoviesDB(json);
         return json;
     }
 
-
-
-
-
-    public JSONObject newItem(String name,int Quantity) throws JSONException {
-        JSONObject json = null;
+    public int getCredentials(String username, String password) throws JSONException {
+        JSONObject json = new JSONObject();
+        int result = 0;
         try {
-            postRequest(name);
+            json.put("email", username);
+            json.put("password", password);
+            String response = postRequest("/login",json);
+            JSONObject resJson = new JSONObject(response);
+            result = resJson.getJSONArray("response").getJSONObject(0).getInt("id");
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-//        putMoviesDB(json);
-        return json;
+        return result;
     }
 
-    public JSONObject getCredentials(String username, String password) throws JSONException {
-        JSONObject json = null;
+    public int signUpUser(String username, String password, String mobile) throws JSONException {
+        JSONObject json = new JSONObject();
+        int result = 0;
         try {
-            String response = getRequest(Domain + "/login/" + username + "/" + password);
-            if (!response.equals("0")){
-                json = new JSONObject(response);
-            }else {
-                Log.d("getShopItems", response);
-            }
+            json.put("email", username);
+            json.put("password", password);
+            json.put("mobile", mobile);
+            String response = postRequest("/signup",json);
+            JSONObject resJson = new JSONObject(response);
+            result = resJson.getInt("response");
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-//        putMoviesDB(json);
-        return json;
+        return result;
     }
-
 
     public JSONObject addToCart(int userId, int itemId) throws JSONException {
         JSONObject json = null;
@@ -325,7 +258,7 @@ public class Core {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return json;
@@ -343,7 +276,7 @@ public class Core {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return count;
@@ -359,7 +292,7 @@ public class Core {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
-            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return json;

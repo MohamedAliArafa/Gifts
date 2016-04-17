@@ -48,7 +48,11 @@ public class ShopDataModel {
     }
 
     public String getPictureUrl() {
-        return "http://bubble.zeowls.com/uploads/" + pictureUrl;
+        if (pictureUrl == null){
+            return null;
+        }else {
+            return "http://bubble.zeowls.com/uploads/" + pictureUrl;
+        }
     }
 
     public void setPictureUrl(String pictureUrl) {

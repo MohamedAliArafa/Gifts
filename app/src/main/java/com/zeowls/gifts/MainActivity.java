@@ -1,10 +1,12 @@
 package com.zeowls.gifts;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +26,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.HomePage.HomePageFragment1;
 import com.zeowls.gifts.LoginPage.LoginActivity;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     static Button cartCount;
     static int mCartCount = 0;
-    static int userId = 0;
+    static int userId = 1;
 
     Fragment mContent;
 
@@ -56,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Firebase.setAndroidContext(this);
 
         if (savedInstanceState != null) {
             //Restore the fragment's instance
             Fragment mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-        }else {
+        } else {
 
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
@@ -68,6 +80,64 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
             fragmentTransaction.commit();
         }
+
+
+        final Handler h = new Handler();
+        final int delay = 1000; //milliseconds
+
+        h.postDelayed(new Runnable() {
+            public void run() {
+//                SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
+//                String restoredText = prefs.getString("name", null);
+//                if (restoredText != null) {
+//                    String name = prefs.getString("name", "No name defined");
+//                    userId = prefs.getInt("id", 0);
+                    if (userId != 0) {
+                        //do something
+                        Firebase ref = new Firebase("https://giftshop.firebaseio.com/orders/User");
+                        Query queryRef = ref.orderByChild("shop_id");
+                        queryRef.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+//                                Log.d("item id", String.valueOf(order.item_id));
+                                System.out.println(dataSnapshot.getValue());
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+                                Log.d("item id", String.valueOf(order.item_id));
+                                System.out.println(dataSnapshot.getValue());
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+                                Log.d("item id", String.valueOf(order.item_id));
+                                System.out.println(dataSnapshot.getValue());
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
+                                Log.d("item id", String.valueOf(order.item_id));
+                                System.out.println(dataSnapshot.getValue());
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+//
+                }
+                h.postDelayed(this, delay);
+            }
+
+        }, delay);
+//                new cartCount().execute();
+
 
         configureToolbar();
         configureNavigationView();
@@ -79,6 +149,24 @@ public class MainActivity extends AppCompatActivity {
         assert navigationView != null;
         View header = navigationView.getHeaderView(0);
         usernameNav = (TextView) header.findViewById(R.id.nameNavText);
+
+        SharedPreferences preferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
+        userId = preferences.getInt("id", 0);
+
+        MenuItem login = navigationView.getMenu().findItem(R.id.navLoginBTN);
+        MenuItem logout = navigationView.getMenu().findItem(R.id.navLogoutBTN);
+        MenuItem fav = navigationView.getMenu().findItem(R.id.navFavBTN);
+
+        if (userId == 0){
+            fav.setVisible(false);
+            login.setVisible(true);
+            logout.setVisible(false);
+        }else {
+            fav.setVisible(true);
+            login.setVisible(false);
+            logout.setVisible(true);
+        }
+
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     // This method will trigger on item Click of navigation menu
@@ -161,13 +249,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        configureToolbar();
+        configureNavigationView();
+        configureDrawer();
         SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
         String restoredText = prefs.getString("name", null);
         if (restoredText != null) {
             String name = prefs.getString("name", "No name defined");
             userId = prefs.getInt("id", 0);
             if (userId != 0) {
-                new cartCount().execute();
+//                new cartCount().execute();
+                Firebase ref = new Firebase("https://giftshop.firebaseio.com/orders/User");
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        System.out.println(snapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        System.out.println("The read failed: " + firebaseError.getMessage());
+                    }
+                });
             }
             navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(false);
             navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(true);
@@ -192,9 +295,9 @@ public class MainActivity extends AppCompatActivity {
         cartCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Cart", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
-                startActivity(intent);
+//                Toast.makeText(MainActivity.this, "Cart", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
+//                startActivity(intent);
             }
         });
 
@@ -215,28 +318,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Objects doInBackground(Void... params) {
-            Core core = new Core(getBaseContext());
-            mCartCount = core.cartCount(userId);
+//            Core core = new Core(getBaseContext());
+//            mCartCount = core.cartCount(userId);
+
             return null;
         }
     }
 
-
-    public class sendItems extends AsyncTask<Void, Void, String> {
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            Core core = new Core(getBaseContext());
-            return core.sendPrams();
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -247,8 +335,8 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 
-            LoginFragment loginFragment = new LoginFragment();
-            loginFragment.show(getFragmentManager(), "sign in dialog");
+//            LoginFragment loginFragment = new LoginFragment();
+//            loginFragment.show(getFragmentManager(), "sign in dialog");
 
 //            new sendItems().execute();
 //            Intent intent = new Intent(MainActivity.this, newitem.class
@@ -271,6 +359,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's instance
-        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
+//        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
     }
 }
