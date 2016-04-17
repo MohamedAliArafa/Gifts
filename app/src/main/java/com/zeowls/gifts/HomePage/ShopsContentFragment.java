@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
@@ -38,8 +41,6 @@ public class ShopsContentFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
-    private LinearLayout mErrorText;
-
     ContentAdapter adapter;
 
     Context context;
@@ -52,7 +53,7 @@ public class ShopsContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         return inflater.inflate(R.layout.content_fragment, container, false);
@@ -60,7 +61,7 @@ public class ShopsContentFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) view.findViewById( R.id.recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mErrorText = (LinearLayout) view.findViewById(R.id.error);
 
@@ -77,7 +78,7 @@ public class ShopsContentFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-                shops.clear();
+            shops.clear();
         }
 
         @Override
@@ -98,8 +99,8 @@ public class ShopsContentFragment extends Fragment {
             try {
                 Core core = new Core(getContext());
                 JSONArray itemsarray = core.getAllShops().getJSONArray("Shop");
-                if ( itemsarray.length() != 0 ){
-                    for (int i = 0; i < itemsarray.length(); i++){
+                if (itemsarray.length() != 0) {
+                    for (int i = 0; i < itemsarray.length(); i++) {
                         JSONObject item = itemsarray.getJSONObject(i);
                         ShopDataModel shop = new ShopDataModel();
                         shop.setId(item.getInt("id"));
@@ -112,6 +113,21 @@ public class ShopsContentFragment extends Fragment {
                         if (!item.getString("profile_pic").equals("null")) {
                             shop.setPictureUrl(item.getString("profile_pic"));
                         }
+                        //shop.setOwner(item.getString("owner"));
+
+                        if (!item.isNull("profile_pic")) {
+                            shop.setPictureUrl(item.getString("profile_pic"));
+                        } else {
+                            shop.setPictureUrl("null");
+                        }
+
+                        if (!item.isNull("description")) {
+                            shop.setDescription(item.getString("description"));
+                        } else {
+                            shop.setDescription("");
+                        }
+
+
                         shops.add(shop);
                     }
                 }
@@ -125,7 +141,7 @@ public class ShopsContentFragment extends Fragment {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView imageView;
-        final TextView name,text;
+        final TextView name, text;
 
         public ViewHolder(View view) {
             super(view);
@@ -178,6 +194,12 @@ public class ShopsContentFragment extends Fragment {
                 if (shops.get(position).getPictureUrl() != null) {
                     picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
                 }
+                if (shops.get(position).getPictureUrl().equals("http://bubble.zeowls.com/uploads/null")) {
+                    holder.imageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+                } else {
+                    picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
+                }
+
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -187,6 +209,7 @@ public class ShopsContentFragment extends Fragment {
                     bundle.putString("ACTION", holder.name.getText().toString());
                     try {
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    } catch (Exception e) {
                         endFragment.setArguments(bundle);
                     }catch (Exception e){
                         e.printStackTrace();
@@ -213,7 +236,7 @@ public class ShopsContentFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
         super.onDestroy();

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +25,8 @@
         android:id="@+id/list_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_favorite_black_24dp" />
 
     <TextView
         android:id="@+id/list_title"
@@ -36,7 +36,8 @@
         android:layout_toRightOf="@+id/list_avatar"
         android:text="@string/item_title"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="@dimen/article_subheading" />
+        android:textSize="@dimen/article_subheading"
+        />
 
     <TextView
         android:id="@+id/list_desc"
@@ -45,10 +46,10 @@
         android:layout_below="@+id/list_title"
         android:layout_marginLeft="@dimen/md_keylines"
         android:layout_toRightOf="@+id/list_avatar"
-        android:textColor="@color/medium_grey"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/item_desc"
         android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@color/medium_grey"
         android:textSize="@dimen/list_body" />
 </RelativeLayout>
