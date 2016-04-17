@@ -21,12 +21,12 @@
     android:padding="@dimen/md_keylines">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@drawable/bubble"
+        android:src="@drawable/giftintro"
         android:id="@+id/list_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_favorite_black_24dp" />
+         />
 
     <TextView
         android:id="@+id/list_title"

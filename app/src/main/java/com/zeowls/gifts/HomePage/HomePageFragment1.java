@@ -72,9 +72,9 @@ public class HomePageFragment1 extends Fragment {
 
 
         tabs = (TabLayout) view.findViewById(R.id.tabs);
-        tabs.addTab(tabs.newTab().setText("Tab 1"));
-        tabs.addTab(tabs.newTab().setText("Tab 2"));
-        tabs.addTab(tabs.newTab().setText("Tab 3"));
+        tabs.addTab(tabs.newTab().setText("Gifts"));
+        tabs.addTab(tabs.newTab().setText("Shops"));
+        tabs.addTab(tabs.newTab().setText("Categories"));
 
         tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
