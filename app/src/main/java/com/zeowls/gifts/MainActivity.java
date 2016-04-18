@@ -32,10 +32,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
-import com.zeowls.LoginFragment;
-import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
-import com.zeowls.gifts.HomePage.HomePageFragment1;
+import com.zeowls.gifts.HomePage.HomePageFragment;
 import com.zeowls.gifts.LoginPage.LoginActivity;
 
 import java.util.ArrayList;
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-    HomePageFragment1 fragment;
+    HomePageFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
-            fragment = new HomePageFragment1();
+            fragment = new HomePageFragment();
             fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
             fragmentTransaction.commit();
         }
@@ -153,9 +151,14 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
         userId = preferences.getInt("id", 0);
 
-        MenuItem login = navigationView.getMenu().findItem(R.id.navLoginBTN);
-        MenuItem logout = navigationView.getMenu().findItem(R.id.navLogoutBTN);
-        MenuItem fav = navigationView.getMenu().findItem(R.id.navFavBTN);
+        Menu menuNav = navigationView.getMenu();
+
+        MenuItem login = menuNav.findItem(R.id.navLoginBTN);
+        MenuItem logout = menuNav.findItem(R.id.navLogoutBTN);
+        MenuItem fav = menuNav.findItem(R.id.navFavBTN);
+
+        login.setVisible(false);
+        login.setTitle("Test");
 
         if (userId == 0) {
             fav.setVisible(false);
@@ -176,12 +179,12 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
 
 //                        // TODO: handle navigation
-                        if (menuItem.getItemId() == R.id.navLoginBTN) {
-                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                            startActivity(intent);
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                        }
+//                        if (menuItem.getItemId() == R.id.navLoginBTN) {
+//                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                            startActivity(intent);
+//                            mDrawerLayout.closeDrawers();
+//                            return true;
+//                        }
 
                         if (menuItem.getItemId() == R.id.navLogoutBTN) {
                             SharedPreferences.Editor editor = getSharedPreferences("Credentials", MODE_PRIVATE).edit();
@@ -272,12 +275,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-            navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(false);
-            navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(false);
+//            navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(true);
             usernameNav.setText(name);
         } else {
-            navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(true);
-            navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(false);
+//            navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(false);
             usernameNav.setText("Guest");
         }
         super.onResume();

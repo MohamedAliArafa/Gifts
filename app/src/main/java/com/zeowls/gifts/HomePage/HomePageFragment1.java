@@ -31,10 +31,10 @@ public class HomePageFragment1 extends Fragment {
     final ShopsContentFragment ShopsTab = new ShopsContentFragment();
     final GiftsContentFragment1 GiftsTab = new GiftsContentFragment1();
     final CategoryContentFragment1 CategoryTab = new CategoryContentFragment1();
-
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
-    HomePageFragment fragment;
+//
+//    FragmentManager fragmentManager;
+//    FragmentTransaction fragmentTransaction;
+//    HomePageFragment fragment;
 
 
     @Override
@@ -46,7 +46,7 @@ public class HomePageFragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_page_1, container, false);
+        return inflater.inflate(R.layout.fragment_home_page, container, false);
     }
 
     @Override
@@ -61,63 +61,63 @@ public class HomePageFragment1 extends Fragment {
 //            supportActionBar.setTitle("Bubble");
 //        }
         // Setting ViewPager for each Tabs
-        //  viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         // Set Tabs inside Toolbar
 
 
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_main_2, GiftsTab);
-        fragmentTransaction.commit();
-
-
+//        fragmentManager = getFragmentManager();
+//        fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.fragment_main_2, GiftsTab);
+//        fragmentTransaction.commit();
+//
+//
         tabs = (TabLayout) view.findViewById(R.id.tabs);
-        tabs.addTab(tabs.newTab().setText("Gifts"));
-        tabs.addTab(tabs.newTab().setText("Shops"));
-        tabs.addTab(tabs.newTab().setText("Categories"));
-
-        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-                Toast.makeText(getContext(), "Hi " + tab.getPosition(), Toast.LENGTH_SHORT).show();
-                switch (tab.getPosition()) {
-                    case 0:
-                        fragmentManager = getFragmentManager();
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_main_2, GiftsTab);
-                        fragmentTransaction.commit();
-                        break;
-                    case 1:
-                        fragmentManager = getFragmentManager();
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_main_2, ShopsTab);
-                        fragmentTransaction.commit();
-                        break;
-                    case 2:
-                        fragmentManager = getFragmentManager();
-                        fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.fragment_main_2, CategoryTab);
-                        fragmentTransaction.commit();
-                        break;
-                    default:
-                        Toast.makeText(getContext(), "Default", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+//        tabs.addTab(tabs.newTab().setText("Tab 1"));
+//        tabs.addTab(tabs.newTab().setText("Tab 2"));
+//        tabs.addTab(tabs.newTab().setText("Tab 3"));
+//
+//        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//
+//                Toast.makeText(getContext(), "Hi " + tab.getPosition(), Toast.LENGTH_SHORT).show();
+//                switch (tab.getPosition()) {
+//                    case 0:
+//                        fragmentManager = getFragmentManager();
+//                        fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.replace(R.id.fragment_main_2, GiftsTab);
+//                        fragmentTransaction.commit();
+//                        break;
+//                    case 1:
+//                        fragmentManager = getFragmentManager();
+//                        fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.replace(R.id.fragment_main_2, ShopsTab);
+//                        fragmentTransaction.commit();
+//                        break;
+//                    case 2:
+//                        fragmentManager = getFragmentManager();
+//                        fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.replace(R.id.fragment_main_2, CategoryTab);
+//                        fragmentTransaction.commit();
+//                        break;
+//                    default:
+//                        Toast.makeText(getContext(), "Default", Toast.LENGTH_SHORT).show();
+//                        break;
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -131,20 +131,20 @@ public class HomePageFragment1 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-//    // Add Fragments to Tabs
-//    private void setupViewPager(ViewPager viewPager) {
-//        Adapter adapter = new Adapter(getFragmentManager());
-//        adapter.addFragment(new GiftsContentFragment1(), "Gifts");
-//        adapter.addFragment(new ShopsContentFragment(), "Shops");
-//        adapter.addFragment(new CategoryContentFragment1(), "Catogries");
-//        viewPager.setAdapter(adapter);
-//    }
+    // Add Fragments to Tabs
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getFragmentManager());
+        adapter.addFragment(GiftsTab, "Gifts");
+        adapter.addFragment(ShopsTab, "Shops");
+        adapter.addFragment(CategoryTab, "Catogries");
+        viewPager.setAdapter(adapter);
+    }
 
     @Override
     public void onResume() {
-//        setupViewPager(viewPager);
-//        assert tabs != null;
-//        tabs.setupWithViewPager(viewPager);
+        setupViewPager(viewPager);
+        assert tabs != null;
+        tabs.setupWithViewPager(viewPager);
         super.onResume();
     }
 

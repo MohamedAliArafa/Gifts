@@ -316,8 +316,10 @@ public class GiftsContentFragment1 extends Fragment {
 
     @Override
     public void onPause() {
-        if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
-            loadingData.cancel(true);
+        if (loadingData != null) {
+            if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
+                loadingData.cancel(true);
+            }
         }
         super.onPause();
     }
