@@ -67,7 +67,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     private static ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
-    private static final Integer[] IMAGES = {R.drawable.android, R.drawable.android1};
+    private static final Integer[] IMAGES = {R.drawable.giftintro, R.drawable.giftintro};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
@@ -91,7 +91,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.execute();
         }
         return inflater.inflate(R.layout.item_detail_in_fragment, container, false);
@@ -133,7 +133,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
         mPager.setAdapter(mPagerAdapter);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            Shop_Name_before.setTransitionName(transitionName);
             Item_Pic.setTransitionName(transText);
         }
@@ -150,10 +150,10 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                 if (user_id != 0) {
                     if (item_id != 0 && shop_id != 0) {
                         new addToCart().execute();
-                    }else {
-                        Log.d("Id Empty","Item And Shop Ids are Empty");
+                    } else {
+                        Log.d("Id Empty", "Item And Shop Ids are Empty");
                     }
-                }else {
+                } else {
                     Intent in = new Intent(getActivity(), LoginActivity.class);
                     startActivity(in);
                 }
@@ -301,10 +301,14 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                 price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
                 item_name_toolbar.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
                 shop_name.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
-                shop_id= itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id");
+                shop_id = itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id");
                 collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
                 name.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
+                if (itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image").equals("")) {
+                    Item_Pic.setImageResource(R.drawable.giftintro);
+                } else {
+                    picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
+                }
                 endFragment = new Shop_Detail_Fragment();
 
                 final Bundle bundle = new Bundle();
@@ -377,9 +381,9 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
         @Override
         protected void onPostExecute(Object o) {
-            if ((boolean) o){
+            if ((boolean) o) {
                 Toast.makeText(getActivity(), "item added to cart", Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 Toast.makeText(getActivity(), "some thing went wrong", Toast.LENGTH_SHORT).show();
             }
         }
@@ -390,7 +394,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
             Core core = new Core(getContext());
             FireOwl fireOwl = new FireOwl(getContext());
             try {
-                fireOwl.addOrder(shop_id,item_id, user_id);
+                fireOwl.addOrder(shop_id, item_id, user_id);
 //                itemsJSON = core.addToCart(user_id,id);
                 state = true;
             } catch (Exception e) {

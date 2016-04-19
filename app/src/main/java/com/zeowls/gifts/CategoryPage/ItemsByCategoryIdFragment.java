@@ -29,12 +29,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ItemsByCategoryIdFragment extends Fragment{
+public class ItemsByCategoryIdFragment extends Fragment {
     static ArrayList<ItemDataMode> items = new ArrayList<>();
     RecyclerView recyclerView;
     ContentAdapter adapter;
     Context context;
-    int id =0;
+    int id = 0;
 
     protected FragmentActivity myContext;
 
@@ -60,6 +60,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
 
         return recyclerView;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -82,9 +83,9 @@ public class ItemsByCategoryIdFragment extends Fragment{
             try {
                 Core core = new Core(getContext());
                 JSONObject itemsJSON = core.getItemsByCategoryId(id);
-                if (core.getItemsByCategoryId(id) != null &&  itemsJSON.getJSONArray("Items").length() != 0 ){
-                    Log.d("json",core.getItemsByCategoryId(id).toString());
-                    for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++){
+                if (core.getItemsByCategoryId(id) != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    Log.d("json", core.getItemsByCategoryId(id).toString());
+                    for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++) {
                         JSONArray itemsarray = itemsJSON.getJSONArray("Items");
                         JSONObject item = itemsarray.getJSONObject(i);
                         ItemDataMode item1 = new ItemDataMode();
@@ -138,8 +139,13 @@ public class ItemsByCategoryIdFragment extends Fragment{
                 TextView price = (TextView) holder.itemView.findViewById(R.id.price);
                 name.setText(items.get(position).getName());
                 desc.setText(items.get(position).getDesc());
-                price.setText("$"+items.get(position).getPrice());
-                picasso.load(items.get(position).getImgUrl()).into(image);
+                price.setText("$" + items.get(position).getPrice());
+                Log.d("Imagelist : ",items.get(position).getImgUrl());
+                if (items.get(position).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
+                    image.setImageResource(R.drawable.giftintro);
+                } else {
+                    picasso.load(items.get(position).getImgUrl()).into(image);
+                }
             }
 
 
@@ -147,7 +153,7 @@ public class ItemsByCategoryIdFragment extends Fragment{
                 @Override
                 public void onClick(View v) {
                     FragmentManager fragmentManager = getFragmentManager();
-                    Item_Detail_Fragment endFragment= new Item_Detail_Fragment();
+                    Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
                     endFragment.setId(items.get(position).getId());
                     fragmentManager.beginTransaction()
                             .add(R.id.fragment_main, endFragment)

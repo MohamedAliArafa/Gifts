@@ -238,7 +238,7 @@
                 android:id="@+id/item_Detail_Image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/bubble"
+                android:src="@drawable/giftintro"
                 app:border_color="@android:color/white"
                 app:border_width="2dp" />
         </FrameLayout>

@@ -47,10 +47,10 @@ public class GiftsContentFragment1 extends Fragment {
     loadingData loadingData;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
 //            GiftItems = savedInstanceState.getParcelableArray("items");
-        }else {
+        } else {
             loadingData = new loadingData();
             if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
                 loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -89,7 +89,7 @@ public class GiftsContentFragment1 extends Fragment {
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
                 mRecyclerView.setAdapter(adapter);
-            }else {
+            } else {
                 mErrorText.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
             }
@@ -193,7 +193,11 @@ public class GiftsContentFragment1 extends Fragment {
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
-                picasso.load(GiftItems.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
+                if (GiftItems.get(absolutePosition).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
+                    holder.imageView.setImageResource(R.drawable.giftintro);
+                } else {
+                    picasso.load(GiftItems.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
+                }
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +207,7 @@ public class GiftsContentFragment1 extends Fragment {
                     bundle.putString("TRANS_NAME", imageTransitionName);
                     bundle.putString("TRANS_TEXT", textTransitionName);
                     bundle.putString("ACTION", holder.ItemName.getText().toString());
-                    if ( holder.imageView.getDrawable() != null) {
+                    if (holder.imageView.getDrawable() != null) {
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
                     }
                     endFragment.setArguments(bundle);
@@ -310,7 +314,7 @@ public class GiftsContentFragment1 extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-       // outState.putParcelableArray("items", GiftItems);
+        // outState.putParcelableArray("items", GiftItems);
         //Save the fragment's state here
     }
 
