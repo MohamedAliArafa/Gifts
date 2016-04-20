@@ -65,7 +65,9 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        if (((MainActivity) getActivity()).toolbar != null) {
+            ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        }
         super.onCreate(savedInstanceState);
     }
 

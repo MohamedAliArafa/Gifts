@@ -82,8 +82,13 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     loadingData loadingData;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
