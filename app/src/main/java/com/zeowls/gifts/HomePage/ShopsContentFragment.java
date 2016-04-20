@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.ItemDetailsPage.ItemDataMode;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment_2;
@@ -39,9 +38,6 @@ import java.util.ArrayList;
 import com.zeowls.gifts.provider.Contract.ShopEntry;
 import com.zeowls.gifts.views.adapters.CursorRecyclerViewAdapter;
 
-/**
- * Provides UI for the view with Cards.
- */
 public class ShopsContentFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     static final int COL_SHOP_ID = 0;
@@ -277,7 +273,7 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
             }
 
             // no-op
-            if (shops.size() != 0) {
+//            if (shops.size() != 0) {
                 holder.name.setText(cursor.getString(ShopsContentFragment.COL_SHOP_TITLE));
                 holder.text.setText(cursor.getString(ShopsContentFragment.COL_SHOP_DESCRIPTION));
                 if (cursor.getString(ShopsContentFragment.COL_SHOP_IMAGE) != null) {
@@ -289,7 +285,7 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
                     picasso.load(cursor.getString(ShopsContentFragment.COL_SHOP_IMAGE)).into(holder.imageView);
                 }
 
-            }
+//            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -304,10 +300,10 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
                     bundle.putString("ACTION", holder.name.getText().toString());
                     try {
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
-                        endFragment.setArguments(bundle);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    endFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(id);
                     fragmentManager.beginTransaction()

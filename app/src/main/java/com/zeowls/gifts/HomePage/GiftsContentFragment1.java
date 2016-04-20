@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GiftsContentFragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -118,19 +119,17 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
         protected Object doInBackground(Object[] params) {
             try {
                 Core core = new Core(getActivity());
-                JSONArray catarray = core.getAllCategories().getJSONArray("Category");
                 JSONArray itemsarray = core.getHomePage();
-                for (int y = 0; y < catarray.length(); y++) {
-                    ItemDataMode mainCategory = new ItemDataMode();
-                    mainCategory.setId(catarray.getJSONObject(y).getInt("id"));
-                    JSONArray subCatArray = core.getSubCategoriesByCatID(mainCategory.getId()).getJSONArray("Category");
-                    for (int z = 0; z < subCatArray.length(); z++) {
-                        ItemDataMode category = new ItemDataMode();
-                        category.setName(subCatArray.getJSONObject(z).getString("name"));
-                        category.setId(subCatArray.getJSONObject(z).getInt("id"));
-                        CategoryList.add(category);
-                    }
+
+                JSONArray subCatArray = core.getSubAllCategories().getJSONArray("Category");
+                for (int z = 0; z < subCatArray.length(); z++) {
+                    ItemDataMode category = new ItemDataMode();
+                    category.setName(subCatArray.getJSONObject(z).getString("name"));
+                    category.setId(subCatArray.getJSONObject(z).getInt("id"));
+                    CategoryList.add(category);
                 }
+                Collections.sort(CategoryList);
+
                 if (itemsarray.length() != 0) {
                     for (int i = 0; i < itemsarray.length(); i++) {
                         JSONArray items = itemsarray.getJSONObject(i).getJSONArray("Category");

@@ -1,9 +1,11 @@
 package com.zeowls.gifts.ShopsTap;
 
+import java.util.Comparator;
+
 /**
  * Created by nora on 3/23/2016.
  */
-public class ShopDataModel {
+public class ShopDataModel implements Comparable<ShopDataModel> {
     int id, ParentCatID;
     String name, description, owner, pictureUrl;
 
@@ -57,5 +59,12 @@ public class ShopDataModel {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+
+    @Override
+    public int compareTo(ShopDataModel shop) {
+        int id = shop.getId();
+        return this.id - id;
     }
 }

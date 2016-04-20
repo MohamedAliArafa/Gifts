@@ -177,6 +177,23 @@ public class Core {
         return json;
     }
 
+    public JSONObject getSubAllCategories(){
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/GetSubCategories/JSON");
+            if (!response.equals("0")){
+                json = new JSONObject(response);
+            }else {
+                Log.d("GetSubCategories", response);
+            }
+        } catch (Exception e) {
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
     public JSONObject getAllCategories(){
         JSONObject json = null;
         try {

@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ItemDataMode {
+public class ItemDataMode implements Comparable<ItemDataMode> {
     public int catId, id, shopId;
     String name;
     String desc;
@@ -81,6 +81,12 @@ public class ItemDataMode {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    @Override
+    public int compareTo(ItemDataMode item) {
+        int id = item.getId();
+        return this.id - id;
     }
 
 }

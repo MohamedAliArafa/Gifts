@@ -1,11 +1,14 @@
 package com.zeowls.gifts.HomePage;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,16 +25,43 @@ import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.CategoryPage.ItemsByCategoryIdFragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
+import com.zeowls.gifts.provider.Contract;
+import com.zeowls.gifts.views.HeaderCursorRecyclerViewAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-/**
- * Created by nora on 3/24/2016.
- */
-public class CategoryContentFragment1 extends Fragment {
+public class CategoryContentFragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    static final int COL_CAT_ID = 0;
+    static final int COL_CAT_UID = 1;
+    static final int COL_CAT_NAME = 2;
+    static final int COL_CAT_PARENT_ID = 2;
+
+    private static final String[] SUB_CAT_COLUMNS = {
+            Contract.CategoryEntry.TABLE_NAME + "." + Contract.CategoryEntry._ID,
+            Contract.CategoryEntry.COLUMN_ID,
+            Contract.CategoryEntry.COLUMN_NAME,
+            Contract.CategoryEntry.COLUMN_PARENT_ID
+    };
+
+    static final int COL_SUB_CAT_ID = 0;
+    static final int COL_SUB_CAT_UID = 1;
+    static final int COL_SUB_CAT_NAME = 2;
+    static final int COL_SUB_CAT_PARENT_ID = 3;
+
+    private static final String[] CAT_COLUMNS = {
+            Contract.ParentCategoryEntry.TABLE_NAME + "." + Contract.ParentCategoryEntry._ID,
+            Contract.ParentCategoryEntry.COLUMN_ID,
+            Contract.ParentCategoryEntry.COLUMN_NAME
+    };
+
+    private int CAT_LOADER = 0;
+    private int SUB_CAT_LOADER = 1;
 
     static ArrayList<ShopDataModel> categories = new ArrayList<>();
     static ArrayList<ShopDataModel> SubCategoreis = new ArrayList<>();
@@ -45,11 +75,20 @@ public class CategoryContentFragment1 extends Fragment {
     loadingData loadingData;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onStart() {
         loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+        super.onStart();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getLoaderManager().initLoader(CAT_LOADER, null, this);
+        getLoaderManager().initLoader(SUB_CAT_LOADER, null, this);
+        categories.clear();
+        SubCategoreis.clear();
         return inflater.inflate(R.layout.content_fragment, container, false);
     }
 
@@ -64,6 +103,21 @@ public class CategoryContentFragment1 extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(adapter);
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     private class loadingData extends AsyncTask {
@@ -117,12 +171,6 @@ public class CategoryContentFragment1 extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-
-
-
-
             return null;
         }
     }
@@ -174,9 +222,7 @@ public class CategoryContentFragment1 extends Fragment {
             if (categories.size() != 0) {
                 return categories.size();
             }
-
             return 0;
-
         }
 
         @Override
@@ -184,10 +230,8 @@ public class CategoryContentFragment1 extends Fragment {
 //        if (section % 2 == 0)
 //            return 2; // even sections get 4 items
 
-
             if (categories.size() != 0) {
                 for (int y = 0; y < categories.size(); y++) {
-
                     if (SubCategoreis.size() != 0) {
                         Section_ItemsCount = 0;
                         for (int x = 0; x < SubCategoreis.size(); x++) {
@@ -197,13 +241,10 @@ public class CategoryContentFragment1 extends Fragment {
 
                             }
                         }
-
                         if (section == y) {
                             return Section_ItemsCount;
                         }
                     }
-
-
                 }
             }
 
@@ -225,9 +266,9 @@ public class CategoryContentFragment1 extends Fragment {
 
             if (SubCategoreis.size() != 0) {
                 Log.d("Araay size", String.valueOf(SubCategoreis.size()));
-
                 holder.Sub_Category_Item_Name.setText(SubCategoreis.get(absolutePosition).getName());
-
+            }else {
+                holder.Sub_Category_Item_Name.setText(SubCategoreis.get(absolutePosition).getName());
             }
 
 //
@@ -315,6 +356,8 @@ public class CategoryContentFragment1 extends Fragment {
             }
         }
     }
+
+
 
     @Override
     public void onPause() {
