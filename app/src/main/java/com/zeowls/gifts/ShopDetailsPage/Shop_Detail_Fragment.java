@@ -37,7 +37,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
-    TextView Shop_Name, Shop_Name_before, Shop_Slogan,shop_phone,shop_email,shop_address;
+    TextView Shop_Name, Shop_Name_before, Shop_Slogan,shop_phone,shop_email,shop_address, Shop_Slogan_Title;
     ImageView Shop_Pic, ShopHeader_Pic;
     CardView Shop_Slogan_Card;
 
@@ -97,12 +97,17 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         Bitmap imageBitmap = null;
         String transText = "";
         String transitionName = "";
+        String mobile = "",email = "",address = "",owner_name = "";
 
         if (bundle != null) {
             transitionName = bundle.getString("TRANS_NAME");
             actionTitle = bundle.getString("ACTION");
             imageBitmap = bundle.getParcelable("IMAGE");
             transText = bundle.getString("TRANS_TEXT");
+            mobile = bundle.getString("TRANS_MOBILE");
+            email = bundle.getString("TRANS_EMAIL");
+            address = bundle.getString("TRANS_ADDRESS");
+            owner_name = bundle.getString("TRANS_OWNER_NAME");
         }
 
         Shop_Items_btn = (Button) view.findViewById(R.id.Shop_Items_btn);
@@ -113,6 +118,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
         Shop_Slogan_Card = (CardView) view.findViewById(R.id.item_Detail_Shop_Slogan_card);
         Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
+        Shop_Slogan_Title = (TextView) view.findViewById(R.id.item_Detail_Slogan);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
 
@@ -120,11 +126,33 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         shop_email = (TextView) view.findViewById(R.id.shop_email);
         shop_address = (TextView) view.findViewById(R.id.shop_address);
 
+        if (!mobile.equals("null")) {
+            shop_phone.setText(mobile);
+        }else {
+            shop_phone.setText("No Mobile Available");
+        }
+        if (!email.equals("null")) {
+            shop_email.setText(email);
+        }else {
+            shop_email.setText("No Email Available");
+        }
+        if (!address.equals("null")) {
+            shop_address.setText(address);
+        }else {
+            shop_address.setText("No Address Available");
+        }
+        if (!owner_name.equals("null")) {
+            Shop_Slogan_Title.setText(owner_name);
+        }else {
+            Shop_Slogan_Title.setText("No Owner Name Available");
+        }
+
         if (imageBitmap != null) {
             Shop_Pic.setImageBitmap(imageBitmap);
             ShopHeader_Pic.setImageBitmap(imageBitmap);
         }
         Shop_Name_before.setText(actionTitle);
+        Shop_Name.setText(actionTitle);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Shop_Name_before.setTransitionName(transitionName);
@@ -229,39 +257,41 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         @Override
         protected void onPostExecute(Object o) {
             try {
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").isEmpty()) {
-                        Shop_Slogan_Card.setVisibility(View.VISIBLE);
-                        Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
+                if (itemsJSON != null) {
+                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").equals("null")) {
+                        if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").isEmpty()) {
+                            Shop_Slogan_Card.setVisibility(View.VISIBLE);
+                            Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
+                        }
                     }
-                }
 
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile").isEmpty()) {
-                        shop_phone.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile"));
+                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile").equals("null")) {
+                        if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile").isEmpty()) {
+                            shop_phone.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile"));
+                        }
                     }
-                }
 
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email").isEmpty()) {
-                        shop_email.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email"));
+                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email").equals("null")) {
+                        if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email").isEmpty()) {
+                            shop_email.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email"));
+                        }
                     }
-                }
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address").isEmpty()) {
-                        shop_address.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address"));
+                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address").equals("null")) {
+                        if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address").isEmpty()) {
+                            shop_address.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address"));
+                        }
                     }
-                }
 
-                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
-                String shopName = itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name");
-                Shop_Name_before.setText(shopName);
-                Shop_Name.setText(shopName);
+                    collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
+                    String shopName = itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name");
+                    Shop_Name_before.setText(shopName);
+                    Shop_Name.setText(shopName);
 
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic").equals("null")) {
-                    String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
-                    picasso.load(profilePic).fit().into(ShopHeader_Pic);
-                    picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
+                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic").equals("null")) {
+                        String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
+                        picasso.load(profilePic).fit().into(ShopHeader_Pic);
+                        picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

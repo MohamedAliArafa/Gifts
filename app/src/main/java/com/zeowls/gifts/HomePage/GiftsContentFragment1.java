@@ -1,11 +1,14 @@
 package com.zeowls.gifts.HomePage;
 
+import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,10 +35,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class GiftsContentFragment1 extends Fragment {
+public class GiftsContentFragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static ArrayList<ItemDataMode> GiftItems = new ArrayList<>();
-    static ArrayList<ItemDataMode> Category = new ArrayList<>();
+    static ArrayList<ItemDataMode> CategoryList = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
@@ -76,6 +79,21 @@ public class GiftsContentFragment1 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
     private class loadingData extends AsyncTask {
 
         @Override
@@ -98,10 +116,10 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         protected Object doInBackground(Object[] params) {
-
             try {
                 Core core = new Core(getActivity());
                 JSONArray catarray = core.getAllCategories().getJSONArray("Category");
+                JSONArray itemsarray = core.getHomePage();
                 for (int y = 0; y < catarray.length(); y++) {
                     ItemDataMode mainCategory = new ItemDataMode();
                     mainCategory.setId(catarray.getJSONObject(y).getInt("id"));
@@ -110,12 +128,17 @@ public class GiftsContentFragment1 extends Fragment {
                         ItemDataMode category = new ItemDataMode();
                         category.setName(subCatArray.getJSONObject(z).getString("name"));
                         category.setId(subCatArray.getJSONObject(z).getInt("id"));
-                        JSONArray itemsarray = core.getItemsByCategoryId(category.getId()).getJSONArray("Items");
-                        if (itemsarray.length() != 0) {
-                            Category.add(category);
-                            for (int i = 0; i < 4; i++) {
-                                JSONObject item = itemsarray.getJSONObject(i);
+                        CategoryList.add(category);
+                    }
+                }
+                if (itemsarray.length() != 0) {
+                    for (int i = 0; i < itemsarray.length(); i++) {
+                        JSONArray items = itemsarray.getJSONObject(i).getJSONArray("Category");
+                        if (items.length() > 0) {
+                            CategoryList.get(i).setCatId(items.length());
+                            for (int y = 0; y < items.length(); y++) {
                                 ItemDataMode Gift_Item = new ItemDataMode();
+                                JSONObject item = items.getJSONObject(y);
                                 Gift_Item.setId(item.getInt("id"));
                                 Gift_Item.setName(item.getString("name"));
                                 Gift_Item.setShopName(item.getString("shop_name"));
@@ -127,7 +150,6 @@ public class GiftsContentFragment1 extends Fragment {
                         }
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -143,10 +165,12 @@ public class GiftsContentFragment1 extends Fragment {
 
         @Override
         public int getSectionCount() {
-            if (GiftItems.size() != 0) {
-                return GiftItems.size() / 4;
+//            if (GiftItems.size() != 0) {
+//                return GiftItems.size() / 4;
+//            }
+            if (CategoryList.size() != 0) {
+                return CategoryList.size();
             }
-
             return 0;
 
         }
@@ -155,13 +179,13 @@ public class GiftsContentFragment1 extends Fragment {
         public int getItemCount(int section) {
 //        if (section % 2 == 0)
 //            return 2; // even sections get 4 items
-            return 4; // odd get 8
+            return CategoryList.get(section).getCatId(); // odd get 8
         }
 
         @Override
         public void onBindHeaderViewHolder(MainVH holder, int section) {
 //            holder.ItemName.setText(String.format("Section %d", section));
-            holder.ItemName.setText(Category.get(section).getName());
+            holder.ItemName.setText(CategoryList.get(section).getName());
         }
 
         @Override
