@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,11 +52,10 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     TextView usernameNav;
 
-    static Button cartCount;
+    RelativeLayout Shopping_Cart_Relative;
+    TextView notif_count;
     static int mCartCount = 0;
     static int userId = 1;
-
-    Fragment mContent;
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
@@ -293,14 +293,19 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem item = menu.findItem(R.id.action_cart);
         MenuItemCompat.setActionView(item, R.layout.card_update_count);
-        cartCount = (Button) MenuItemCompat.getActionView(item);
-        cartCount.setText(String.valueOf(mCartCount));
-        cartCount.setOnClickListener(new View.OnClickListener() {
+        Shopping_Cart_Relative = (RelativeLayout) MenuItemCompat.getActionView(item).findViewById(R.id.Shopping_Cart_Relative);
+        notif_count = (TextView) MenuItemCompat.getActionView(item).findViewById(R.id.notif_count);
+        notif_count.setText(String.valueOf(mCartCount));
+        Shopping_Cart_Relative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(MainActivity.this, "Cart", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
-//                startActivity(intent);
+
+                if (mCartCount!=0) {
+                    Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(MainActivity.this, "Shopping Cart Empty", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -336,17 +341,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
 
-//            LoginFragment loginFragment = new LoginFragment();
-//            loginFragment.show(getFragmentManager(), "sign in dialog");
-
-//            new sendItems().execute();
-//            Intent intent = new Intent(MainActivity.this, newitem.class
-//);
-//            startActivity(intent);
-            return true;
-        }
 //        if (id == android.R.id.home) {
 //            mDrawerLayout.openDrawer(GravityCompat.START);
 //        }

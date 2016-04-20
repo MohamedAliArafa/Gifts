@@ -19,7 +19,7 @@ import com.zeowls.gifts.views.adapters.SamplePagerAdapter;
 
 public class HomePageFragment extends Fragment {
 
-//    ActionBar supportActionBar;
+    //    ActionBar supportActionBar;
     String imageTransitionName = "";
     String textTransitionName = "";
     Bundle bundle = new Bundle();
@@ -28,8 +28,7 @@ public class HomePageFragment extends Fragment {
     final ShopsContentFragment endFragment = new ShopsContentFragment();
 
     boolean fab_show_icons = false;
-    FloatingActionButton fab,fab1,fab2,fab3;
-
+    FloatingActionButton fab, fab1, fab2, fab3;
 
 
     @Override
@@ -59,17 +58,20 @@ public class HomePageFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         // Set Tabs inside Toolbar
         tabs = (TabLayout) view.findViewById(R.id.tabs);
-        // Adding Floating Action Button to bottom right of main view
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab1 = (FloatingActionButton) view.findViewById(R.id.fab_1);
-        fab2 = (FloatingActionButton) view.findViewById(R.id.fab_2);
-        fab3 = (FloatingActionButton) view.findViewById(R.id.fab_3);
 
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+//        We Disable FAB Button on 18-4-2016 from here and from design also
 
+//         Adding Floating Action Button to bottom right of main view
+//        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+//        fab1 = (FloatingActionButton) view.findViewById(R.id.fab_1);
+//        fab2 = (FloatingActionButton) view.findViewById(R.id.fab_2);
+//        fab3 = (FloatingActionButton) view.findViewById(R.id.fab_3);
+//
+//        assert fab != null;
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(final View v) {
+//
 //                //Animations
 //                Animation show_fab_1 = AnimationUtils.loadAnimation(getContext(), R.anim.fab1_show);
 //                Animation hide_fab_1 = AnimationUtils.loadAnimation(getContext(), R.anim.fab1_hide);
@@ -125,11 +127,11 @@ public class HomePageFragment extends Fragment {
 //                    fab3.setClickable(false);
 //                    fab_show_icons = false;
 //                }
-
-
+//
+//
 //                Snackbar.make(v, "Hello To bubble", Snackbar.LENGTH_LONG).show();
-            }
-        });
+//            }
+//        });
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -138,7 +140,7 @@ public class HomePageFragment extends Fragment {
         SamplePagerAdapter adapter = new SamplePagerAdapter(getFragmentManager());
         adapter.addFragment(new GiftsContentFragment1(), "Gifts");
         adapter.addFragment(new ShopsContentFragment(), "Shops");
-        adapter.addFragment(new CategoryContentFragment1(), "Catogries");
+        adapter.addFragment(new CategoryContentFragment1(), "Categories");
         viewPager.setAdapter(adapter);
     }
 

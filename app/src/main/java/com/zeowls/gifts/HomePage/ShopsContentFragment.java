@@ -25,6 +25,8 @@ import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment_2;
+import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment_3;
 import com.zeowls.gifts.ShopsTap.ShopDataModel;
 
 import org.json.JSONArray;
@@ -160,6 +162,10 @@ public class ShopsContentFragment extends Fragment {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
         final Shop_Detail_Fragment endFragment = new Shop_Detail_Fragment();
+        final Shop_Detail_Fragment_2 endFragment2 = new Shop_Detail_Fragment_2();
+        final Shop_Detail_Fragment_3 endFragment3 = new Shop_Detail_Fragment_3();
+
+
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -219,7 +225,6 @@ public class ShopsContentFragment extends Fragment {
                     fragmentManager.beginTransaction()
                             .hide(getFragmentManager().findFragmentByTag("homeFragment"))
                             .add(R.id.fragment_main, endFragment)
-//                            .replace(R.id.fragment_main, endFragment)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
                             .addSharedElement(holder.name, textTransitionName)

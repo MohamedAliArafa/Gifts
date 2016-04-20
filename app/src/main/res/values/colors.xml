@@ -8,6 +8,11 @@
     <color name="medium_grey">#9E9E9E</color>
     <color name="soft_grey">#d6d6d6</color>
     <color name="button_grey">#515151</color>
+    <color name="black">#000000</color>
+    <color name="test">#ff5521</color>
+    <color name="test2">#263238</color>
+    <color name="test3">#37474F</color>
+    <color name="test4">#00BCD4</color>
 
 
     <color name="material_login_login_color">#FFFFFF</color>

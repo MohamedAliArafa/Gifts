@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +31,12 @@ import com.zeowls.gifts.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
+public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnOffsetChangedListener {
 
 
     int id = 0;
     CollapsingToolbarLayout collapsingToolbar;
-    TextView Shop_Name, Shop_Name_before, Shop_Slogan,shop_phone,shop_email,shop_address;
+    TextView Shop_Name, Shop_Name_before, Shop_Slogan;
     ImageView Shop_Pic, ShopHeader_Pic;
     CardView Shop_Slogan_Card;
 
@@ -65,9 +64,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        if (((MainActivity) getActivity()).toolbar != null) {
-            ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
-        }
+        ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
         super.onCreate(savedInstanceState);
     }
 
@@ -115,10 +112,6 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
-
-        shop_phone = (TextView) view.findViewById(R.id.shop_phone);
-        shop_email = (TextView) view.findViewById(R.id.shop_email);
-        shop_address = (TextView) view.findViewById(R.id.shop_address);
 
         if (imageBitmap != null) {
             Shop_Pic.setImageBitmap(imageBitmap);
@@ -233,23 +226,6 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                     if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").isEmpty()) {
                         Shop_Slogan_Card.setVisibility(View.VISIBLE);
                         Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
-                    }
-                }
-
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile").isEmpty()) {
-                        shop_phone.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("mobile"));
-                    }
-                }
-
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email").isEmpty()) {
-                        shop_email.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("owner_email"));
-                    }
-                }
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address").isEmpty()) {
-                        shop_address.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("shop_address"));
                     }
                 }
 
