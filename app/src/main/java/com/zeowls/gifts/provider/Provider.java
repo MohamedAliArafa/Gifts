@@ -17,6 +17,7 @@ public class Provider extends ContentProvider {
     static final int ITEMS = 101;
     static final int CAT = 102;
     static final int PARENT_CAT = 103;
+    static final int CART = 104;
 
     private DBHelper mOpenHelper;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -49,6 +50,10 @@ public class Provider extends ContentProvider {
                 retCursor = mOpenHelper.getReadableDatabase().query(Contract.ParentCategoryEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             }
+            case CART: {
+                retCursor = mOpenHelper.getReadableDatabase().query(Contract.CartEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -70,6 +75,8 @@ public class Provider extends ContentProvider {
                 return Contract.CategoryEntry.CONTENT_TYPE;
             case PARENT_CAT:
                 return Contract.ParentCategoryEntry.CONTENT_TYPE;
+            case CART:
+                return Contract.CartEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -114,6 +121,14 @@ public class Provider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case CART: {
+                long _id = db.insert(Contract.CartEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = Contract.CartEntry.BuildParentCatUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -143,6 +158,10 @@ public class Provider extends ContentProvider {
             }
             case PARENT_CAT: {
                 returnRow = db.delete(Contract.ParentCategoryEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case CART: {
+                returnRow = db.delete(Contract.CartEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default:
@@ -178,6 +197,10 @@ public class Provider extends ContentProvider {
                 returnRow = db.update(Contract.ParentCategoryEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
+            case CART: {
+                returnRow = db.update(Contract.CartEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -195,6 +218,7 @@ public class Provider extends ContentProvider {
         matcher.addURI(authority,Contract.PATH_ITEMS, ITEMS);
         matcher.addURI(authority,Contract.PATH_CATS, CAT);
         matcher.addURI(authority,Contract.PATH_PARENT_CATS, PARENT_CAT);
+        matcher.addURI(authority,Contract.PATH_CART, CART);
         return matcher;
     }
 

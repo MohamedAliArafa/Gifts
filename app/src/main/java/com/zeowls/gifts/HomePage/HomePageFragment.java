@@ -26,13 +26,16 @@ public class HomePageFragment extends Fragment {
     ViewPager viewPager;
     TabLayout tabs;
     final ShopsContentFragment endFragment = new ShopsContentFragment();
-
+    GiftsContentFragment1 GiftsFragment = new GiftsContentFragment1();
+    ShopsContentFragment ShopFragment = new ShopsContentFragment();
+    CategoryContentFragment1 CategoryFragment = new CategoryContentFragment1();
     boolean fab_show_icons = false;
     FloatingActionButton fab, fab1, fab2, fab3;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
     }
 
@@ -138,9 +141,9 @@ public class HomePageFragment extends Fragment {
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         SamplePagerAdapter adapter = new SamplePagerAdapter(getFragmentManager());
-        adapter.addFragment(new GiftsContentFragment1(), "Gifts");
-        adapter.addFragment(new ShopsContentFragment(), "Shops");
-        adapter.addFragment(new CategoryContentFragment1(), "Categories");
+        adapter.addFragment(GiftsFragment, "Gifts");
+        adapter.addFragment(ShopFragment, "Shops");
+        adapter.addFragment(CategoryFragment, "Categories");
         viewPager.setAdapter(adapter);
     }
 

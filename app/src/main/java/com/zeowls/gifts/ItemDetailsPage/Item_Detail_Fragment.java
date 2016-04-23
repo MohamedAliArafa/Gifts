@@ -149,22 +149,6 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         mAppBarLayout.addOnOffsetChangedListener(this);
         startAlphaAnimation(item_name_toolbar, 0, View.INVISIBLE);
 
-        addToCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (user_id != 0) {
-                    if (item_id != 0 && shop_id != 0) {
-                        new addToCart().execute();
-                    } else {
-                        Log.d("Id Empty", "Item And Shop Ids are Empty");
-                    }
-                } else {
-                    Intent in = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(in);
-                }
-            }
-        });
-
         //TODO
         init();
     }
@@ -302,17 +286,26 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         @Override
         protected void onPostExecute(Object o) {
             try {
-                description.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("description"));
-                price.setText("$" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("price"));
-                item_name_toolbar.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                shop_name.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("shop_name"));
-                shop_id = itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id");
-                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                name.setText(itemsJSON.getJSONArray("Items").getJSONObject(0).getString("name"));
-                if (itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image").equals("")) {
+                JSONObject item = itemsJSON.getJSONArray("Items").getJSONObject(0);
+
+                final String item_name = item.getString("name");
+                final String item_price = "$" + item.getString("price");
+                final String item_image = item.getString("image");
+                final String item_desc = item.getString("description");
+                final String shop_name_txt = item.getString("shop_name");
+                shop_id = item.getInt("shop_id");
+
+                description.setText(item_desc);
+                price.setText(item_price);
+                item_name_toolbar.setText(item_name);
+                shop_name.setText(shop_name_txt);
+                collapsingToolbar.setTitle(item_name);
+                name.setText(item_name);
+
+                if (item_image.equals("")) {
                     Item_Pic.setImageResource(R.drawable.giftintro);
                 } else {
-                    picasso.load("http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Items").getJSONObject(0).getString("image")).fit().centerCrop().into(Item_Pic);
+                    picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(Item_Pic);
                 }
                 endFragment = new Shop_Detail_Fragment();
 
@@ -342,11 +335,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                     @Override
                     public void onClick(View v) {
                         FragmentManager fragmentManager = getFragmentManager();
-                        try {
-                            endFragment.setId(itemsJSON.getJSONArray("Items").getJSONObject(0).getInt("shop_id"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        endFragment.setId(shop_id);
                         fragmentManager.beginTransaction()
                                 .add(R.id.fragment_main, endFragment)
                                 .addToBackStack(null)
@@ -354,7 +343,22 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                     }
                 });
 
-
+                addToCart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (user_id != 0) {
+                            if (item_id != 0 && shop_id != 0) {
+//                        new addToCart().execute();
+                                new Core(getActivity()).addToCart(shop_id,item_id,item_name,item_price,item_image,item_desc,shop_name_txt);
+                            } else {
+                                Log.d("Id Empty", "Item And Shop Ids are Empty");
+                            }
+                        } else {
+                            Intent in = new Intent(getActivity(), LoginActivity.class);
+                            startActivity(in);
+                        }
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }

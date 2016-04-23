@@ -1,9 +1,13 @@
 package com.zeowls.gifts;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,9 +40,12 @@ import com.firebase.client.ValueEventListener;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.HomePage.HomePageFragment;
 import com.zeowls.gifts.LoginPage.LoginActivity;
+import com.zeowls.gifts.provider.Contract;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import com.zeowls.gifts.provider.Contract.CartEntry;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +64,29 @@ public class MainActivity extends AppCompatActivity {
     static int mCartCount = 0;
     static int userId = 1;
 
+    private int CART_LOADER = 0;
+
+    static final int COL_CART_ID = 0;
+    static final int COL_CART_ITEM_ID = 1;
+    static final int COL_CART_ITEM_NAME = 2;
+    static final int COL_CART_IETME_PRICE = 3;
+    static final int COL_CART_ITEM_IMAGE = 4;
+    static final int COL_CART_ITEM_DESC = 5;
+    static final int COL_CART_SHOP_ID = 6;
+    static final int COL_CART_SHOPE_NAME = 7;
+
+    private static final String[] CART_COLUMNS = {
+            Contract.CartEntry.TABLE_NAME + "." + Contract.CartEntry._ID,
+            CartEntry.COLUMN_ITEM_ID,
+            CartEntry.COLUMN_ITEM_NAME,
+            CartEntry.COLUMN_ITEM_PRICE,
+            CartEntry.COLUMN_ITEM_PHOTO,
+            CartEntry.COLUMN_ITEM_PHOTO,
+            CartEntry.COLUMN_ITEM_DESC,
+            CartEntry.COLUMN_SHOP_ID,
+            CartEntry.COLUMN_SHOP_NAME
+    };
+
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     HomePageFragment fragment;
@@ -66,76 +96,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Firebase.setAndroidContext(this);
-
-        if (savedInstanceState != null) {
+//        getLoaderManager().initLoader(CART_LOADER, null, this);
+//        if (savedInstanceState != null) {
             //Restore the fragment's instance
-            Fragment mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-        } else {
+//            Fragment mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+//        } else {
 
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
             fragment = new HomePageFragment();
             fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
             fragmentTransaction.commit();
-        }
-
-
-        final Handler h = new Handler();
-        final int delay = 1000; //milliseconds
-
-        h.postDelayed(new Runnable() {
-            public void run() {
-//                SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
-//                String restoredText = prefs.getString("name", null);
-//                if (restoredText != null) {
-//                    String name = prefs.getString("name", "No name defined");
-//                    userId = prefs.getInt("id", 0);
-                if (userId != 0) {
-                    //do something
-                    Firebase ref = new Firebase("https://giftshop.firebaseio.com/orders/User");
-                    Query queryRef = ref.orderByChild("shop_id");
-                    queryRef.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                                FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-//                                Log.d("item id", String.valueOf(order.item_id));
-                            System.out.println(dataSnapshot.getValue());
-                        }
-
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                            FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-                            Log.d("item id", String.valueOf(order.item_id));
-                            System.out.println(dataSnapshot.getValue());
-                        }
-
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
-                            FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-                            Log.d("item id", String.valueOf(order.item_id));
-                            System.out.println(dataSnapshot.getValue());
-                        }
-
-                        @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                            FireOwl.orderDataModel order = dataSnapshot.getValue(FireOwl.orderDataModel.class);
-                            Log.d("item id", String.valueOf(order.item_id));
-                            System.out.println(dataSnapshot.getValue());
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    });
-//
-                }
-                h.postDelayed(this, delay);
-            }
-
-        }, delay);
-//                new cartCount().execute();
-
+//        }
 
         configureToolbar();
         configureNavigationView();
@@ -316,24 +288,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public class cartCount extends AsyncTask<Void, Void, Objects> {
-
-//        @Override
-//        protected void onPostExecute(Objects objects) {
-//            cartCount.setText(String.valueOf(mCartCount));
-//            super.onPostExecute(objects);
-//        }
-
-        @Override
-        protected Objects doInBackground(Void... params) {
-//            Core core = new Core(getBaseContext());
-//            mCartCount = core.cartCount(userId);
-
-            return null;
-        }
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -359,4 +313,22 @@ public class MainActivity extends AppCompatActivity {
         //Save the fragment's instance
 //        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
     }
+
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        if (id == CART_LOADER) {
+//            return new CursorLoader(this, Contract.CartEntry.CONTENT_URI, CART_COLUMNS, null, null, CartEntry._ID + " ASC");
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        mCartCount = data.getCount();
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> loader) {
+//
+//    }
 }

@@ -16,6 +16,7 @@ public class Contract {
     public static final String PATH_ITEMS = "items";
     public static final String PATH_CATS = "categories";
     public static final String PATH_PARENT_CATS = "parent_categories";
+    public static final String PATH_CART = "cart";
 
     public static final class ShopEntry implements BaseColumns{
         public static Uri CONTENT_URI = BASE_CONTENT.buildUpon().appendPath(PATH_SHOPS).build();
@@ -86,6 +87,24 @@ public class Contract {
         public static String TABLE_NAME = "parent_category";
         public static String COLUMN_ID = "id";
         public static String COLUMN_NAME = "name";
+
+        public static Uri BuildParentCatUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI,id);
+        }
+
+    }
+
+    public static final class CartEntry implements BaseColumns{
+        public static Uri CONTENT_URI = BASE_CONTENT.buildUpon().appendPath(PATH_PARENT_CATS).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CART;
+        public static String TABLE_NAME = "cart";
+        public static String COLUMN_ITEM_ID = "item_id";
+        public static String COLUMN_ITEM_NAME = "item_name";
+        public static String COLUMN_ITEM_PRICE = "item_price";
+        public static String COLUMN_ITEM_PHOTO = "item_photo";
+        public static String COLUMN_ITEM_DESC = "item_desc";
+        public static String COLUMN_SHOP_ID = "shop_id";
+        public static String COLUMN_SHOP_NAME = "shop_name";
 
         public static Uri BuildParentCatUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI,id);

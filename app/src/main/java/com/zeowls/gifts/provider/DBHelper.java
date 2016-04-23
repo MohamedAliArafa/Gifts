@@ -11,11 +11,12 @@ import com.zeowls.gifts.provider.Contract.ShopEntry;
 import com.zeowls.gifts.provider.Contract.ItemEntry;
 import com.zeowls.gifts.provider.Contract.CategoryEntry;
 import com.zeowls.gifts.provider.Contract.ParentCategoryEntry;
+import com.zeowls.gifts.provider.Contract.CartEntry;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
-    final static String DATABASE_NAME = "movies.db";
+    final static String DATABASE_NAME = "bubble.db";
 
     private static int DATABASE_VERSION = 1;
 
@@ -68,8 +69,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_PARENT_CAT_TABLE = "CREATE TABLE " + ParentCategoryEntry.TABLE_NAME + " (" +
 
-                CategoryEntry._ID + " TEXT PRIMARY KEY," +
-                CategoryEntry.COLUMN_ID + " TEXT NOT NULL, " +
+                CategoryEntry._ID + " INTEGER PRIMARY KEY," +
+                CategoryEntry.COLUMN_ID + " INTEGER NOT NULL, " +
                 CategoryEntry.COLUMN_NAME + " TEXT NOT NULL, "+
 //                CategoryEntry.COLUMN_PARENT_ID + " TEXT NOT NULL, " +
 //                " FOREIGN KEY (" + CategoryEntry.COLUMN_PARENT_ID + ") REFERENCES " +
@@ -78,18 +79,35 @@ public class DBHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_CAT_TABLE = "CREATE TABLE " + CategoryEntry.TABLE_NAME + " (" +
 
-                CategoryEntry._ID + " TEXT PRIMARY KEY," +
-                CategoryEntry.COLUMN_ID + " TEXT NOT NULL, " +
+                CategoryEntry._ID + " INTEGER PRIMARY KEY," +
+                CategoryEntry.COLUMN_ID + " INTEGER NOT NULL, " +
                 CategoryEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 CategoryEntry.COLUMN_PARENT_ID + " TEXT NOT NULL, " +
                 " FOREIGN KEY (" + CategoryEntry.COLUMN_PARENT_ID + ") REFERENCES " +
                 ParentCategoryEntry.TABLE_NAME + " (" + ParentCategoryEntry.COLUMN_ID + "), "+
                 " UNIQUE (" + CategoryEntry.COLUMN_ID + ") ON CONFLICT REPLACE);";
 
+        final String SQL_CREATE_CART_TABLE = "CREATE TABLE " + CartEntry.TABLE_NAME + " (" +
+
+                CartEntry._ID + " INTEGER PRIMARY KEY," +
+                CartEntry.COLUMN_SHOP_ID + " INTEGER NOT NULL, " +
+                CartEntry.COLUMN_ITEM_ID + " INTEGER NOT NULL, " +
+                CartEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, " +
+                CartEntry.COLUMN_ITEM_PRICE + " TEXT NOT NULL, " +
+                CartEntry.COLUMN_ITEM_PHOTO + " TEXT NOT NULL, " +
+                CartEntry.COLUMN_ITEM_DESC + " TEXT NOT NULL, " +
+                CartEntry.COLUMN_SHOP_NAME + " TEXT NOT NULL, " +
+                " FOREIGN KEY (" + CartEntry.COLUMN_ITEM_ID + ") REFERENCES " +
+                ItemEntry.TABLE_NAME + " (" + ItemEntry.COLUMN_ID + "), "+
+                " FOREIGN KEY (" + CartEntry.COLUMN_SHOP_ID + ") REFERENCES " +
+                ShopEntry.TABLE_NAME + " (" + ShopEntry.COLUMN_ID + "), "+
+                " UNIQUE (" + CartEntry._ID + ") ON CONFLICT REPLACE);";
+
         db.execSQL(SQL_CREATE_SHOP_TABLE);
         db.execSQL(SQL_CREATE_ITEM_TABLE);
         db.execSQL(SQL_CREATE_CAT_TABLE);
         db.execSQL(SQL_CREATE_PARENT_CAT_TABLE);
+        db.execSQL(SQL_CREATE_CART_TABLE);
     }
 
     @Override
@@ -98,5 +116,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ItemEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CategoryEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ParentCategoryEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CartEntry.TABLE_NAME);
         onCreate(db);
     }}

@@ -2,6 +2,7 @@ package com.zeowls.gifts.BackEndOwl;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -22,6 +23,7 @@ import java.util.Vector;
 import com.zeowls.gifts.provider.Contract.ShopEntry;
 import com.zeowls.gifts.provider.Contract.ItemEntry;
 import com.zeowls.gifts.provider.Contract.CategoryEntry;
+import com.zeowls.gifts.provider.Contract.CartEntry;
 import com.zeowls.gifts.provider.Contract.ParentCategoryEntry;
 
 
@@ -29,7 +31,7 @@ public class Core {
 
     Context context;
 
-    public Core(Context context){
+    public Core(Context context) {
         this.context = context;
     }
 
@@ -50,14 +52,14 @@ public class Core {
         assert inputStream != null;
         reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        while ((line = reader.readLine())!=null){
+        while ((line = reader.readLine()) != null) {
             stringBuffer.append(line);
         }
         data = stringBuffer.toString();
         return data;
     }
 
-    private String postRequest(String url,JSONObject params) throws IOException {
+    private String postRequest(String url, JSONObject params) throws IOException {
         URL url1 = new URL(Domain + url);
         HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
         connection.setRequestMethod("POST");
@@ -83,7 +85,7 @@ public class Core {
         assert inputStream != null;
         reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        while ((line = reader.readLine())!=null){
+        while ((line = reader.readLine()) != null) {
             stringBuffer.append(line);
         }
         data = stringBuffer.toString();
@@ -94,11 +96,11 @@ public class Core {
     public JSONObject getShopItems(int id) throws JSONException {
         JSONObject json = null;
         try {
-            String response = getRequest(Domain + "/GetShopItems/"+id+"/JSON");
-            if (!response.equals("0")){
+            String response = getRequest(Domain + "/GetShopItems/" + id + "/JSON");
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
                 putItemsDB(json);
-            }else {
+            } else {
                 Log.d("getShopItems", response);
             }
         } catch (Exception e) {
@@ -111,11 +113,11 @@ public class Core {
     public JSONObject getShop(int id) throws JSONException {
         JSONObject json = null;
         try {
-            String response = getRequest(Domain + "/GetShop/"+id+"/JSON");
-            if (!response.equals("0")){
+            String response = getRequest(Domain + "/GetShop/" + id + "/JSON");
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
                 putShopsDB(json);
-            }else {
+            } else {
                 Log.d("getShopItems", response);
             }
         } catch (Exception e) {
@@ -128,11 +130,11 @@ public class Core {
     public JSONObject getItem(int id) throws JSONException {
         JSONObject json = null;
         try {
-            String response = getRequest(Domain + "/GetItem/"+id+"/JSON");
-            if (!response.equals("0")){
+            String response = getRequest(Domain + "/GetItem/" + id + "/JSON");
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
                 putItemsDB(json);
-            }else {
+            } else {
                 Log.d("get Items", response);
             }
         } catch (Exception e) {
@@ -143,14 +145,14 @@ public class Core {
         return json;
     }
 
-    public JSONObject getAllShops(){
+    public JSONObject getAllShops() {
         JSONObject json = null;
         try {
             String response = getRequest(Domain + "/GetAllShops/JSON");
-            if (!response.equals("0")){
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
                 putShopsDB(json);
-            }else {
+            } else {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
@@ -160,13 +162,13 @@ public class Core {
         return json;
     }
 
-    public JSONObject getSubCategoriesByCatID(int id){
+    public JSONObject getSubCategoriesByCatID(int id) {
         JSONObject json = null;
         try {
-            String response = getRequest(Domain + "/GetSubCategoriesById/"+id+"/JSON");
-            if (!response.equals("0")){
+            String response = getRequest(Domain + "/GetSubCategoriesById/" + id + "/JSON");
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
-            }else {
+            } else {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
@@ -177,13 +179,13 @@ public class Core {
         return json;
     }
 
-    public JSONObject getSubAllCategories(){
+    public JSONObject getSubAllCategories() {
         JSONObject json = null;
         try {
             String response = getRequest(Domain + "/GetSubCategories/JSON");
-            if (!response.equals("0")){
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
-            }else {
+            } else {
                 Log.d("GetSubCategories", response);
             }
         } catch (Exception e) {
@@ -194,13 +196,13 @@ public class Core {
         return json;
     }
 
-    public JSONObject getAllCategories(){
+    public JSONObject getAllCategories() {
         JSONObject json = null;
         try {
             String response = getRequest(Domain + "/GetCategories/JSON");
-            if (!response.equals("0")){
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
-            }else {
+            } else {
                 Log.d("getAllShops", response);
             }
         } catch (Exception e) {
@@ -211,14 +213,14 @@ public class Core {
         return json;
     }
 
-    public JSONObject getItemsByCategoryId(int id){
+    public JSONObject getItemsByCategoryId(int id) {
         JSONObject json = null;
         try {
-            String response = getRequest(Domain + "/GetItemByCategory/"+id+"/JSON");
-            if (!response.equals("0")){
+            String response = getRequest(Domain + "/GetItemByCategory/" + id + "/JSON");
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
                 putItemsDB(json);
-            }else {
+            } else {
                 Log.d("get Items By Cat id", response);
             }
         } catch (Exception e) {
@@ -229,14 +231,14 @@ public class Core {
         return json;
     }
 
-    public JSONArray getHomePage(){
+    public JSONArray getHomePage() {
         JSONArray json = null;
         try {
             String response = getRequest(Domain + "/HomePage/JSON");
-            if (!response.equals("0")){
+            if (!response.equals("0")) {
                 json = new JSONArray(response);
 //                putItemsDB(json);
-            }else {
+            } else {
                 Log.d("get Items By Cat id", response);
             }
         } catch (Exception e) {
@@ -254,7 +256,7 @@ public class Core {
         try {
             json.put("email", username);
             json.put("password", password);
-            String response = postRequest("/login",json);
+            String response = postRequest("/login", json);
             JSONObject resJson = new JSONObject(response);
             result = resJson.getJSONArray("response").getJSONObject(0).getInt("id");
         } catch (Exception e) {
@@ -271,7 +273,7 @@ public class Core {
             json.put("email", username);
             json.put("password", password);
             json.put("mobile", mobile);
-            String response = postRequest("/signup",json);
+            String response = postRequest("/signup", json);
             JSONObject resJson = new JSONObject(response);
             result = resJson.getInt("response");
         } catch (Exception e) {
@@ -281,37 +283,64 @@ public class Core {
         return result;
     }
 
-    public JSONObject addToCart(int userId, int itemId) throws JSONException {
-        JSONObject json = null;
-        try {
-            String response = getRequest(Domain + "/addToShopCart/" + userId + "/" + itemId);
-            if (!response.equals("0")){
-                json = new JSONObject(response);
-            }else {
-                Log.d("addToShopCart", response);
-            }
-        } catch (Exception e) {
-//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+    public void addToCart(int shop_id, int item_id, String item_name, String item_price,
+                          String item_image, String item_desc, String shop_name) {
+
+        ContentValues cartValues = new ContentValues();
+        Vector<ContentValues> cVVector = new Vector<>();
+
+        cartValues.put(CartEntry.COLUMN_ITEM_ID, item_id);
+        cartValues.put(CartEntry.COLUMN_ITEM_NAME, item_name);
+        cartValues.put(CartEntry.COLUMN_ITEM_PRICE, item_price);
+        cartValues.put(CartEntry.COLUMN_ITEM_PHOTO, item_image);
+        cartValues.put(CartEntry.COLUMN_ITEM_DESC, item_desc);
+        cartValues.put(CartEntry.COLUMN_SHOP_ID, shop_id);
+        cartValues.put(CartEntry.COLUMN_SHOP_NAME, shop_name);
+
+        cVVector.add(cartValues);
+
+        int inserted = 0;
+        // add to database
+        if (cVVector.size() > 0) {
+            ContentValues[] cvArray = new ContentValues[cVVector.size()];
+            cVVector.toArray(cvArray);
+            inserted = context.getContentResolver().bulkInsert(CartEntry.CONTENT_URI, cvArray);
         }
-        return json;
+
+        Log.i(Core.class.getSimpleName(), "Cart adding Complete. " + inserted + " Inserted");
+
+        //        JSONObject json = null;
+//        try {
+//            String response = getRequest(Domain + "/addToShopCart/" + userId + "/" + itemId);
+//            if (!response.equals("0")){
+//                json = new JSONObject(response);
+//            }else {
+//                Log.d("addToShopCart", response);
+//            }
+//        } catch (Exception e) {
+////            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+//        return json;
     }
 
     public int cartCount(int userId) {
-        JSONObject json;
+
+
+//        JSONObject json;
         int count = 0;
-        try {
-            String response = getRequest(Domain + "/getUserShopCart/" + userId + "/");
-            if (!response.equals("0")){
-                json = new JSONObject(response);
-                count = json.getJSONArray("Cart").length();
-            }else {
-                Log.d("addToShopCart", response);
-            }
-        } catch (Exception e) {
-//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
+//        try {
+//            String response = getRequest(Domain + "/getUserShopCart/" + userId + "/");
+//            if (!response.equals("0")) {
+//                json = new JSONObject(response);
+//                count = json.getJSONArray("Cart").length();
+//            } else {
+//                Log.d("addToShopCart", response);
+//            }
+//        } catch (Exception e) {
+////            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
         return count;
     }
 
@@ -319,9 +348,9 @@ public class Core {
         JSONObject json = null;
         try {
             String response = getRequest(Domain + "/getUserShopCart/" + userId + "/");
-            if (!response.equals("0")){
+            if (!response.equals("0")) {
                 json = new JSONObject(response);
-            }else {
+            } else {
                 Log.d("addToShopCart", response);
             }
         } catch (Exception e) {
@@ -331,7 +360,7 @@ public class Core {
         return json;
     }
 
-    public void putShopsDB(JSONObject jsonObject){
+    public void putShopsDB(JSONObject jsonObject) {
 
         final String shop_list = "Shop";
         final String shop_id = "id";
@@ -344,13 +373,13 @@ public class Core {
         final String shop_description = "description";
         final String shop_short_description = "short_description";
         final String shop_address = "shop_address";
-        try{
+        try {
 
             JSONArray movies = jsonObject.getJSONArray(shop_list);
             Vector<ContentValues> cVVector = new Vector<>(movies.length());
 
-            for (int i=0; i < movies.length();i++){
-                String id,title,owner_name,email,mobile,image,poster,description,short_description,fav,address;
+            for (int i = 0; i < movies.length(); i++) {
+                String id, title, owner_name, email, mobile, image, poster, description, short_description, fav, address;
                 JSONObject movie = movies.getJSONObject(i);
                 id = movie.getString(shop_id);
                 title = movie.getString(shop_name);
@@ -366,24 +395,24 @@ public class Core {
 
                 ContentValues moviesValues = new ContentValues();
 
-                moviesValues.put(ShopEntry.COLUMN_ID,id);
-                moviesValues.put(ShopEntry.COLUMN_FAV,fav);
-                moviesValues.put(ShopEntry.COLUMN_NAME,title);
-                moviesValues.put(ShopEntry.COLUMN_OWNER_NAME,owner_name);
-                moviesValues.put(ShopEntry.COLUMN_EMAIL,email);
-                moviesValues.put(ShopEntry.COLUMN_MOBILE,mobile);
-                moviesValues.put(ShopEntry.COLUMN_PROFILE_PIC,image);
-                moviesValues.put(ShopEntry.COLUMN_COVER_PIC,poster);
-                moviesValues.put(ShopEntry.COLUMN_DESCRIPTION,description);
-                moviesValues.put(ShopEntry.COLUMN_SHORT_DESCRIPTION,short_description);
-                moviesValues.put(ShopEntry.COLUMN_ADDRESS,address);
+                moviesValues.put(ShopEntry.COLUMN_ID, id);
+                moviesValues.put(ShopEntry.COLUMN_FAV, fav);
+                moviesValues.put(ShopEntry.COLUMN_NAME, title);
+                moviesValues.put(ShopEntry.COLUMN_OWNER_NAME, owner_name);
+                moviesValues.put(ShopEntry.COLUMN_EMAIL, email);
+                moviesValues.put(ShopEntry.COLUMN_MOBILE, mobile);
+                moviesValues.put(ShopEntry.COLUMN_PROFILE_PIC, image);
+                moviesValues.put(ShopEntry.COLUMN_COVER_PIC, poster);
+                moviesValues.put(ShopEntry.COLUMN_DESCRIPTION, description);
+                moviesValues.put(ShopEntry.COLUMN_SHORT_DESCRIPTION, short_description);
+                moviesValues.put(ShopEntry.COLUMN_ADDRESS, address);
 
                 cVVector.add(moviesValues);
             }
 
             int inserted = 0;
             // add to database
-            if ( cVVector.size() > 0 ) {
+            if (cVVector.size() > 0) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
                 inserted = context.getContentResolver().bulkInsert(ShopEntry.CONTENT_URI, cvArray);
@@ -397,7 +426,7 @@ public class Core {
     }
 
 
-    public void putItemsDB(JSONObject jsonObject){
+    public void putItemsDB(JSONObject jsonObject) {
 
         final String item_list = "Items";
         final String item_id = "id";
@@ -407,14 +436,14 @@ public class Core {
         final String item_description = "description";
         final String item_shop_id = "shop_id";
         final String item_cat_id = "sub_cat_id";
-        try{
+        try {
 
             JSONArray movies = jsonObject.getJSONArray(item_list);
             Vector<ContentValues> cVVector = new Vector<>(movies.length());
 
-            for (int i=0; i < movies.length();i++){
-                String id,title,image,price,description,fav;
-                int shop_id = 0,cat_id = 0;
+            for (int i = 0; i < movies.length(); i++) {
+                String id, title, image, price, description, fav;
+                int shop_id = 0, cat_id = 0;
                 JSONObject movie = movies.getJSONObject(i);
                 id = movie.getString(item_id);
                 title = movie.getString(item_name);
@@ -427,21 +456,21 @@ public class Core {
 
                 ContentValues moviesValues = new ContentValues();
 
-                moviesValues.put(ItemEntry.COLUMN_ID,id);
-                moviesValues.put(ItemEntry.COLUMN_FAV,fav);
-                moviesValues.put(ItemEntry.COLUMN_NAME,title);
-                moviesValues.put(ItemEntry.COLUMN_PRICE,price);
-                moviesValues.put(ItemEntry.COLUMN_IMAGE,image);
-                moviesValues.put(ItemEntry.COLUMN_DESCRIPTION,description);
-                moviesValues.put(ItemEntry.COLUMN_SHOP_ID,shop_id);
-                moviesValues.put(ItemEntry.COLUMN_CAT_ID,cat_id);
+                moviesValues.put(ItemEntry.COLUMN_ID, id);
+                moviesValues.put(ItemEntry.COLUMN_FAV, fav);
+                moviesValues.put(ItemEntry.COLUMN_NAME, title);
+                moviesValues.put(ItemEntry.COLUMN_PRICE, price);
+                moviesValues.put(ItemEntry.COLUMN_IMAGE, image);
+                moviesValues.put(ItemEntry.COLUMN_DESCRIPTION, description);
+                moviesValues.put(ItemEntry.COLUMN_SHOP_ID, shop_id);
+                moviesValues.put(ItemEntry.COLUMN_CAT_ID, cat_id);
 
                 cVVector.add(moviesValues);
             }
 
             int inserted = 0;
             // add to database
-            if ( cVVector.size() > 0 ) {
+            if (cVVector.size() > 0) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
                 inserted = context.getContentResolver().bulkInsert(ItemEntry.CONTENT_URI, cvArray);
