@@ -373,8 +373,8 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                                 Log.d("Id Empty", "Item And Shop Ids are Empty");
                             }
                         } else {
-                            Intent in = new Intent(getActivity(), LoginActivity.class);
-                            startActivity(in);
+                            DialogFragment newFragment = new LoginFragment();
+                            newFragment.show(getFragmentManager(), "missiles");
                         }
                     }
                 });

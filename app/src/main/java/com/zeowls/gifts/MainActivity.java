@@ -40,7 +40,6 @@ import com.firebase.client.ValueEventListener;
 import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.HomePage.HomePageFragment;
-import com.zeowls.gifts.LoginPage.LoginActivity;
 import com.zeowls.gifts.provider.Contract;
 
 import java.util.Objects;
