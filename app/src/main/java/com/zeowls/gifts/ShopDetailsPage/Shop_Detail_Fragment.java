@@ -171,6 +171,8 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         Shop_Items_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //hello from un comitted
                 fragmentManager = getFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 shopAllItemsFragment =  new ShopAllItemsFragment();
