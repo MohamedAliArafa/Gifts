@@ -55,4 +55,11 @@
     <string name="next">NEXT</string>
     <string name="txt_yo_yo">YoYoYOOy</string>
 
+
+    <string name="error_confirm_passord_not_identical">Confirm password not identical</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="no_matching_email">No Matching Email</string>
+    <string name="Email_alrady_Exist">Email Already Exist</string>
+    <string name="Mobile_Aready_Exist">Mobile Already Exist</string>
+
 </resources>

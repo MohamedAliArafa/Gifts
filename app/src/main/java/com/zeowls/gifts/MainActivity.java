@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,7 +27,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,12 +37,12 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.HomePage.HomePageFragment;
 import com.zeowls.gifts.LoginPage.LoginActivity;
 import com.zeowls.gifts.provider.Contract;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import com.zeowls.gifts.provider.Contract.CartEntry;
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     HomePageFragment fragment;
+    LoginFragment loginFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem fav = menuNav.findItem(R.id.navFavBTN);
 
         login.setVisible(false);
-        login.setTitle("Test");
+        login.setTitle("Login");
 
         if (userId == 0) {
             fav.setVisible(false);
@@ -151,12 +152,15 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
 
 //                        // TODO: handle navigation
-//                        if (menuItem.getItemId() == R.id.navLoginBTN) {
-//                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                            startActivity(intent);
-//                            mDrawerLayout.closeDrawers();
-//                            return true;
-//                        }
+                        if (menuItem.getItemId() == R.id.navLoginBTN) {
+
+                            DialogFragment newFragment = new LoginFragment();
+                            newFragment.show(getSupportFragmentManager(), "missiles");
+
+                            mDrawerLayout.closeDrawers();
+                            return true;
+                        }
+
 
                         if (menuItem.getItemId() == R.id.navLogoutBTN) {
                             SharedPreferences.Editor editor = getSharedPreferences("Credentials", MODE_PRIVATE).edit();
@@ -272,10 +276,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (mCartCount!=0) {
+                if (mCartCount != 0) {
                     Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
                     startActivity(intent);
-                }else {
+                } else {
                     Toast.makeText(MainActivity.this, "Shopping Cart Empty", Toast.LENGTH_SHORT).show();
                 }
             }

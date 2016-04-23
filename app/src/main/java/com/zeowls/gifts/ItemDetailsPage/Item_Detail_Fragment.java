@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,10 +31,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.zeowls.LoginFragment;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.ImageSLider2.SlidingImage_Adapter;
-import com.zeowls.gifts.LoginPage.LoginActivity;
 import com.zeowls.gifts.MainActivity;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.ShopDetailsPage.Shop_Detail_Fragment;
@@ -148,6 +149,24 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         AppBarLayout mAppBarLayout = (AppBarLayout) view.findViewById(R.id.main_appbar);
         mAppBarLayout.addOnOffsetChangedListener(this);
         startAlphaAnimation(item_name_toolbar, 0, View.INVISIBLE);
+
+        addToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user_id != 0) {
+                    if (item_id != 0 && shop_id != 0) {
+                        new addToCart().execute();
+                    } else {
+                        Log.d("Id Empty", "Item And Shop Ids are Empty");
+                    }
+                } else {
+
+                    DialogFragment newFragment = new LoginFragment();
+                    newFragment.show(getFragmentManager(), "missiles");
+
+                }
+            }
+        });
 
         //TODO
         init();

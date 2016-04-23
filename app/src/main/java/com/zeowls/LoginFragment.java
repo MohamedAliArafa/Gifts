@@ -1,39 +1,128 @@
 package com.zeowls;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
-
-import com.zeowls.MaterialLoginLib.MaterialLoginView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.support.v4.app.DialogFragment;
+import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.RegisterFragment;
+
+import org.json.JSONException;
 
 
 public class LoginFragment extends DialogFragment {
 
+
+    EditText Email_Field, Password_Field;
+    String Email_Value, Password_Value;
+    ImageView Sign_In_Im;
+    TextView Forget_Pass_Txt;
+    Button Sign_Up_Btn;
+    View focusView;
+    private UserLoginTask mAuthTask = null;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-
-
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//
-//        return inflater.inflate(R.layout.fragment_login, container, false);
-//    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_login_2, container, false);
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MaterialLoginView login = (MaterialLoginView) view.findViewById(R.id.login);
+        Email_Field = (EditText) view.findViewById(R.id.Login_Fr_email);
+        Password_Field = (EditText) view.findViewById(R.id.Login_Fr_Password);
+        Sign_In_Im = (ImageView) view.findViewById(R.id.Login_Fr_SignBtn);
+        Forget_Pass_Txt = (TextView) view.findViewById(R.id.Login_Fr_ForgetPassTxt);
+        Sign_Up_Btn = (Button) view.findViewById(R.id.Login_Fr_SignUpBtn);
+
+
+        Password_Field.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if (actionId == R.id.login) {
+                    Login_Task();
+                    return true;
+
+                }
+                return false;
+            }
+        });
+
+        Sign_Up_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dismiss();
+                DialogFragment newFragment = new RegisterFragment();
+                newFragment.show(getFragmentManager(), "missiles");
+
+            }
+        });
+
+
+        Sign_In_Im.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Login_Task();
+
+
+            }
+        });
+
+
+    }
+
+    public void Login_Task() {
+        Email_Value = Email_Field.getText().toString();
+        Password_Value = Password_Field.getText().toString();
+        boolean cancel = false;
+        focusView = null;
+
+        if (TextUtils.isEmpty(Email_Value)) {
+            Email_Field.setError(getString(R.string.error_field_required));
+            focusView = Email_Field;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(Password_Value)) {
+            Password_Field.setError(getString(R.string.error_field_required));
+            focusView = Password_Field;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            mAuthTask = new UserLoginTask(Email_Value, Password_Value);
+            mAuthTask.execute((Void) null);
+        }
 
     }
 
@@ -50,34 +139,79 @@ public class LoginFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        // Use the Builder class for convenient dialog construction
-
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_login, null);
-//        builder.setView(view);
-//        builder.setMessage("Fire missiles?")
-//                .setPositiveButton("fire", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // FIRE ZE MISSILES!
-//                    }
-//                })
-//                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // User cancelled the dialog
-//                    }
-//                });
-//        // Create the AlertDialog object and return it
-//        return super.onCreateDialog(savedInstanceState);
-////        return builder.create();
-
-
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.fragment_login);
         return dialog;
 
 
     }
 
+
+    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
+
+        private final String mEmail;
+        private final String mPassword;
+
+        UserLoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int state = 0;
+            Core core = new Core(getActivity());
+            try {
+                int user_id = core.getCredentials(mEmail, mPassword);
+                if (user_id == -2) {
+                    state = 1;
+                    return state;
+                } else if (user_id == -1) {
+                    state = 2;
+                    return state;
+                } else {
+                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("Credentials", Context.MODE_PRIVATE).edit();
+                    editor.putInt("id", user_id);
+                    Log.d("user Id", String.valueOf(user_id));
+                    editor.apply();
+                    return state;
+                }
+            } catch (JSONException e) {
+                state = 3;
+                Log.d("Error", e.getMessage());
+                e.printStackTrace();
+                return state;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(final Integer state) {
+            mAuthTask = null;
+            switch (state) {
+                case 1:
+                    Email_Field.setError(getString(R.string.email_does_not_exist));
+                    Email_Field.requestFocus();
+                    break;
+                case 2:
+                    Password_Field.setError(getString(R.string.password_is_wrong));
+                    Password_Field.requestFocus();
+                    break;
+                case 3:
+                    Toast.makeText(getActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    getActivity().finish();
+                    startActivity(getActivity().getIntent());
+            }
+
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+        }
+    }
 
 }

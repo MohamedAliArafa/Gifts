@@ -258,7 +258,7 @@ public class Core {
             json.put("password", password);
             String response = postRequest("/login", json);
             JSONObject resJson = new JSONObject(response);
-            result = resJson.getJSONArray("response").getJSONObject(0).getInt("id");
+            result = resJson.getInt("response");
         } catch (Exception e) {
 //            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
