@@ -82,6 +82,7 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         return inflater.inflate(R.layout.shop_details_in_fragment, container, false);
     }
 
+
     @Override
     public void onAttach(Activity activity) {
         myContext = (FragmentActivity) activity;
