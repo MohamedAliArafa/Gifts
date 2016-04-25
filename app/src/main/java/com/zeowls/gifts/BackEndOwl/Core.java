@@ -1,9 +1,16 @@
 package com.zeowls.gifts.BackEndOwl;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,17 +26,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
 
-
+import com.zeowls.gifts.provider.Contract;
 import com.zeowls.gifts.provider.Contract.ShopEntry;
 import com.zeowls.gifts.provider.Contract.ItemEntry;
-import com.zeowls.gifts.provider.Contract.CategoryEntry;
 import com.zeowls.gifts.provider.Contract.CartEntry;
-import com.zeowls.gifts.provider.Contract.ParentCategoryEntry;
-
 
 public class Core {
 
     Context context;
+
+
 
     public Core(Context context) {
         this.context = context;
@@ -300,47 +306,21 @@ public class Core {
         cVVector.add(cartValues);
 
         int inserted = 0;
-        // add to database
-        if (cVVector.size() > 0) {
-            ContentValues[] cvArray = new ContentValues[cVVector.size()];
-            cVVector.toArray(cvArray);
-            inserted = context.getContentResolver().bulkInsert(CartEntry.CONTENT_URI, cvArray);
+        inserted = context.getContentResolver().update(CartEntry.CONTENT_URI, cartValues, CartEntry.COLUMN_ITEM_ID + " = ?", new String[]{String.valueOf(item_id)});
+        Log.i(Core.class.getSimpleName(), "Cart Updatin8g Complete. " + inserted + " Inserted");
+        if (inserted == 0) {
+            // add to database
+            if (cVVector.size() > 0) {
+                ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                cVVector.toArray(cvArray);
+                inserted = context.getContentResolver().bulkInsert(CartEntry.CONTENT_URI, cvArray);
+                Log.i(Core.class.getSimpleName(), "Cart Inserting Complete. " + inserted + " Inserted");
+            }
         }
-
-        Log.i(Core.class.getSimpleName(), "Cart adding Complete. " + inserted + " Inserted");
-
-        //        JSONObject json = null;
-//        try {
-//            String response = getRequest(Domain + "/addToShopCart/" + userId + "/" + itemId);
-//            if (!response.equals("0")){
-//                json = new JSONObject(response);
-//            }else {
-//                Log.d("addToShopCart", response);
-//            }
-//        } catch (Exception e) {
-////            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//            e.printStackTrace();
-//        }
-//        return json;
     }
 
     public int cartCount(int userId) {
-
-
-//        JSONObject json;
         int count = 0;
-//        try {
-//            String response = getRequest(Domain + "/getUserShopCart/" + userId + "/");
-//            if (!response.equals("0")) {
-//                json = new JSONObject(response);
-//                count = json.getJSONArray("Cart").length();
-//            } else {
-//                Log.d("addToShopCart", response);
-//            }
-//        } catch (Exception e) {
-////            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//            e.printStackTrace();
-//        }
         return count;
     }
 
@@ -482,5 +462,4 @@ public class Core {
             e.printStackTrace();
         }
     }
-
 }

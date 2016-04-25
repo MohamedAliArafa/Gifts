@@ -23,9 +23,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.MainActivity;
 import com.zeowls.gifts.R;
 
@@ -61,7 +63,6 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     protected FragmentActivity myContext;
 
     loadingData loadingData;
-    ShopAllItemsFragment shopAllItemsFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +76,8 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        FireOwl fireOwl = new FireOwl(getActivity());
+        fireOwl.getOrders(id);
         loadingData = new loadingData();
         if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.execute();
@@ -171,14 +174,26 @@ public class Shop_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         Shop_Items_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String fragmentTag = "ShopFragment";
+                String backStateName = this.getClass().getName();
+                FragmentManager manager = getFragmentManager();
 
+                ShopAllItemsFragment endFragment = new ShopAllItemsFragment();
+//                if (manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+                    FragmentTransaction ft = manager.beginTransaction();
+                    endFragment.setId(id);
+                    ft.add(R.id.fragment_main, endFragment);
+//                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    ft.addToBackStack(backStateName);
+                    ft.commit();
+//                }
                 //hello from un comitted
-                fragmentManager = getFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                shopAllItemsFragment =  new ShopAllItemsFragment();
-                shopAllItemsFragment.setId(id);
-                fragmentTransaction.replace(R.id.fragment_main, shopAllItemsFragment);
-                fragmentTransaction.commit();
+//                fragmentManager = getFragmentManager();
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                shopAllItemsFragment =  new ShopAllItemsFragment();
+//                shopAllItemsFragment.setId(id);
+//                fragmentTransaction.add(R.id.fragment_main, shopAllItemsFragment);
+//                fragmentTransaction.commit();
             }
         });
 

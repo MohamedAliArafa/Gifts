@@ -95,7 +95,7 @@ public class Contract {
     }
 
     public static final class CartEntry implements BaseColumns{
-        public static Uri CONTENT_URI = BASE_CONTENT.buildUpon().appendPath(PATH_PARENT_CATS).build();
+        public static Uri CONTENT_URI = BASE_CONTENT.buildUpon().appendPath(PATH_CART).build();
         public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CART;
         public static String TABLE_NAME = "cart";
         public static String COLUMN_ITEM_ID = "item_id";

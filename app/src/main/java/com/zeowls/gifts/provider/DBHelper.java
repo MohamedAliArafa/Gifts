@@ -101,7 +101,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 ItemEntry.TABLE_NAME + " (" + ItemEntry.COLUMN_ID + "), "+
                 " FOREIGN KEY (" + CartEntry.COLUMN_SHOP_ID + ") REFERENCES " +
                 ShopEntry.TABLE_NAME + " (" + ShopEntry.COLUMN_ID + "), "+
-                " UNIQUE (" + CartEntry._ID + ") ON CONFLICT REPLACE);";
+                " UNIQUE (" + CartEntry.COLUMN_ITEM_ID + ") ON CONFLICT REPLACE);";
 
         db.execSQL(SQL_CREATE_SHOP_TABLE);
         db.execSQL(SQL_CREATE_ITEM_TABLE);

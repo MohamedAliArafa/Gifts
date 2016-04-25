@@ -1,33 +1,56 @@
 package com.zeowls.gifts.BackEndOwl;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
+import com.firebase.client.ValueEventListener;
+
+import java.util.List;
 
 public class FireOwl {
 
-    private String FirebaseURL = "https://giftshop.firebaseio.com/";
     private Firebase firebaseRef;
 
-    public FireOwl(Context context){
+    public FireOwl(Context context) {
         Firebase.setAndroidContext(context);
-        firebaseRef = new Firebase(FirebaseURL);
+        String firebaseURL = "https://giftshop.firebaseio.com/";
+        firebaseRef = new Firebase(firebaseURL);
     }
 
-    public void addOrder(int shop_id, int item_id, int user_id){
-        firebaseRef.child("orders").child(String.valueOf("Shop")).child(String.valueOf(shop_id)).child("item:"+item_id+",user:"+user_id).setValue(new orderDataModel(shop_id,item_id,user_id));
-        firebaseRef.child("orders").child(String.valueOf("User")).child(String.valueOf(user_id)).child("item:"+item_id+",shop:"+shop_id).setValue(new orderDataModel(shop_id,item_id,user_id));
+    public void addOrder(int shop_id, int item_id, int user_id) {
+        firebaseRef.child("orders").child(String.valueOf(shop_id)).push().setValue(new orderDataModel(item_id, user_id, 0));
+//        firebaseRef.child("orders").child(String.valueOf(user_id)).push().setValue(new orderDataModel(item_id,user_id,0));
     }
 
-    public class orderDataModel {
-        public int item_id;
-        public int shop_id;
-        public int user_id;
+    public void getOrders(int shop_id) {
+        firebaseRef.child("orders").child(String.valueOf(shop_id)).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    orderDataModel post = postSnapshot.getValue(orderDataModel.class);
+                    Log.e("Get Data", String.valueOf(post.getItem_id()));
+                }
+//                GenericTypeIndicator<List<orderDataModel>> t = new GenericTypeIndicator<List<orderDataModel>>() {};
+//                List<orderDataModel> messages = snapshot.getValue(t);
+//                if( messages == null ) {
+//                    System.out.println("No messages");
+//                }
+//                else {
+//                    System.out.println("The first message is: " + messages.get(0).getItem_id());
+//                }
+            }
 
-        public orderDataModel(int shop_id, int item_id, int user_id) {
-            this.item_id = item_id;
-            this.shop_id = shop_id;
-            this.user_id = user_id;
-        }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+
+        });
     }
+
+
 }

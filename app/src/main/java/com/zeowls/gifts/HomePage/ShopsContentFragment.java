@@ -161,7 +161,7 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
         protected Object doInBackground(Object[] params) {
 
             try {
-                Core core = new Core(getContext());
+                Core core = new Core(getActivity());
                 JSONArray itemsarray = core.getAllShops().getJSONArray("Shop");
                 if (itemsarray.length() != 0) {
                     for (int i = 0; i < itemsarray.length(); i++) {

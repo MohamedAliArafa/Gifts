@@ -1,11 +1,16 @@
 package com.zeowls.gifts.HomePage;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +18,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.zeowls.gifts.MainActivity;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.provider.Contract;
 import com.zeowls.gifts.views.adapters.SamplePagerAdapter;
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     //    ActionBar supportActionBar;
     String imageTransitionName = "";
@@ -32,10 +40,35 @@ public class HomePageFragment extends Fragment {
     boolean fab_show_icons = false;
     FloatingActionButton fab, fab1, fab2, fab3;
 
+    TextView count;
+
+    private int CART_LOADER = 0;
+
+    static final int COL_CART_ID = 0;
+    static final int COL_CART_ITEM_ID = 1;
+    static final int COL_CART_ITEM_NAME = 2;
+    static final int COL_CART_IETME_PRICE = 3;
+    static final int COL_CART_ITEM_IMAGE = 4;
+    static final int COL_CART_ITEM_DESC = 5;
+    static final int COL_CART_SHOP_ID = 6;
+    static final int COL_CART_SHOPE_NAME = 7;
+
+    private static final String[] CART_COLUMNS = {
+            Contract.CartEntry.TABLE_NAME + "." + Contract.CartEntry._ID,
+            Contract.CartEntry.COLUMN_ITEM_ID,
+            Contract.CartEntry.COLUMN_ITEM_NAME,
+            Contract.CartEntry.COLUMN_ITEM_PRICE,
+            Contract.CartEntry.COLUMN_ITEM_PHOTO,
+            Contract.CartEntry.COLUMN_ITEM_PHOTO,
+            Contract.CartEntry.COLUMN_ITEM_DESC,
+            Contract.CartEntry.COLUMN_SHOP_ID,
+            Contract.CartEntry.COLUMN_SHOP_NAME
+    };
+
+    int CartCout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
     }
 
@@ -135,7 +168,14 @@ public class HomePageFragment extends Fragment {
 //                Snackbar.make(v, "Hello To bubble", Snackbar.LENGTH_LONG).show();
 //            }
 //        });
+        setupViewPager(viewPager);
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        setupViewPager(viewPager);
+        super.onViewStateRestored(savedInstanceState);
     }
 
     // Add Fragments to Tabs
@@ -162,7 +202,28 @@ public class HomePageFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(CART_LOADER, null, this);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), Contract.CartEntry.CONTENT_URI, CART_COLUMNS, null, null, Contract.CartEntry._ID + " ASC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        ((MainActivity) getActivity()).mCartCount = data.getCount();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

@@ -88,6 +88,8 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         super.onActivityCreated(savedInstanceState);
     }
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,16 +98,17 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
-            loadingData.execute();
-        }
         return inflater.inflate(R.layout.item_detail_in_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        loadingData = new loadingData();
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
+            loadingData.execute();
+        }
 
         Bundle bundle = getArguments();
         String actionTitle = "";
@@ -226,6 +229,9 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     @Override
     public void onResume() {
+        if (((MainActivity) getActivity()).toolbar != null && ((MainActivity) getActivity()).toolbar.getVisibility() != View.GONE) {
+            ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        }
         SharedPreferences prefs = getActivity().getSharedPreferences("Credentials", getActivity().MODE_PRIVATE);
         user_id = prefs.getInt("id", 0);
         super.onResume();
@@ -353,12 +359,26 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        FragmentManager fragmentManager = getFragmentManager();
-                        endFragment.setId(shop_id);
-                        fragmentManager.beginTransaction()
-                                .add(R.id.fragment_main, endFragment)
-                                .addToBackStack(null)
-                                .commit();
+
+                        String fragmentTag = "ShopFragment";
+                        String backStateName = this.getClass().getName();
+                        FragmentManager manager = getFragmentManager();
+
+                        if (manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+                            FragmentTransaction ft = manager.beginTransaction();
+                            endFragment.setId(shop_id);
+                            ft.add(R.id.fragment_main, endFragment, fragmentTag);
+//                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                            ft.addToBackStack(backStateName);
+                            ft.commit();
+                        }
+
+//                        FragmentManager fragmentManager = getFragmentManager();
+//                        endFragment.setId(shop_id);
+//                        fragmentManager.beginTransaction()
+//                                .add(R.id.fragment_main, endFragment)
+//                                .addToBackStack(null)
+//                                .commit();
                     }
                 });
 
@@ -369,6 +389,8 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                             if (item_id != 0 && shop_id != 0) {
 //                        new addToCart().execute();
                                 new Core(getActivity()).addToCart(shop_id,item_id,item_name,item_price,item_image,item_desc,shop_name_txt);
+                                FireOwl fireOwl = new FireOwl(getActivity());
+                                fireOwl.addOrder(shop_id,item_id,user_id);
                             } else {
                                 Log.d("Id Empty", "Item And Shop Ids are Empty");
                             }
@@ -443,7 +465,9 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
 
     @Override
     public void onPause() {
-        ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
+        if (((MainActivity) getActivity()).toolbar != null && ((MainActivity) getActivity()).toolbar.getVisibility() != View.VISIBLE) {
+            ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
+        }
         if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }

@@ -93,8 +93,8 @@ public class ShopAllItemsFragment extends Fragment {
             try {
                 Core core = new Core(getContext());
                 JSONObject itemsJSON = core.getShopItems(id);
-                if (core.getShopItems(id) != null && itemsJSON.getJSONArray("Items").length() != 0) {
-                    Log.d("json", core.getShopItems(id).toString());
+                if (itemsJSON != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    Log.d("json", itemsJSON.toString());
                     for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++) {
                         JSONArray itemsarray = itemsJSON.getJSONArray("Items");
                         JSONObject item = itemsarray.getJSONObject(i);
@@ -196,14 +196,12 @@ public class ShopAllItemsFragment extends Fragment {
                 public void onClick(View v) {
                     fragmentManager = myContext.getSupportFragmentManager();
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    if (fragment != null) {
-                        fragmentTransaction.remove(fragment);
-                    }
-
-
+//                    if (fragment != null) {
+//                        fragmentTransaction.remove(fragment);
+//                    }
                     fragment = new Item_Detail_Fragment();
                     fragment.setId(items.get(position).getId());
-//                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.fragment_main, fragment);
                     fragmentTransaction.commit();
 //                    Context context = v.getContext();

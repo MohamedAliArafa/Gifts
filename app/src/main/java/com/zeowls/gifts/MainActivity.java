@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
     TextView usernameNav;
 
     RelativeLayout Shopping_Cart_Relative;
-    TextView notif_count;
-    static int mCartCount = 0;
+    public TextView notif_count;
+    public int mCartCount = 0;
     static int userId = 1;
 
     private int CART_LOADER = 0;

@@ -328,8 +328,6 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                         //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
             }
         }
     }
