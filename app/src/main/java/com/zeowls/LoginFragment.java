@@ -2,6 +2,7 @@ package com.zeowls;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,9 +19,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.RegisterFragment;
+import com.facebook.FacebookSdk;
+
 
 import org.json.JSONException;
 
@@ -35,6 +44,8 @@ public class LoginFragment extends DialogFragment {
     Button Sign_Up_Btn;
     View focusView;
     private UserLoginTask mAuthTask = null;
+    LoginButton loginButton;
+    CallbackManager callbackManager;
 
 
     @Override
@@ -56,6 +67,29 @@ public class LoginFragment extends DialogFragment {
         Sign_In_Im = (ImageView) view.findViewById(R.id.Login_Fr_SignBtn);
         Forget_Pass_Txt = (TextView) view.findViewById(R.id.Login_Fr_ForgetPassTxt);
         Sign_Up_Btn = (Button) view.findViewById(R.id.Login_Fr_SignUpBtn);
+        loginButton = (LoginButton) view.findViewById(R.id._Facebook_login_button);
+        loginButton.setReadPermissions("email");
+        loginButton.setFragment(this);
+
+        FacebookSdk.sdkInitialize(getContext());
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
 
 
         Password_Field.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -94,6 +128,13 @@ public class LoginFragment extends DialogFragment {
         });
 
 
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public void Login_Task() {

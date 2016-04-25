@@ -6,6 +6,9 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -23,6 +26,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +35,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -42,6 +48,8 @@ import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.HomePage.HomePageFragment;
 import com.zeowls.gifts.provider.Contract;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 import com.zeowls.gifts.provider.Contract.CartEntry;
@@ -98,15 +106,19 @@ public class MainActivity extends AppCompatActivity {
         Firebase.setAndroidContext(this);
 //        getLoaderManager().initLoader(CART_LOADER, null, this);
 //        if (savedInstanceState != null) {
-            //Restore the fragment's instance
+        //Restore the fragment's instance
 //            Fragment mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 //        } else {
 
-            fragmentManager = getSupportFragmentManager();
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragment = new HomePageFragment();
-            fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
-            fragmentTransaction.commit();
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragment = new HomePageFragment();
+        fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
+        fragmentTransaction.commit();
 //        }
 
         configureToolbar();

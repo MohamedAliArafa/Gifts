@@ -130,11 +130,19 @@
             android:background="@drawable/sing_arrow"
             android:src="@drawable/ic_action_navigation_arrow_forward_2" />
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/_Facebook_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/Login_Fr_SignBtn"
+            />
+
         <TextView
             android:id="@+id/Login_Fr_ForgetPassTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Login_Fr_SignBtn"
+            android:layout_below="@+id/_Facebook_login_button"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="Forget Password?"

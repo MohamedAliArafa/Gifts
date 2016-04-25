@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zeowls.SectionedREcycler.SectionedRecyclerViewAdapter;
+import com.zeowls.SectionedREcycler.SpacesItemDecoration;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.CategoryPage.ItemsByCategoryIdFragment;
 import com.zeowls.gifts.R;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CategoryContentFragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class CategoryContentFragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static final int COL_CAT_ID = 0;
     static final int COL_CAT_UID = 1;
@@ -70,6 +71,7 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
     private ProgressBar mProgressBar;
     private LinearLayout mErrorText;
 
+
     MainAdapter2 adapter;
     int Section_ItemsCount;
     loadingData loadingData;
@@ -99,6 +101,8 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
         mErrorText = (LinearLayout) view.findViewById(R.id.error);
         adapter = new MainAdapter2();
         Section_ItemsCount = 0;
+        int i = 0;
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(i));
         mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(adapter);
@@ -134,7 +138,7 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
                 mRecyclerView.setAdapter(adapter);
-            }else {
+            } else {
                 mErrorText.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
             }
@@ -175,38 +179,6 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-
-        public ViewHolder(LayoutInflater inflater, final ViewGroup parent) {
-            super(inflater.inflate(R.layout.category_item_card, parent, false));
-
-
-            // Adding Snackbar to Action Button inside card
-            final ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Image is pressed",
-                            Snackbar.LENGTH_LONG).show();
-
-//                    Context context =  imageView.getContext();
-//                    Log.d("context",context.toString());
-//                    context.startActivity(new Intent(context, ItemsByCategoryIdActivity.class));
-                }
-            });
-            TextView textView = (TextView) itemView.findViewById(R.id.name);
-
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Text is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-
-        }
-    }
 
     /**
      * Adapter to display recycler view.
@@ -267,35 +239,15 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
             if (SubCategoreis.size() != 0) {
                 Log.d("Araay size", String.valueOf(SubCategoreis.size()));
                 holder.Sub_Category_Item_Name.setText(SubCategoreis.get(absolutePosition).getName());
-            }else {
+            } else {
                 holder.Sub_Category_Item_Name.setText(SubCategoreis.get(absolutePosition).getName());
             }
 
-//
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-//                    ItemsByCategoryIdFragment fragment = null;
-//                    FragmentManager fragmentManager;
-//                    FragmentTransaction fragmentTransaction;
-//                    fragmentManager = myContext.getSupportFragmentManager();
-//                    fragmentTransaction = fragmentManager.beginTransaction();
-//                    if (fragment != null) {
-//                        fragmentTransaction.remove(fragment);
-//                    }
-//
-//                    fragment = new ItemsByCategoryIdFragment();
-//                    fragment.setId(SubCategoreis.get(absolutePosition).getId());
-//                    fragmentTransaction.addToBackStack(null);
-//                    fragmentTransaction.replace(R.id.fragment, fragment);
-//                    fragmentTransaction.commit();
-
-                    Context context = v.getContext();
-//                    Toast.makeText(context,"id: " + GiftItems.get(absolutePosition).getId(), Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(context, ItemsByCategoryIdActivity.class);
-//                    intent.putExtra("id", SubCategoreis.get(absolutePosition).getId());
-//                    context.startActivity(intent);
 
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(SubCategoreis.get(absolutePosition).getId());
@@ -308,8 +260,7 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
 
                 }
             });
-//
-//
+
 
         }
 
@@ -358,10 +309,9 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
     }
 
 
-
     @Override
     public void onPause() {
-        if (loadingData.getStatus() == AsyncTask.Status.RUNNING){
+        if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
         super.onPause();

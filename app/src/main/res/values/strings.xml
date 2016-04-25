@@ -61,5 +61,8 @@
     <string name="no_matching_email">No Matching Email</string>
     <string name="Email_alrady_Exist">Email Already Exist</string>
     <string name="Mobile_Aready_Exist">Mobile Already Exist</string>
+    <string name="facebook_app_id">1068276013232042</string>
+    <string name="fb_login_protocol_scheme">fb1068276013232042</string>
+
 
 </resources>
