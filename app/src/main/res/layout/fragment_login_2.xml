@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:theme="@style/TextLabel">
 
-                    <com.zeowls.gifts.PasswordEditText
+                    <com.zeowls.gifts.views.PasswordEditText
                         android:id="@+id/Login_Fr_Password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -1,0 +1,114 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zeowls.gifts.Fragments.ItemDetailFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/md_keylines">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/md_keylines"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/item_detail_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:src="@drawable/android"
+                    android:transitionName="@string/image_trans"/>
+
+                <TextView
+                    android:id="@+id/item_detail_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/md_keylines"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="@dimen/article_titles" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/md_keylines">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/md_keylines"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/item_detail_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/md_keylines"
+                    tools:text="Product Short Description"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="@dimen/article_titles" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/md_keylines">
+
+                    <TextView
+                        android:id="@+id/item_detail_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="22.5 $"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/article_titles" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="Ask a Question"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/article_titles" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/item_detail_addtocart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:text="Add To Cart"
+                    android:textColor="@color/cardview_light_background" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <!--End Of Title Card View -->
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/md_keylines">
+
+            <include layout="@layout/item_detail_shop_card" />
+
+        </android.support.v7.widget.CardView>
+
+
+    </LinearLayout>
+
+</ScrollView>
+

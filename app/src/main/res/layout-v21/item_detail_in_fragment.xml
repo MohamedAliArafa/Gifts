@@ -24,13 +24,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-                android:background="@color/white"
                 >
 
                 <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"/>
+                    android:layout_height="300dp" />
 
                 <FrameLayout
                     android:id="@+id/main.framelayout.title"
@@ -111,7 +110,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/md_keylines"
-                            tools:text="Product Short Description"
+                            android:text="Product Short Description"
                             android:textColor="@color/cardview_dark_background"
                             android:textSize="@dimen/article_titles" />
 
@@ -124,7 +123,7 @@
                                 android:id="@+id/description2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                tools:text="22.5 $"
+                                android:text="22.5 $"
                                 android:textColor="@color/colorPrimaryDark"
                                 android:textSize="@dimen/article_titles" />
 
@@ -196,7 +195,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:layout_anchor="@id/main.framelayout.title"
-            app:theme="@style/ThemeOverlay.AppCompat"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:title=""
             >
 
             <LinearLayout
@@ -217,7 +217,7 @@
                     android:gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    tools:text="@string/quila_name2"
+                    android:text="@string/quila_name2"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     />

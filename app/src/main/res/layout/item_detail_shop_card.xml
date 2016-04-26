@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/md_keylines"
     android:orientation="vertical">
 
 
     <ImageView
-        android:id="@+id/item_Detail_SHop_Image"
+        android:id="@+id/item_detail_shop_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
@@ -16,19 +17,19 @@
 
 
     <TextView
-        android:id="@+id/item_Detail_Shop_title"
+        android:id="@+id/item_detail_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:maxWidth="200dp"
-        android:text="Candy Shop"
+        tools:text="Candy Shop"
         android:textSize="21sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/item_Detail_Shop_Slogan"
+        android:id="@+id/item_detail_shop_slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -38,7 +39,7 @@
 
 
     <Button
-        android:id="@+id/Item_Detail_Shop_Visit"
+        android:id="@+id/item_detail_shop_visit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
