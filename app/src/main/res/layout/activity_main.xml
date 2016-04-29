@@ -35,7 +35,7 @@
             android:id="@+id/fragment_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.zeowls.gifts.HomePage.HomePageFragment">
+            tools:context=".Fragments.HomePageFragment">
         </FrameLayout>
 
         <android.support.design.widget.NavigationView
