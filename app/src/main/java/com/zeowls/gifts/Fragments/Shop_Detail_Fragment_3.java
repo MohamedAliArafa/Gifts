@@ -1,12 +1,13 @@
 package com.zeowls.gifts.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,37 +15,55 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.Activities.MainActivity;
+import com.zeowls.gifts.Models.ItemDataMode;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.views.SpacesItemDecoration;
+import com.zeowls.gifts.views.adapters.SectionedRecyclerViewAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnOffsetChangedListener {
+import java.util.ArrayList;
+
+public class Shop_Detail_Fragment_3 extends Fragment {
 
 
     int id = 0;
-    CollapsingToolbarLayout collapsingToolbar;
-    TextView Shop_Name, Shop_Name_before, Shop_Slogan;
     ImageView Shop_Pic, ShopHeader_Pic;
-    CardView Shop_Slogan_Card;
-
+    LinearLayout Linear_Location;
     Picasso picasso;
     public ActionBar supportActionBar;
+    static ArrayList<ItemDataMode> items = new ArrayList<>();
+    RecyclerView recyclerView;
+    MainAdapter adapter;
+
+
+
     Button Shop_Items_btn;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+
+    String shop_address_Value, shop_name_value, shop_description_value, shop_profile_pic_value, shop_cover_pic_value;
+    TextView shop_address, Shop_Name;
+
 
     // private static final int NUM_PAGES = 5;
 
@@ -59,12 +78,16 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
 
     protected FragmentActivity myContext;
 
-    loadingData loadingData;
+    loadingData2 loadingData;
     ShopAllItemsFragment shopAllItemsFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).toolbar.setVisibility(View.GONE);
+        supportActionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setHomeButtonEnabled(true);
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -72,11 +95,11 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        loadingData = new loadingData();
+        loadingData = new loadingData2();
         if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.execute();
         }
-        return inflater.inflate(R.layout.shop_details_in_fragment, container, false);
+        return inflater.inflate(R.layout.shop_details_in_fragment_3, container, false);
     }
 
     @Override
@@ -102,34 +125,44 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
             transText = bundle.getString("TRANS_TEXT");
         }
 
-        Shop_Items_btn = (Button) view.findViewById(R.id.Shop_Items_btn);
-        // Set Collapsing Toolbar layout to the screen
-        collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
 
-        Shop_Name_before = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
-        Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title);
-        Shop_Slogan_Card = (CardView) view.findViewById(R.id.item_Detail_Shop_Slogan_card);
-        Shop_Slogan = (TextView) view.findViewById(R.id.item_Detail_Shop_Slogan);
+        Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
         ShopHeader_Pic = (ImageView) view.findViewById(R.id.image);
+        Linear_Location = (LinearLayout) view.findViewById(R.id.Linear_Location);
+        shop_address = (TextView) view.findViewById(R.id.shop_address);
+        recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        Shop_Items_btn = (Button) view.findViewById(R.id.Shop_Items_btn);
+
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        picasso = Picasso.with(getActivity());
+
+        adapter = new MainAdapter();
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_span));
+        recyclerView.setLayoutManager(manager);
+        adapter.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+
+
+        new loadingData().execute();
+
+
+//        adapter = new ContentAdapter();
+//
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setHasFixedSize(false);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
         if (imageBitmap != null) {
             Shop_Pic.setImageBitmap(imageBitmap);
             ShopHeader_Pic.setImageBitmap(imageBitmap);
         }
-        Shop_Name_before.setText(actionTitle);
+        Shop_Name.setText(actionTitle);
+        ((MainActivity) getActivity()).toolbar.setTitle(actionTitle);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Shop_Name_before.setTransitionName(transitionName);
-            ShopHeader_Pic.setTransitionName(transText);
-        }
 
-        mTitleContainer = (LinearLayout) view.findViewById(R.id.main_linearlayout_title);
-        AppBarLayout mAppBarLayout = (AppBarLayout) view.findViewById(R.id.main_appbar);
-        mAppBarLayout.addOnOffsetChangedListener(this);
-        startAlphaAnimation(Shop_Name, 0, View.INVISIBLE);
-        picasso = Picasso.with(getContext());
-        collapsingToolbar.setTitle(getString(R.string.item_title));
 
 
         Shop_Items_btn.setOnClickListener(new View.OnClickListener() {
@@ -139,63 +172,26 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
                 fragmentTransaction = fragmentManager.beginTransaction();
                 shopAllItemsFragment =  new ShopAllItemsFragment();
                 shopAllItemsFragment.setId(id);
-                fragmentTransaction.replace(R.id.fragment_main, shopAllItemsFragment);
+                fragmentTransaction.add(R.id.fragment_main, shopAllItemsFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.hide(getFragmentManager().findFragmentByTag("homeFragment"));
                 fragmentTransaction.commit();
             }
         });
 
+
+
     }
 
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        int maxScroll = appBarLayout.getTotalScrollRange();
-        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
-        handleAlphaOnTitle(percentage);
-        handleToolbarTitleVisibility(percentage);
-    }
+    private void updateUI() {
 
-    private void handleToolbarTitleVisibility(float percentage) {
-        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+        Shop_Name.setText(shop_name_value);
+        shop_address.setText(shop_address_Value);
+        picasso.load(shop_profile_pic_value).fit().centerInside().into(Shop_Pic);
+        picasso.load(shop_cover_pic_value).fit().into(ShopHeader_Pic);
 
-            if (!mIsTheTitleVisible) {
-                startAlphaAnimation(Shop_Name, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
-                mIsTheTitleVisible = true;
-            }
 
-        } else {
-
-            if (mIsTheTitleVisible) {
-                startAlphaAnimation(Shop_Name, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
-                mIsTheTitleVisible = false;
-            }
-        }
-    }
-
-    private void handleAlphaOnTitle(float percentage) {
-        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
-            if (mIsTheTitleContainerVisible) {
-                startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
-                mIsTheTitleContainerVisible = false;
-            }
-
-        } else {
-
-            if (!mIsTheTitleContainerVisible) {
-                startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
-                mIsTheTitleContainerVisible = true;
-            }
-        }
-    }
-
-    public static void startAlphaAnimation(View v, long duration, int visibility) {
-        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
-                ? new AlphaAnimation(0f, 1f)
-                : new AlphaAnimation(1f, 0f);
-
-        alphaAnimation.setDuration(duration);
-        alphaAnimation.setFillAfter(true);
-        v.startAnimation(alphaAnimation);
     }
 
     public void setId(int id) {
@@ -203,9 +199,15 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
     }
 
 
-    private class loadingData extends AsyncTask<Void, Void, Object> {
+    private class loadingData2 extends AsyncTask<Void, Void, Object> {
 
         JSONObject itemsJSON;
+
+        @Override
+        protected void onPreExecute() {
+            Context context = getContext();
+            picasso = Picasso.with(context);
+        }
 
         @Override
         protected Object doInBackground(Void... params) {
@@ -222,23 +224,36 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
         @Override
         protected void onPostExecute(Object o) {
             try {
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").equals("null")) {
-                    if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description").isEmpty()) {
-                        Shop_Slogan_Card.setVisibility(View.VISIBLE);
-                        Shop_Slogan.setText(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("description"));
-                    }
+
+                JSONObject item = itemsJSON.getJSONArray("Shop").getJSONObject(0);
+
+                if (!item.getString("description").equals("null") && !item.getString("description").isEmpty()) {
+                    shop_description_value = item.getString("description");
                 }
 
-                collapsingToolbar.setTitle(itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name"));
-                String shopName = itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("name");
-                Shop_Name_before.setText(shopName);
-                Shop_Name.setText(shopName);
-
-                if (!itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic").equals("null")) {
-                    String profilePic = "http://bubble.zeowls.com/uploads/" + itemsJSON.getJSONArray("Shop").getJSONObject(0).getString("profile_pic");
-                    picasso.load(profilePic).fit().into(ShopHeader_Pic);
-                    picasso.load(profilePic).fit().centerInside().into(Shop_Pic);
+                if (!item.getString("name").equals("null") && !item.getString("name").isEmpty()) {
+                    shop_name_value = item.getString("name");
                 }
+
+                if (!item.getString("profile_pic").equals("null")) {
+                    shop_profile_pic_value = "http://bubble.zeowls.com/uploads/" + item.getString("profile_pic");
+                }
+
+                if (!item.getString("cover_pic").equals("null")) {
+                    shop_cover_pic_value = "http://bubble.zeowls.com/uploads/" + item.getString("cover_pic");
+                }
+
+
+                if (!item.getString("shop_address").equals("null") && !item.getString("shop_address").isEmpty()) {
+                    shop_address_Value = item.getString("shop_address");
+                } else {
+                    Linear_Location.setVisibility(View.GONE);
+                }
+
+
+                updateUI();
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -247,10 +262,315 @@ public class Shop_Detail_Fragment_3 extends Fragment implements AppBarLayout.OnO
 
     @Override
     public void onPause() {
-        ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
         if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
+        ((MainActivity) getActivity()).toolbar.setTitle("Bubble");
+
         super.onPause();
     }
+
+
+    private class loadingData extends AsyncTask {
+
+        @Override
+        protected void onPreExecute() {
+            items.clear();
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            recyclerView.setAdapter(adapter);
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+
+            try {
+                Core core = new Core(getContext());
+                JSONObject itemsJSON = core.getShopItems(id);
+                if (itemsJSON != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    Log.d("json", itemsJSON.toString());
+                    for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++) {
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
+                        JSONObject item = itemsarray.getJSONObject(i);
+                        ItemDataMode item1 = new ItemDataMode();
+                        item1.setCatId(item.getInt("cat_id"));
+                        item1.setDesc(item.getString("description"));
+                        item1.setId(item.getInt("id"));
+                        item1.setName(item.getString("name"));
+                        item1.setPrice(item.getString("price"));
+                        item1.setShopId(item.getInt("shop_id"));
+                        item1.setShortDesc(item.getString("short_description"));
+                        item1.setImgUrl(item.getString("image"));
+
+                        items.add(item1);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
+//    public class ViewHolder extends RecyclerView.ViewHolder {
+//
+//        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
+//            super(inflater.inflate(R.layout.category_item_card, parent, false));
+//
+//
+//            // Adding Snackbar to Action Button inside card
+//            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+//            TextView textView = (TextView) itemView.findViewById(R.id.name);
+//            TextView price = (TextView) itemView.findViewById(R.id.price);
+//
+//
+////            imageView.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+//////                    Context context =  v.getContext();
+//////                    context.startActivity(new Intent(context, ItemDetailActivity_2.class));
+////                    Snackbar.make(v, "Image is pressed",
+////                            Snackbar.LENGTH_LONG).show();
+////                }
+////            });
+//
+//
+////            textView.setOnClickListener(new View.OnClickListان شاء الله ener() {
+////                @Override
+////                public void onClick(View v) {
+////                    Snackbar.make(v, "Text is pressed",
+////                            Snackbar.LENGTH_LONG).show();
+////                }
+////            });
+//
+//
+////            price.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    Snackbar.make(v, "Price is pressed",
+////                            Snackbar.LENGTH_LONG).show();
+////                }
+////            });
+//
+//        }
+//    }
+
+//    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+//        // Set numbers of Card in RecyclerView.
+//        private static final int LENGTH = 18;
+//        Item_Detail_Fragment fragment;
+//        FragmentManager fragmentManager;
+//        FragmentTransaction fragmentTransaction;
+//
+//        @Override
+//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(ViewHolder holder, final int position) {
+//            // no-op
+//            if (items.size() != 0) {
+//                ImageView image = (ImageView) holder.itemView.findViewById(R.id.imageView);
+//                TextView name = (TextView) holder.itemView.findViewById(R.id.name);
+//                TextView description = (TextView) holder.itemView.findViewById(R.id.description);
+//                TextView price = (TextView) holder.itemView.findViewById(R.id.price);
+//                name.setText(items.get(position).getName());
+//                description.setText(items.get(position).getDesc());
+//                price.setText(items.get(position).getPrice());
+//                if (items.get(position).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
+//                    image.setImageResource(R.drawable.giftintro);
+//                } else {
+//                    Picasso.with(getContext()).load(items.get(position).getImgUrl()).into(image);
+//                }
+//                //text.setText(shops.get(position).getDescription());
+//            }
+//
+//
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    fragmentManager = myContext.getSupportFragmentManager();
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+////                    if (fragment != null) {
+////                        fragmentTransaction.remove(fragment);
+////                    }
+//                    fragment = new Item_Detail_Fragment();
+//                    fragment.setId(items.get(position).getId());
+//                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.replace(R.id.fragment_main, fragment);
+//                    fragmentTransaction.commit();
+////                    Context context = v.getContext();
+////                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();
+////                    Intent intent = new Intent(context, ItemDetailActivity.class);
+////                    intent.putExtra("id", shops.get(position).getId());
+////                    context.startActivity(intent);
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return items.size();
+//        }
+//    }
+
+
+    public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
+
+        final Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
+        final ItemDetailFragment endFragment2 = new ItemDetailFragment();
+
+        @Override
+        public int getSectionCount() {
+            return 1;
+        }
+
+        @Override
+        public int getItemCount(int section) {
+            return items.size();
+        }
+
+        @Override
+        public void onBindHeaderViewHolder(MainVH holder, int section) {
+//            holder.ItemName.setText(String.format("Section %d", section));
+            holder.ItemName.setText("");
+        }
+
+        @Override
+        public void onBindViewHolder(final MainVH holder, int section, int relativePosition, final int absolutePosition) {
+            holder.ItemName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
+
+            final String imageTransitionName = "transition" + absolutePosition;
+            final String textTransitionName = "transtext" + absolutePosition;
+            final Bundle bundle = new Bundle();
+
+
+            if (items.size() != 0) {
+                Log.d("Array size", String.valueOf(items.size()));
+                holder.ItemName.setText(items.get(absolutePosition).getName());
+                holder.ShopName.setText(items.get(absolutePosition).getShopName());
+                holder.ItemPrice.setText(String.valueOf(items.get(absolutePosition).getPrice()));
+                if (items.get(absolutePosition).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
+                    holder.imageView.setImageResource(R.drawable.giftintro);
+                } else {
+                    picasso.load(items.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
+                }
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.cardView.setCardElevation(20);
+                    bundle.putString("TRANS_NAME", imageTransitionName);
+                    bundle.putString("TRANS_TEXT", textTransitionName);
+
+                    bundle.putString("ACTION", holder.ItemName.getText().toString());
+                    if (holder.imageView.getDrawable() != null) {
+                        bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    }
+
+                    endFragment2.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    endFragment2.setId(items.get(absolutePosition).getId());
+                    fragmentManager.beginTransaction()
+                            .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+                            .add(R.id.fragment_main, endFragment2)
+                            .addToBackStack(null)
+                            .addSharedElement(holder.imageView, imageTransitionName)
+                            .addSharedElement(holder.ItemName, textTransitionName)
+                            .commit();
+//                    Intent intent = new Intent(getActivity(), ItemDetailActivity.class);
+//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+//                    getActivity().startActivity(intent);
+
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemViewType(int section, int relativePosition, int absolutePosition) {
+//        if (section == 1)
+//            return 0; // VIEW_TYPE_HEADER is -2, VIEW_TYPE_ITEM is -1. You can return 0 or greater.
+            return super.getItemViewType(section, relativePosition, absolutePosition);
+        }
+
+        @Override
+        public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
+            int layout;
+            switch (viewType) {
+                case VIEW_TYPE_HEADER:
+                    layout = R.layout.list_item_header_3;
+                    break;
+                case VIEW_TYPE_ITEM:
+                    layout = R.layout.list_item_main;
+                    break;
+                default:
+                    layout = R.layout.list_item_main_bold;
+                    break;
+            }
+
+            View v = LayoutInflater.from(getActivity()).inflate(layout, parent, false);
+
+            return new MainVH(v);
+        }
+
+        public class MainVH extends RecyclerView.ViewHolder {
+
+
+            TextView ShopName;
+            TextView ItemName;
+            TextView ItemPrice;
+            CardView cardView;
+            ImageView imageView;
+
+            public MainVH(View itemView) {
+                super(itemView);
+
+                ShopName = (TextView) itemView.findViewById(R.id.card_Shop_name);
+                ItemName = (TextView) itemView.findViewById(R.id.card_Name);
+                ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
+                cardView = (CardView) itemView.findViewById(R.id.card_view);
+                imageView = (ImageView) itemView.findViewById(R.id.card_image);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
+//                        context.startActivity(intent);
+                    }
+                });
+
+
+                ShopName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+                ItemName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Toast.makeText(context, ItemName.getText(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+                ItemPrice.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
+
 }

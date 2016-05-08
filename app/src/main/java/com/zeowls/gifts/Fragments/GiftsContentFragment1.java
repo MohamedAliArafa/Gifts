@@ -141,7 +141,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                 if (itemsarray.length() != 0) {
                     for (int i = 0; i < itemsarray.length(); i++) {
                         JSONArray items = itemsarray.getJSONObject(i).getJSONArray("Category");
-                        if (items.length() > 0) {
+                        if (items.length() > 3) {
                             CategoryList.get(i).setCatId(items.length());
                             for (int y = 0; y < items.length(); y++) {
                                 ItemDataMode Gift_Item = new ItemDataMode();
@@ -169,6 +169,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
     public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
         final Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
+        final ItemDetailFragment endFragment2 =  new ItemDetailFragment();
 
         @Override
         public int getSectionCount() {
@@ -207,13 +208,14 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                 holder.ItemName.setTransitionName(textTransitionName);
                 holder.imageView.setTransitionName(imageTransitionName);
                 setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
-                endFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_trans));
-                endFragment.setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_trans));
-                endFragment.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
+                endFragment2.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_trans));
+                endFragment2.setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_trans));
+                endFragment2.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
             }
 
             if (GiftItems.size() != 0) {
                 Log.d("Array size", String.valueOf(GiftItems.size()));
+                Log.d("Array absolutePosition", String.valueOf(absolutePosition));
                 holder.ItemName.setText(GiftItems.get(absolutePosition).getName());
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
@@ -236,12 +238,12 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
                     }
 
-                    endFragment.setArguments(bundle);
+                    endFragment2.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    endFragment.setId(GiftItems.get(absolutePosition).getId());
+                    endFragment2.setId(GiftItems.get(absolutePosition).getId());
                     fragmentManager.beginTransaction()
                             .hide(getFragmentManager().findFragmentByTag("homeFragment"))
-                            .add(R.id.fragment_main, endFragment)
+                            .add(R.id.fragment_main, endFragment2)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
                             .addSharedElement(holder.ItemName, textTransitionName)

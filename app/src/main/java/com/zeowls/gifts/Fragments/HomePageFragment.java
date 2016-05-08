@@ -22,14 +22,14 @@ public class HomePageFragment extends Fragment {
     ViewPager viewPager;
     TabLayout tabs;
     final ShopsContentFragment endFragment = new ShopsContentFragment();
-    GiftsContentFragment1 GiftsFragment;
-    ShopsContentFragment ShopFragment;
-    CategoryContentFragment1 CategoryFragment;
+    final ShopsContentFragment ShopsTab = new ShopsContentFragment();
+    final GiftsContentFragment1 GiftsTab = new GiftsContentFragment1();
+    final CategoryContentFragment1 CategoryTab = new CategoryContentFragment1();
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        GiftsFragment = new GiftsContentFragment1();
-        ShopFragment = new ShopsContentFragment();
-        CategoryFragment = new CategoryContentFragment1();
+//        GiftsFragment = new GiftsContentFragment1();
+//        ShopFragment = new ShopsContentFragment();
+//        CategoryFragment = new CategoryContentFragment1();
         super.onCreate(savedInstanceState);
     }
 
@@ -57,9 +57,9 @@ public class HomePageFragment extends Fragment {
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         SamplePagerAdapter adapter = new SamplePagerAdapter(getFragmentManager());
-        adapter.addFragment(GiftsFragment, "Gifts");
-        adapter.addFragment(ShopFragment, "Shops");
-        adapter.addFragment(CategoryFragment, "Categories");
+        adapter.addFragment(GiftsTab, "Gifts");
+        adapter.addFragment(ShopsTab, "Shops");
+        adapter.addFragment(CategoryTab, "Categories");
         viewPager.setAdapter(adapter);
     }
 

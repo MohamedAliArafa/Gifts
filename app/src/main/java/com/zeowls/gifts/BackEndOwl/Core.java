@@ -41,7 +41,7 @@ public class Core {
         this.context = context;
     }
 
-    private String Domain = "http://bubble-zeowls.herokuapp.com";
+    private String Domain = "http://bubble-zeowls-stage.herokuapp.com";
 
     private String getRequest(String url) throws IOException {
         String data;
@@ -50,6 +50,7 @@ public class Core {
         Log.d("url", url);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url1.openConnection();
         httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.setRequestProperty("Authorization","627562626c6520617069206b6579");
         httpURLConnection.setConnectTimeout(2000);
         httpURLConnection.connect();
 
@@ -68,6 +69,7 @@ public class Core {
     private String postRequest(String url, JSONObject params) throws IOException {
         URL url1 = new URL(Domain + url);
         HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
+        connection.setRequestProperty("Authorization","627562626c6520617069206b6579");
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoInput(true);

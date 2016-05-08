@@ -43,7 +43,7 @@ import com.zeowls.gifts.provider.Contract.CartEntry;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
+    public ActionBarDrawerToggle mDrawerToggle;
 
     public ActionBar supportActionBar;
     public AppBarLayout appBarLayout;
@@ -206,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void configureDrawer() {
         // Configure drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.drawer_open,
                 R.string.drawer_closed) {
@@ -219,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 

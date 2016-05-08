@@ -138,7 +138,7 @@ public class ShopAllItemsFragment extends Fragment {
 //            });
 
 
-//            textView.setOnClickListener(new View.OnClickListener() {
+//            textView.setOnClickListener(new View.OnClickListان شاء الله ener() {
 //                @Override
 //                public void onClick(View v) {
 //                    Snackbar.make(v, "Text is pressed",
@@ -161,7 +161,7 @@ public class ShopAllItemsFragment extends Fragment {
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
-        Item_Detail_Fragment fragment;
+        ItemDetailFragment fragment;
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
 
@@ -198,7 +198,7 @@ public class ShopAllItemsFragment extends Fragment {
 //                    if (fragment != null) {
 //                        fragmentTransaction.remove(fragment);
 //                    }
-                    fragment = new Item_Detail_Fragment();
+                    fragment = new ItemDetailFragment();
                     fragment.setId(items.get(position).getId());
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.fragment_main, fragment);
