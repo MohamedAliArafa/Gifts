@@ -36,7 +36,6 @@ public class Core {
     Context context;
 
 
-
     public Core(Context context) {
         this.context = context;
     }
@@ -50,7 +49,7 @@ public class Core {
         Log.d("url", url);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url1.openConnection();
         httpURLConnection.setRequestMethod("GET");
-        httpURLConnection.setRequestProperty("Authorization","627562626c6520617069206b6579");
+        httpURLConnection.setRequestProperty("Authorization", "627562626c6520617069206b6579");
         httpURLConnection.setConnectTimeout(2000);
         httpURLConnection.connect();
 
@@ -69,7 +68,7 @@ public class Core {
     private String postRequest(String url, JSONObject params) throws IOException {
         URL url1 = new URL(Domain + url);
         HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
-        connection.setRequestProperty("Authorization","627562626c6520617069206b6579");
+        connection.setRequestProperty("Authorization", "627562626c6520617069206b6579");
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoInput(true);
@@ -242,7 +241,7 @@ public class Core {
     public JSONArray getHomePage() {
         JSONArray json = null;
         try {
-            String response = getRequest(Domain + "/HomePage/JSON");
+            String response = getRequest(Domain + "/HomePageTest/JSON");
             if (!response.equals("0")) {
                 json = new JSONArray(response);
 //                putItemsDB(json);
@@ -463,5 +462,39 @@ public class Core {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public int makeOrder(int item_id, int user_id, int quantity) {
+
+        JSONObject json = new JSONObject();
+        int result = 0;
+        try {
+            json.put("item_id", item_id);
+            json.put("user_id", user_id);
+            json.put("quantity", quantity);
+            String response = postRequest("/makeOrder", json);
+            JSONObject resJson = new JSONObject(response);
+            result = resJson.getInt("response");
+        } catch (Exception e) {
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+
+    public JSONObject getUserOrders(int user_id) {
+        JSONObject json = new JSONObject();
+        JSONObject responseJson = new JSONObject();
+
+        try {
+            json.put("user_id", user_id);
+            responseJson = new JSONObject(postRequest("/getOrdersByUser", json));
+        } catch (Exception e) {
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return responseJson;
     }
 }

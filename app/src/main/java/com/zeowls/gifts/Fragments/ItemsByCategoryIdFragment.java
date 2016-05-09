@@ -151,7 +151,7 @@ public class ItemsByCategoryIdFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     FragmentManager fragmentManager = getFragmentManager();
-                    Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
+                    ItemDetailFragment endFragment = new ItemDetailFragment();
                     endFragment.setId(items.get(position).getId());
                     fragmentManager.beginTransaction()
                             .add(R.id.fragment_main, endFragment)

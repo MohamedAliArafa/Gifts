@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.Activities.ItemDetailActivity;
@@ -107,6 +108,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
 
         @Override
         protected void onPreExecute() {
+            CategoryList.clear();
             GiftItems.clear();
         }
 
@@ -128,35 +130,60 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
             try {
                 Core core = new Core(getActivity());
                 JSONArray itemsarray = core.getHomePage();
+                JSONArray sectionsArray = core.getHomePage();
+                for (int i = 0; i < sectionsArray.length(); i++){
+                    String sectionName = sectionsArray.getJSONObject(i).getString("Catname");
+                    JSONArray sectionItems = sectionsArray.getJSONObject(i).getJSONArray("Category");
+                    int itemsCount = sectionItems.length();
+                    if (itemsCount > 1) {
+                        ItemDataMode category = new ItemDataMode();
+                        category.setName(sectionName);
+                        category.setCatId(itemsCount);
+                        CategoryList.add(category);
 
-                JSONArray subCatArray = core.getSubAllCategories().getJSONArray("Category");
-                for (int z = 0; z < subCatArray.length(); z++) {
-                    ItemDataMode category = new ItemDataMode();
-                    category.setName(subCatArray.getJSONObject(z).getString("name"));
-                    category.setId(subCatArray.getJSONObject(z).getInt("id"));
-                    CategoryList.add(category);
-                }
-                Collections.sort(CategoryList);
-
-                if (itemsarray.length() != 0) {
-                    for (int i = 0; i < itemsarray.length(); i++) {
-                        JSONArray items = itemsarray.getJSONObject(i).getJSONArray("Category");
-                        if (items.length() > 3) {
-                            CategoryList.get(i).setCatId(items.length());
-                            for (int y = 0; y < items.length(); y++) {
-                                ItemDataMode Gift_Item = new ItemDataMode();
-                                JSONObject item = items.getJSONObject(y);
-                                Gift_Item.setId(item.getInt("id"));
-                                Gift_Item.setName(item.getString("name"));
-                                Gift_Item.setShopName(item.getString("shop_name"));
-                                Gift_Item.setDesc(item.getString("description"));
-                                Gift_Item.setPrice("$" + item.getString("price"));
-                                Gift_Item.setImgUrl(item.getString("image"));
-                                GiftItems.add(Gift_Item);
-                            }
+                        for (int y = 0; y < sectionItems.length(); y++){
+                            ItemDataMode Gift_Item = new ItemDataMode();
+                            JSONObject item = sectionItems.getJSONObject(y);
+                            Gift_Item.setId(item.getInt("id"));
+                            Gift_Item.setName(item.getString("name"));
+                            Gift_Item.setShopName(item.getString("shop_name"));
+                            Gift_Item.setDesc(item.getString("description"));
+                            Gift_Item.setPrice("$" + item.getString("price"));
+                            Gift_Item.setImgUrl(item.getString("image"));
+                            GiftItems.add(Gift_Item);
                         }
                     }
+
                 }
+
+//                JSONArray subCatArray = core.getSubAllCategories().getJSONArray("Category");
+//                for (int z = 0; z < subCatArray.length(); z++) {
+//                    ItemDataMode category = new ItemDataMode();
+//                    category.setName(subCatArray.getJSONObject(z).getString("name"));
+//                    category.setId(subCatArray.getJSONObject(z).getInt("id"));
+//                    CategoryList.add(category);
+//                }
+//                Collections.sort(CategoryList);
+//
+//                if (itemsarray.length() != 0) {
+//                    for (int i = 0; i < itemsarray.length(); i++) {
+//                        JSONArray items = itemsarray.getJSONObject(i).getJSONArray("Category");
+//                        if (items.length() > 3) {
+//                            CategoryList.get(i).setCatId(items.length());
+//                            for (int y = 0; y < items.length(); y++) {
+//                                ItemDataMode Gift_Item = new ItemDataMode();
+//                                JSONObject item = items.getJSONObject(y);
+//                                Gift_Item.setId(item.getInt("id"));
+//                                Gift_Item.setName(item.getString("name"));
+//                                Gift_Item.setShopName(item.getString("shop_name"));
+//                                Gift_Item.setDesc(item.getString("description"));
+//                                Gift_Item.setPrice("$" + item.getString("price"));
+//                                Gift_Item.setImgUrl(item.getString("image"));
+//                                GiftItems.add(Gift_Item);
+//                            }
+//                        }
+//                    }getJSONArray
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -168,7 +195,6 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
 
     public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
-        final Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
         final ItemDetailFragment endFragment2 =  new ItemDetailFragment();
 
         @Override

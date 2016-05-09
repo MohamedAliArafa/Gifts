@@ -160,7 +160,9 @@
                     android:text="Add to Cart"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:id="@+id/addToCart"
+                    />
 
 
             </RelativeLayout>

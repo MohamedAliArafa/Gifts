@@ -3,6 +3,8 @@ package com.zeowls.gifts.Fragments;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.Activities.MainActivity;
+import com.zeowls.gifts.Activities.ShoppingCartActivity;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.R;
@@ -77,7 +80,7 @@ public class ItemDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         description = (TextView) view.findViewById(R.id.item_detail_desc);
         item_detail_desc_2 = (TextView) view.findViewById(R.id.item_detail_desc_2);
-
+        addToCart= (Button) view.findViewById(R.id.addToCart);
         price = (TextView) view.findViewById(R.id.item_detail_price);
         shopName = (TextView) view.findViewById(R.id.item_detail_shop_name);
         item_detail_shop_name_2 = (TextView) view.findViewById(R.id.item_detail_shop_name_2);
@@ -267,7 +270,7 @@ public class ItemDetailFragment extends Fragment {
                 });
 
 
-/*
+
                 addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -276,6 +279,8 @@ public class ItemDetailFragment extends Fragment {
                                 new Core(getActivity()).addToCart(shop_id,item_id,item_name,item_price,item_image,item_desc,shop_name_txt);
                                 FireOwl fireOwl = new FireOwl(getActivity());
                                 fireOwl.addOrder(shop_id,item_id,user_id);
+                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
+                                startActivity(intent);
                             } else {
                                 Log.d("Id Empty", "Item And Shop Ids are Empty");
                             }
@@ -287,7 +292,7 @@ public class ItemDetailFragment extends Fragment {
                 });        ((MainActivity) getActivity()).toolbar.setTitle(item_name);
 
 
-                */
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -478,6 +483,15 @@ public class ItemDetailFragment extends Fragment {
             }
         });
         return animator;
+    }
+
+
+
+    @Override
+    public void onResume() {
+        SharedPreferences prefs = getActivity().getSharedPreferences("Credentials", getActivity().MODE_PRIVATE);
+        user_id = prefs.getInt("id", 0);
+        super.onResume();
     }
 
 
