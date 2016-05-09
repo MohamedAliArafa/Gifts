@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "685286655882",
+    "project_id": "bubble-993d6"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685286655882:android:6ec55baccf372fa8",
+        "android_client_info": {
+          "package_name": "com.google.codelab.networkmanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTnjZigSxiE1EUK2AU3Rk8G9ujD6QpTs4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685286655882:android:cb890e1c83158972",
+        "android_client_info": {
+          "package_name": "com.zeowls.gifts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685286655882-d1b07p9505t7rkpq9jlvh1qb01nf59qi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zeowls.gifts",
+            "certificate_hash": "B95366B4856DCD7FFB893F7DD22118DECCA2287E"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTnjZigSxiE1EUK2AU3Rk8G9ujD6QpTs4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
