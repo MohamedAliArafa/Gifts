@@ -18,13 +18,13 @@ import java.util.ArrayList;
  */
 public class SlidingImage_Adapter extends PagerAdapter {
 
-    private ArrayList<Integer> IMAGES;
+    private ArrayList<String> IMAGES;
     private LayoutInflater inflater;
     private Context context;
     private Picasso picasso;
 
 
-    public SlidingImage_Adapter(Context context,ArrayList<Integer> IMAGES) {
+    public SlidingImage_Adapter(Context context,ArrayList<String> IMAGES) {
         this.context = context;
         this.IMAGES=IMAGES;
         inflater = LayoutInflater.from(context);

@@ -50,7 +50,7 @@ import com.zeowls.gifts.provider.Contract;
 
 import com.zeowls.gifts.provider.Contract.CartEntry;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean isReceiverRegistered;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,10 +128,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(context);
-                boolean sentToken = sharedPreferences
-                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences.getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
                 if (sentToken) {
                 } else {
 
@@ -154,15 +151,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-
-
-    private void registerReceiver(){
-        if(!isReceiverRegistered) {
+    private void registerReceiver() {
+        if (!isReceiverRegistered) {
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                     new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
             isReceiverRegistered = true;
         }
     }
+
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
@@ -228,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 fragment = new HomePageFragment();
                                 fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
                                 fragmentTransaction.commit();
-                            }else {
+                            } else {
                                 fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
                                 fragmentTransaction.commit();

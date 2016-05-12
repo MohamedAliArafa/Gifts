@@ -497,4 +497,22 @@ public class Core {
         }
         return responseJson;
     }
+
+    public JSONObject registerDevice(int user_id, String token) {
+
+        JSONObject json = new JSONObject();
+        JSONObject responseJson = new JSONObject();
+
+        try {
+            json.put("user_id", user_id);
+            json.put("device_token", token);
+            responseJson = new JSONObject(postRequest("/registerDevice", json));
+            Log.d("registerDeviceToken", token);
+        } catch (Exception e) {
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return responseJson;
+
+    }
 }

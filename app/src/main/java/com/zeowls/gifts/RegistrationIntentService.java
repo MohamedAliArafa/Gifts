@@ -3,6 +3,7 @@ package com.zeowls.gifts;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.zeowls.gifts.BackEndOwl.Core;
 
 import java.io.IOException;
 
@@ -106,7 +108,7 @@ public class RegistrationIntentService extends IntentService {
         super(TAG);
     }
 
-
+    String token = "";
 
 
 
@@ -119,7 +121,7 @@ public class RegistrationIntentService extends IntentService {
         // Fetch token here
         try {
             // request token that will be used by the server to send push notifications
-            String token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+            token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
             Log.d(TAG, "GCM Registration Token: " + token);
             // save token
             sharedPreferences.edit().putString(GCM_TOKEN, token).apply();
@@ -134,10 +136,24 @@ public class RegistrationIntentService extends IntentService {
     }
 
     private void sendRegistrationToServer(String token) {
-        // send network request
 
+        SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
+        int user_id = prefs.getInt("id", 0);
+        // send network request
+        Core core = new Core(getBaseContext());
+        core.registerDevice(user_id, token);
         // if registration sent was successful, store a boolean that indicates whether the generated token has been sent to server
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, true).apply();
     }
+
+//    class registerDeviceToServer extends AsyncTask{
+//
+//        @Override
+//        protected Object doInBackground(Object[] params) {
+//            Core core = new Core(getBaseContext());
+//            core.registerDevice();
+//            return null;
+//        }
+//    }
 }

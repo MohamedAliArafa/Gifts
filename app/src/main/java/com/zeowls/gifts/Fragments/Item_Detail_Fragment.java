@@ -139,7 +139,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
         Item_Pic = (ImageView) view.findViewById(R.id.item_Detail_Image);
 
         mPager = (ViewPager) view.findViewById(R.id.pager);
-        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
+//        mPagerAdapter = new SlidingImage_Adapter(getContext(), ImagesArray);
         mPager.setAdapter(mPagerAdapter);
 
         name.setText(actionTitle);

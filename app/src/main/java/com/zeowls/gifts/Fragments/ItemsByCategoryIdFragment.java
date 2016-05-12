@@ -146,16 +146,16 @@ public class ItemsByCategoryIdFragment extends Fragment {
                 }
             }
 
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String backStateName = this.getClass().getName();
                     FragmentManager fragmentManager = getFragmentManager();
                     ItemDetailFragment endFragment = new ItemDetailFragment();
                     endFragment.setId(items.get(position).getId());
                     fragmentManager.beginTransaction()
                             .add(R.id.fragment_main, endFragment)
-                            .addToBackStack(null)
+                            .addToBackStack(backStateName)
                             .commit();
                 }
             });

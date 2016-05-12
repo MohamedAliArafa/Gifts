@@ -72,15 +72,16 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
 
     @Override
     public void onStart() {
-        loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
-            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
+
         super.onStart();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        loadingData = new loadingData();
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         getLoaderManager().initLoader(CAT_LOADER, null, this);
         getLoaderManager().initLoader(SUB_CAT_LOADER, null, this);
         categories.clear();

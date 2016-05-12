@@ -21,21 +21,20 @@ public class HomePageFragment extends Fragment {
     Bundle bundle = new Bundle();
     ViewPager viewPager;
     TabLayout tabs;
-    final ShopsContentFragment endFragment = new ShopsContentFragment();
-    final ShopsContentFragment ShopsTab = new ShopsContentFragment();
-    final GiftsContentFragment1 GiftsTab = new GiftsContentFragment1();
-    final CategoryContentFragment1 CategoryTab = new CategoryContentFragment1();
+    static ShopsContentFragment endFragment = new ShopsContentFragment();
+    static ShopsContentFragment ShopsTab;
+    static GiftsContentFragment1 GiftsTab;
+    static CategoryContentFragment1 CategoryTab;
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        GiftsFragment = new GiftsContentFragment1();
-//        ShopFragment = new ShopsContentFragment();
-//        CategoryFragment = new CategoryContentFragment1();
+        GiftsTab = new GiftsContentFragment1();
+        ShopsTab = new ShopsContentFragment();
+        CategoryTab = new CategoryContentFragment1();
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home_page, container, false);
     }
@@ -45,14 +44,16 @@ public class HomePageFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         tabs = (TabLayout) view.findViewById(R.id.tabs);
         setupViewPager(viewPager);
+        assert tabs != null;
+        tabs.setupWithViewPager(viewPager);
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        setupViewPager(viewPager);
-        super.onViewStateRestored(savedInstanceState);
-    }
+//    @Override
+//    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+//        setupViewPager(viewPager);
+//        super.onViewStateRestored(savedInstanceState);
+//    }
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
@@ -65,9 +66,7 @@ public class HomePageFragment extends Fragment {
 
     @Override
     public void onResume() {
-        setupViewPager(viewPager);
-        assert tabs != null;
-        tabs.setupWithViewPager(viewPager);
+
         super.onResume();
     }
 

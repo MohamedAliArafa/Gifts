@@ -9,11 +9,14 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,9 +35,15 @@ import com.zeowls.gifts.Activities.ShoppingCartActivity;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.views.adapters.SlidingImage_Adapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ItemDetailFragment extends Fragment {
 
@@ -45,6 +54,7 @@ public class ItemDetailFragment extends Fragment {
     ValueAnimator mAnimator2;
     ValueAnimator mAnimator3;
 
+    private ArrayList<String> ImagesArray = new ArrayList<>();
 
     TextView name, description, price, itemNameToolbar, shopName, item_detail_desc_2, item_detail_shop_name_2;
     Button visitShop, addToCart;
@@ -80,14 +90,14 @@ public class ItemDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         description = (TextView) view.findViewById(R.id.item_detail_desc);
         item_detail_desc_2 = (TextView) view.findViewById(R.id.item_detail_desc_2);
-        addToCart= (Button) view.findViewById(R.id.addToCart);
+        addToCart = (Button) view.findViewById(R.id.addToCart);
         price = (TextView) view.findViewById(R.id.item_detail_price);
         shopName = (TextView) view.findViewById(R.id.item_detail_shop_name);
         item_detail_shop_name_2 = (TextView) view.findViewById(R.id.item_detail_shop_name_2);
 
         visitShop = (Button) view.findViewById(R.id.item_detail_shop_visit);
         //addToCart = (Button) view.findViewById(R.id.item_detail_addtocart);
-        //itemPic = (ImageView) view.findViewById(R.id.item_detail_image);
+        itemPic = (ImageView) view.findViewById(R.id.item_image_pager);
 
         Reviews_Header = (LinearLayout) view.findViewById(R.id.Reviews_Header);
         OverView_Header = (LinearLayout) view.findViewById(R.id.OverView_Header);
@@ -99,7 +109,6 @@ public class ItemDetailFragment extends Fragment {
 
         item_Shop_Photo_2 = (ImageView) view.findViewById(R.id.item_Shop_Photo_2);
         item_Shop_Photo = (ImageView) view.findViewById(R.id.item_Shop_Photo);
-
 
         Expandable_Reviews.getViewTreeObserver().addOnPreDrawListener(
                 new ViewTreeObserver.OnPreDrawListener() {
@@ -204,10 +213,7 @@ public class ItemDetailFragment extends Fragment {
             Title = bundle.getString("ACTION");
             imageBitmap = bundle.getParcelable("IMAGE");
             transText = bundle.getString("TRANS_TEXT");
-
-
         }
-
 
         new loadingData().execute();
     }
@@ -218,13 +224,14 @@ public class ItemDetailFragment extends Fragment {
         shopName.setText(shop_name_txt);
         item_detail_desc_2.setText(item_desc);
         item_detail_shop_name_2.setText(shop_name_txt);
-        ((MainActivity) getActivity()).toolbar.setTitle(item_name);
+        if (item_name != null && ((MainActivity) getActivity()).toolbar != null) {
+            ((MainActivity) getActivity()).toolbar.setTitle(item_name);
+        }
 //        ((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
 
         picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo);
         picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo_2);
-
-
+        picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(itemPic);
     }
 
     public void setId(int id) {
@@ -259,7 +266,7 @@ public class ItemDetailFragment extends Fragment {
                         String fragmentTag = "ShopFragment";
                         String backStateName = this.getClass().getName();
                         FragmentManager manager = getFragmentManager();
-                        if (manager.findFragmentByTag(fragmentTag) == null){ //fragment not in back stack, create it.
+                        if (manager.findFragmentByTag(fragmentTag) == null) { //fragment not in back stack, create it.
                             FragmentTransaction ft = manager.beginTransaction();
                             endFragment.setId(shop_id);
                             ft.add(R.id.fragment_main, endFragment, fragmentTag);
@@ -270,15 +277,14 @@ public class ItemDetailFragment extends Fragment {
                 });
 
 
-
                 addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (user_id != 0) {
                             if (item_id != 0 && shop_id != 0) {
-                                new Core(getActivity()).addToCart(shop_id,item_id,item_name,item_price,item_image,item_desc,shop_name_txt);
+                                new Core(getActivity()).addToCart(shop_id, item_id, item_name, item_price, item_image, item_desc, shop_name_txt);
                                 FireOwl fireOwl = new FireOwl(getActivity());
-                                fireOwl.addOrder(shop_id,item_id,user_id);
+                                fireOwl.addOrder(shop_id, item_id, user_id);
                                 Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
                                 startActivity(intent);
                             } else {
@@ -289,9 +295,8 @@ public class ItemDetailFragment extends Fragment {
                             newFragment.show(getFragmentManager(), "missiles");
                         }
                     }
-                });        ((MainActivity) getActivity()).toolbar.setTitle(item_name);
-
-
+                });
+                ((MainActivity) getActivity()).toolbar.setTitle(item_name);
 
 
             } catch (JSONException e) {
@@ -484,7 +489,6 @@ public class ItemDetailFragment extends Fragment {
         });
         return animator;
     }
-
 
 
     @Override
