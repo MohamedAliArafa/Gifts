@@ -111,6 +111,37 @@ public class ItemDetailFragment extends Fragment {
         item_Shop_Photo_2 = (ImageView) view.findViewById(R.id.item_Shop_Photo_2);
         item_Shop_Photo = (ImageView) view.findViewById(R.id.item_Shop_Photo);
 
+        Bundle bundle = getArguments();
+        String Title;
+        Bitmap imageBitmap;
+        String transText;
+        String transitionName;
+
+        if (bundle != null) {
+            transitionName = bundle.getString("TRANS_NAME");
+            Title = bundle.getString("ACTION");
+            imageBitmap = bundle.getParcelable("IMAGE");
+            transText = bundle.getString("TRANS_TEXT");
+        }
+
+        new loadingData().execute();
+    }
+
+    private void updateUI() {
+        description.setText(item_desc);
+        price.setText(item_price);
+        shopName.setText(shop_name_txt);
+        item_detail_desc_2.setText(item_desc);
+        item_detail_shop_name_2.setText(shop_name_txt);
+        if (item_name != null && ((MainActivity) getActivity()).toolbar != null) {
+            ((MainActivity) getActivity()).toolbar.setTitle(item_name);
+        }
+//        ((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
+
+        picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo);
+        picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo_2);
+        picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(itemPic);
+
         Expandable_Reviews.getViewTreeObserver().addOnPreDrawListener(
                 new ViewTreeObserver.OnPreDrawListener() {
 
@@ -203,36 +234,6 @@ public class ItemDetailFragment extends Fragment {
             }
         });
 
-        Bundle bundle = getArguments();
-        String Title;
-        Bitmap imageBitmap;
-        String transText;
-        String transitionName;
-
-        if (bundle != null) {
-            transitionName = bundle.getString("TRANS_NAME");
-            Title = bundle.getString("ACTION");
-            imageBitmap = bundle.getParcelable("IMAGE");
-            transText = bundle.getString("TRANS_TEXT");
-        }
-
-        new loadingData().execute();
-    }
-
-    private void updateUI() {
-        description.setText(item_desc);
-        price.setText(item_price);
-        shopName.setText(shop_name_txt);
-        item_detail_desc_2.setText(item_desc);
-        item_detail_shop_name_2.setText(shop_name_txt);
-        if (item_name != null && ((MainActivity) getActivity()).toolbar != null) {
-            ((MainActivity) getActivity()).toolbar.setTitle(item_name);
-        }
-//        ((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
-
-        picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo);
-        picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo_2);
-        picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(itemPic);
     }
 
     public void setId(int id) {

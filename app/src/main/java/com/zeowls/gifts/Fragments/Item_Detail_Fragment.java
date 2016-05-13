@@ -67,7 +67,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
     private static ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
-    private static final Integer[] IMAGES = {R.drawable.giftintro, R.drawable.giftintro};
+    private static final Integer[] IMAGES = {R.drawable.bubble_logo, R.drawable.bubble_logo};
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
@@ -328,7 +328,7 @@ public class Item_Detail_Fragment extends Fragment implements AppBarLayout.OnOff
                 name.setText(item_name);
 
                 if (item_image.equals("")) {
-                    Item_Pic.setImageResource(R.drawable.giftintro);
+                    Item_Pic.setImageResource(R.drawable.bubble_logo);
                 } else {
                     picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(Item_Pic);
                 }

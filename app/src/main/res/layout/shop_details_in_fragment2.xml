@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/giftintro"
+                    android:src="@drawable/bubble_logo"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.7" />
 
@@ -94,7 +94,7 @@
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="@dimen/fab_margin_bottom"
             android:layout_marginRight="@dimen/fab_margin_right"
-            android:src="@drawable/giftintro"
+            android:src="@drawable/bubble_logo"
             app:borderWidth="0dp"
             app:fabSize="normal" />
 

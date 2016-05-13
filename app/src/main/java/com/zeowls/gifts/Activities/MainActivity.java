@@ -61,6 +61,8 @@ import com.zeowls.gifts.provider.Contract.CartEntry;
 
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static final int COL_CART_ID = 0;
@@ -226,12 +228,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userimageNav = (ImageView) header.findViewById(R.id.nameNavImage);
 
         try {
-            String prefName = PrefUtils.getCurrentUser(this).getName();
             userId = PrefUtils.getCurrentUser(this).getId();
             picasso.load(PrefUtils.getCurrentUser(this).getProfilePic()).into(userimageNav);
-            if (prefName != null) {
-                usernameNav.setText(prefName);
-            }
+            usernameNav.setText(PrefUtils.getCurrentUser(this).getName());
         } catch (Exception e) {
             e.printStackTrace();
             usernameNav.setText("Guest");
@@ -239,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         loginButton = (LoginButton) header.findViewById(R.id._Facebook_login_button);
-        loginButton.setReadPermissions("email");
-        loginButton.setReadPermissions("user_birthday");
+
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday"));
 //        loginButton.setFragment(getBaseContext());
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -296,16 +295,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //                        // TODO: handle navigation
                         if (menuItem.getItemId() == R.id.navHomeBTN) {
 
-                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
-                                fragmentTransaction = fragmentManager.beginTransaction();
-                                fragment = new HomePageFragment();
-                                fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
-                                fragmentTransaction.commit();
-                            } else {
-                                fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
-                                fragmentTransaction.commit();
-                            }
+//                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
+//                                fragmentTransaction = fragmentManager.beginTransaction();
+//                                fragment = new HomePageFragment();
+//                                fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
+//                                fragmentTransaction.commit();
+//                            } else {
+//                                fragmentTransaction = fragmentManager.beginTransaction();
+//                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
+//                                fragmentTransaction.commit();
+//                            }
 
                             mDrawerLayout.closeDrawers();
                             return true;
@@ -492,10 +491,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 user.setId(user_id);
                 user.setFacebookID(object.getInt("id"));
                 user.setProfilePic(object.getJSONObject("picture").getJSONObject("data").getString("url"));
-                user.setEmail(object.getString("email"));
-                user.setDOB(object.getString("birthday"));
                 user.setName(object.getString("name"));
                 user.setGender(object.getString("gender"));
+                user.setEmail(object.getString("email"));
+                user.setDOB(object.getString("birthday"));
+
+                PrefUtils.setCurrentUser(user, getBaseContext());
             } catch (Exception e) {
                 e.printStackTrace();
             }

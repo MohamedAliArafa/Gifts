@@ -279,7 +279,7 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
 //                picasso.load(cursor.getString(ShopsContentFragment.COL_SHOP_IMAGE)).into(holder.imageView);
 //            }
 //            if (cursor.getString(ShopsContentFragment.COL_SHOP_IMAGE).equals("http://bubble.zeowls.com/uploads/null")) {
-//                holder.imageView.setImageResource(R.drawable.giftintro);
+//                holder.imageView.setImageResource(R.drawable.bubble_logo);
 //            } else {
 //                picasso.load(cursor.getString(ShopsContentFragment.COL_SHOP_IMAGE)).into(holder.imageView);
 //            }
@@ -361,7 +361,7 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
                     picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
                 }
                 if (shops.get(position).getPictureUrl().equals("http://bubble.zeowls.com/uploads/null")) {
-                    holder.imageView.setImageResource(R.drawable.giftintro);
+                    holder.imageView.setImageResource(R.drawable.bubble_logo);
                 } else {
                     picasso.load(shops.get(position).getPictureUrl()).into(holder.imageView);
                 }

@@ -21,7 +21,7 @@
     android:padding="@dimen/md_keylines">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@drawable/giftintro"
+        android:src="@drawable/bubble_logo"
         android:id="@+id/list_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"

@@ -23,7 +23,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/giftintro" />
+                android:src="@drawable/bubble_logo" />
 
             <TextView
                 android:id="@+id/item_detail_shop_name"
@@ -35,7 +35,7 @@
                 android:layout_toEndOf="@+id/item_Shop_Photo"
                 android:layout_toRightOf="@+id/item_Shop_Photo"
                 android:maxLines="1"
-                android:text="Shop Name"
+                tools:text="Shop Name"
                 android:textSize="20sp" />
 
             <TextView
@@ -95,8 +95,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="20dp"
-                    android:maxLines="6"
-                    android:text="@string/lorem"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -109,7 +107,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="20dp"
-                    android:text="120 LE"
+                    tools:text="120 LE"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
                     android:textStyle="italic" />
@@ -225,8 +223,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginStart="10dp"
-                        android:maxLines="5"
-                        android:text="@string/lorem"
+                        android:textAlignment="center"
+                        android:text="No One reviewed this item yet!, why won't you be the first."
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -264,8 +262,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginStart="10dp"
-                        android:maxLines="5"
-                        android:text="@string/lorem"
+                        android:textAlignment="center"
+                        android:text="the owner must forget to write overview, Sorry about that"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -305,8 +303,6 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginStart="10dp"
-                        android:maxLines="5"
-                        android:text="@string/lorem"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -339,7 +335,7 @@
                     android:layout_height="80dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/giftintro" />
+                    android:src="@drawable/bubble_logo" />
 
 
                 <TextView
@@ -349,7 +345,7 @@
                     android:layout_below="@+id/item_Shop_Photo_2"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:text="Shop Name"
+                    tools:text="Shop Name"
                     android:textSize="18sp"
                     android:textStyle="bold"
 

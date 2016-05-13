@@ -140,7 +140,7 @@ public class ItemsByCategoryIdFragment extends Fragment {
                 price.setText("$" + items.get(position).getPrice());
                 Log.d("Imagelist : ",items.get(position).getImgUrl());
                 if (items.get(position).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
-                    image.setImageResource(R.drawable.giftintro);
+                    image.setImageResource(R.drawable.bubble_logo);
                 } else {
                     picasso.load(items.get(position).getImgUrl()).into(image);
                 }

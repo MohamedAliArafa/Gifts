@@ -246,7 +246,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                 holder.ShopName.setText(GiftItems.get(absolutePosition).getShopName());
                 holder.ItemPrice.setText(String.valueOf(GiftItems.get(absolutePosition).getPrice()));
                 if (GiftItems.get(absolutePosition).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
-                    holder.imageView.setImageResource(R.drawable.giftintro);
+                    holder.imageView.setImageResource(R.drawable.bubble_logo);
                 } else {
                     picasso.load(GiftItems.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
                 }
@@ -373,10 +373,6 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
     @Override
     public void onResume() {
         super.onResume();
-        loadingData = new loadingData();
-        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
-            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
     }
 
     @Override

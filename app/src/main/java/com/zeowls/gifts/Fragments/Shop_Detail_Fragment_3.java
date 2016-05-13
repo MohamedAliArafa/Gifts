@@ -382,7 +382,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
 //                description.setText(items.get(position).getDesc());
 //                price.setText(items.get(position).getPrice());
 //                if (items.get(position).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
-//                    image.setImageResource(R.drawable.giftintro);
+//                    image.setImageResource(R.drawable.bubble_logo);
 //                } else {
 //                    Picasso.with(getContext()).load(items.get(position).getImgUrl()).into(image);
 //                }
@@ -453,9 +453,9 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                 Log.d("Array size", String.valueOf(items.size()));
                 holder.ItemName.setText(items.get(absolutePosition).getName());
                 holder.ShopName.setText(items.get(absolutePosition).getShopName());
-                holder.ItemPrice.setText(String.valueOf(items.get(absolutePosition).getPrice()));
+                holder.ItemPrice.setText("$" + String.valueOf(items.get(absolutePosition).getPrice()));
                 if (items.get(absolutePosition).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
-                    holder.imageView.setImageResource(R.drawable.giftintro);
+                    holder.imageView.setImageResource(R.drawable.bubble_logo);
                 } else {
                     picasso.load(items.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
                 }

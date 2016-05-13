@@ -182,7 +182,7 @@ public class ShopAllItemsFragment extends Fragment {
                 description.setText(items.get(position).getDesc());
                 price.setText("$" + items.get(position).getPrice());
                 if (items.get(position).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
-                    image.setImageResource(R.drawable.giftintro);
+                    image.setImageResource(R.drawable.bubble_logo);
                 } else {
                     Picasso.with(getContext()).load(items.get(position).getImgUrl()).into(image);
                 }
