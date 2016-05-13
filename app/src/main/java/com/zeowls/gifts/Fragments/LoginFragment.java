@@ -23,15 +23,20 @@ import android.support.v4.app.DialogFragment;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.Models.UserDataModel;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.Fragments.RegisterFragment;
 import com.facebook.FacebookSdk;
+import com.zeowls.gifts.Utility.PrefUtils;
 
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class LoginFragment extends DialogFragment {
@@ -46,11 +51,13 @@ public class LoginFragment extends DialogFragment {
     private UserLoginTask mAuthTask = null;
     LoginButton loginButton;
     CallbackManager callbackManager;
+    UserDataModel user;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = new UserDataModel();
     }
 
     @Override
@@ -69,6 +76,7 @@ public class LoginFragment extends DialogFragment {
         Sign_Up_Btn = (Button) view.findViewById(R.id.Login_Fr_SignUpBtn);
         loginButton = (LoginButton) view.findViewById(R.id._Facebook_login_button);
         loginButton.setReadPermissions("email");
+        loginButton.setReadPermissions("user_birthday");
         loginButton.setFragment(this);
 
         FacebookSdk.sdkInitialize(getContext());
@@ -77,7 +85,37 @@ public class LoginFragment extends DialogFragment {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                user.setFBToken(loginResult.getAccessToken().getToken());
                 // App code
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+
+                                Log.e("response: ", response + "");
+                                try {
+
+                                    new UserFBLoginTask(object).execute();
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                Toast.makeText(getActivity(),"welcome "+ user.getName(),Toast.LENGTH_LONG).show();
+//                                Intent intent=new Intent(LoginActivity.this,LogoutActivity.class);
+//                                startActivity(intent);
+//                                finish();
+                                getActivity().finish();
+                                startActivity(getActivity().getIntent());
+
+                            }
+
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
@@ -92,6 +130,7 @@ public class LoginFragment extends DialogFragment {
         });
 
 
+
         Password_Field.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -99,7 +138,6 @@ public class LoginFragment extends DialogFragment {
                 if (actionId == R.id.login) {
                     Login_Task();
                     return true;
-
                 }
                 return false;
             }
@@ -120,10 +158,7 @@ public class LoginFragment extends DialogFragment {
         Sign_In_Im.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Login_Task();
-
-
             }
         });
 
@@ -185,6 +220,40 @@ public class LoginFragment extends DialogFragment {
         return dialog;
 
 
+    }
+
+
+    public class UserFBLoginTask extends AsyncTask<Void, Void, Void> {
+
+        private JSONObject mGraphResponse;
+
+        UserFBLoginTask(JSONObject GraphResponse) {
+            mGraphResponse = GraphResponse;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Core core = new Core(getActivity());
+            try {
+                JSONObject object = mGraphResponse;
+                int user_id = core.signUpFBUser(object, user.getFBToken());
+                user.setId(user_id);
+//                user.facebookID = object.getString("id");
+                user.setEmail(object.getString("email"));
+                user.setDOB(object.getString("birthday"));
+                user.setName(object.getString("name"));
+                user.setGender(object.getString("gender"));
+                PrefUtils.setCurrentUser(user, getActivity());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+        }
     }
 
 

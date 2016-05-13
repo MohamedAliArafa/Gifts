@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,21 +25,20 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.Models.ItemDataMode;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.Utility.PrefUtils;
 import com.zeowls.gifts.provider.Contract;
 import com.zeowls.gifts.views.adapters.CursorRecyclerViewAdapter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ShoppingCartActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ShoppingCartActivity extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     int userId = 0;
     RecyclerView recyclerView;
     CursorContentAdapter adapter;
     Picasso picasso;
+    private static final String TAG = "ShoppingCart";
 
     public int mCartCount = 0;
 
@@ -64,19 +66,28 @@ public class ShoppingCartActivity extends AppCompatActivity implements LoaderMan
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopping_cart);
-        core = new Core(getBaseContext());
-        recyclerView = (RecyclerView) findViewById(R.id.shopping_cart_recycler_view);
+        core = new Core(getActivity());
 
-        getSupportLoaderManager().initLoader(CART_LOADER, null, this);
+
+        getLoaderManager().initLoader(CART_LOADER, null, this);
         new loadingOrdersData().execute();
-        picasso = Picasso.with(getBaseContext());
+        picasso = Picasso.with(getActivity());
 
-        SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
-        String restoredText = prefs.getString("name", null);
-        userId = prefs.getInt("id", 0);
+        try {
+            userId = PrefUtils.getCurrentUser(getActivity()).getId();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return inflater.inflate(R.layout.activity_shopping_cart, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.shopping_cart_recycler_view);
     }
 
     private class GetCart extends AsyncTask {
@@ -101,7 +112,7 @@ public class ShoppingCartActivity extends AppCompatActivity implements LoaderMan
 
         @Override
         protected Object doInBackground(Object[] params) {
-            Core core = new Core(getBaseContext());
+            Core core = new Core(getActivity());
             itemsJSON = core.getUserCart(userId);
             return true;
         }
@@ -157,16 +168,16 @@ public class ShoppingCartActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, Contract.CartEntry.CONTENT_URI, CART_COLUMNS, null, null, Contract.CartEntry._ID + " ASC");
+        return new CursorLoader(getActivity(), Contract.CartEntry.CONTENT_URI, CART_COLUMNS, null, null, Contract.CartEntry._ID + " ASC");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCartCount = data.getCount();
-        adapter = new CursorContentAdapter(getBaseContext(), data);
+        adapter = new CursorContentAdapter(getActivity(), data);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
@@ -187,12 +198,11 @@ public class ShoppingCartActivity extends AppCompatActivity implements LoaderMan
         @Override
         protected void onPostExecute(Object o) {
             if (response == 1) {
-                Toast.makeText(ShoppingCartActivity.this, "Order Sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Order Sent Successfully", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ShoppingCartActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "please login first", Toast.LENGTH_SHORT).show();
+                ((MainActivity) getActivity()).mDrawerLayout.openDrawer(GravityCompat.START);
             }
-
-
         }
 
         @Override
@@ -214,8 +224,8 @@ public class ShoppingCartActivity extends AppCompatActivity implements LoaderMan
 
         @Override
         protected void onPostExecute(Object o) {
-            Toast.makeText(getBaseContext(), response, Toast.LENGTH_SHORT).show();
-
+//            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+            Log.i(TAG, response);
         }
 
         @Override

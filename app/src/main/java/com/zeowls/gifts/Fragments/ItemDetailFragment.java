@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
@@ -280,20 +281,30 @@ public class ItemDetailFragment extends Fragment {
                 addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (user_id != 0) {
+//                        if (user_id != 0) {
                             if (item_id != 0 && shop_id != 0) {
                                 new Core(getActivity()).addToCart(shop_id, item_id, item_name, item_price, item_image, item_desc, shop_name_txt);
                                 FireOwl fireOwl = new FireOwl(getActivity());
                                 fireOwl.addOrder(shop_id, item_id, user_id);
-                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
-                                startActivity(intent);
+
+                                ShoppingCartActivity endFragment2 =  new ShoppingCartActivity();
+                                FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+                                        .add(R.id.fragment_main, endFragment2)
+                                        .addToBackStack(null)
+                                        .commit();
+//                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
+//                                startActivity(intent);
                             } else {
                                 Log.d("Id Empty", "Item And Shop Ids are Empty");
                             }
-                        } else {
-                            DialogFragment newFragment = new LoginFragment();
-                            newFragment.show(getFragmentManager(), "missiles");
-                        }
+//                        } else {
+//                            Toast.makeText(getActivity(), "please login first", Toast.LENGTH_SHORT).show();
+//                            ((MainActivity) getActivity()).mDrawerLayout.openDrawer(GravityCompat.START);
+////                            DialogFragment newFragment = new LoginFragment();
+////                            newFragment.show(getFragmentManager(), "missiles");
+//                        }
                     }
                 });
                 ((MainActivity) getActivity()).toolbar.setTitle(item_name);

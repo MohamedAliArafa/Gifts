@@ -1,16 +1,8 @@
 package com.zeowls.gifts.BackEndOwl;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
 
-import com.zeowls.gifts.provider.Contract;
 import com.zeowls.gifts.provider.Contract.ShopEntry;
 import com.zeowls.gifts.provider.Contract.ItemEntry;
 import com.zeowls.gifts.provider.Contract.CartEntry;
@@ -186,22 +177,22 @@ public class Core {
         return json;
     }
 
-    public JSONObject getSubAllCategories() {
-        JSONObject json = null;
-        try {
-            String response = getRequest(Domain + "/GetSubCategories/JSON");
-            if (!response.equals("0")) {
-                json = new JSONObject(response);
-            } else {
-                Log.d("GetSubCategories", response);
-            }
-        } catch (Exception e) {
-//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-//        putMoviesDB(json);
-        return json;
-    }
+//    public JSONObject getSubAllCategories() {
+//        JSONObject json = null;
+//        try {
+//            String response = getRequest(Domain + "/GetSubCategories/JSON");
+//            if (!response.equals("0")) {
+//                json = new JSONObject(response);
+//            } else {
+//                Log.d("GetSubCategories", response);
+//            }
+//        } catch (Exception e) {
+////            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+////        putMoviesDB(json);
+//        return json;
+//    }
 
     public JSONObject getAllCategories() {
         JSONObject json = null;
@@ -273,6 +264,20 @@ public class Core {
         return result;
     }
 
+    public int signUpFBUser(JSONObject json, String fb_token) throws JSONException {
+        int result = 0;
+        try {
+            json.put("fb_token", fb_token);
+            String response = postRequest("/FBlogin", json);
+            JSONObject resJson = new JSONObject(response);
+            result = resJson.getInt("response");
+        } catch (Exception e) {
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public int signUpUser(String username, String password, String mobile) throws JSONException {
         JSONObject json = new JSONObject();
         int result = 0;
@@ -306,8 +311,7 @@ public class Core {
 
         cVVector.add(cartValues);
 
-        int inserted = 0;
-        inserted = context.getContentResolver().update(CartEntry.CONTENT_URI, cartValues, CartEntry.COLUMN_ITEM_ID + " = ?", new String[]{String.valueOf(item_id)});
+        int inserted = context.getContentResolver().update(CartEntry.CONTENT_URI, cartValues, CartEntry.COLUMN_ITEM_ID + " = ?", new String[]{String.valueOf(item_id)});
         Log.i(Core.class.getSimpleName(), "Cart Updatin8g Complete. " + inserted + " Inserted");
         if (inserted == 0) {
             // add to database
@@ -320,10 +324,10 @@ public class Core {
         }
     }
 
-    public int cartCount(int userId) {
-        int count = 0;
-        return count;
-    }
+//    public int cartCount(int userId) {
+//        int count = 0;
+//        return count;
+//    }
 
     public JSONObject getUserCart(int userId) {
         JSONObject json = null;
@@ -424,7 +428,7 @@ public class Core {
 
             for (int i = 0; i < movies.length(); i++) {
                 String id, title, image, price, description, fav;
-                int shop_id = 0, cat_id = 0;
+                int shop_id, cat_id;
                 JSONObject movie = movies.getJSONObject(i);
                 id = movie.getString(item_id);
                 title = movie.getString(item_name);
@@ -507,7 +511,7 @@ public class Core {
             json.put("user_id", user_id);
             json.put("device_token", token);
             responseJson = new JSONObject(postRequest("/registerDevice", json));
-            Log.d("registerDeviceToken", token);
+            Log.d("registerDeviceToken",  token + "User:" + user_id);
         } catch (Exception e) {
 //            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();

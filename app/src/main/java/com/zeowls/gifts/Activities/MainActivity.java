@@ -7,11 +7,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
@@ -28,46 +28,40 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
-import com.firebase.client.DataSnapshot;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.zeowls.gifts.Fragments.LoginFragment;
+import com.squareup.picasso.Picasso;
+import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.Fragments.HomePageFragment;
+import com.zeowls.gifts.Models.UserDataModel;
 import com.zeowls.gifts.QuickstartPreferences;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.RegistrationIntentService;
+import com.zeowls.gifts.Utility.PrefUtils;
 import com.zeowls.gifts.provider.Contract;
 
 import com.zeowls.gifts.provider.Contract.CartEntry;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-
-    private DrawerLayout mDrawerLayout;
-    public ActionBarDrawerToggle mDrawerToggle;
-
-    public ActionBar supportActionBar;
-    public AppBarLayout appBarLayout;
-    public Toolbar toolbar;
-
-    NavigationView navigationView;
-    TextView usernameNav;
-
-    RelativeLayout Shopping_Cart_Relative;
-    public TextView notif_count;
-    public int mCartCount = 0;
-    static int userId = 1;
-
-    private int CART_LOADER = 0;
 
     static final int COL_CART_ID = 0;
     static final int COL_CART_ITEM_ID = 1;
@@ -89,41 +83,87 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             CartEntry.COLUMN_SHOP_ID,
             CartEntry.COLUMN_SHOP_NAME
     };
-
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "MainActivity";
+    static int userId = 1;
+    public ActionBarDrawerToggle mDrawerToggle;
+    public ActionBar supportActionBar;
+    public AppBarLayout appBarLayout;
+    public Toolbar toolbar;
+    public TextView notif_count;
+    public int mCartCount = 0;
+    Picasso picasso;
+    NavigationView navigationView;
+    TextView usernameNav;
+    ImageView userimageNav;
+    LoginButton loginButton;
+    CallbackManager callbackManager;
+    AccessTokenTracker accessTokenTracker;
+    UserDataModel user;
+    RelativeLayout Shopping_Cart_Relative;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     HomePageFragment fragment;
-    LoginFragment loginFragment;
-
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
-
+    ShoppingCartActivity shoppingFragment;
+    public DrawerLayout mDrawerLayout;
+    private boolean isResumed = false;
+    private int CART_LOADER = 0;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private ProgressBar mRegistrationProgressBar;
-    private TextView mInformationTextView;
     private boolean isReceiverRegistered;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        // SDK init
+        FacebookSdk.sdkInitialize(getBaseContext());
+        callbackManager = CallbackManager.Factory.create();
         Firebase.setAndroidContext(this);
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        user = new UserDataModel();
         AppEventsLogger.activateApp(this);
+        picasso = Picasso.with(getBaseContext());
 
+        //Set View Cotent
+        setContentView(R.layout.activity_main);
+
+        //check user ID
+        try {
+            userId = PrefUtils.getCurrentUser(getBaseContext()).getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //track FB login
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (isResumed) {
+                    FragmentManager manager = getSupportFragmentManager();
+                    int backStackSize = manager.getBackStackEntryCount();
+                    for (int i = 0; i < backStackSize; i++) {
+                        manager.popBackStack();
+                    }
+                    if (currentAccessToken != null) {
+                        Log.i(TAG, currentAccessToken.getToken());
+                    } else {
+                        PrefUtils.clearCurrentUser(getBaseContext());
+                        userId = 0;
+                        configureNavigationView();
+                    }
+                }
+            }
+        };
+
+        //init home fragment
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragment = new HomePageFragment();
         fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
         fragmentTransaction.commit();
-//        }
 
         configureToolbar();
         configureNavigationView();
         configureDrawer();
-
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -131,13 +171,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences.getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
                 if (sentToken) {
+                    Log.i(TAG, "Register Token SENT to Server");
                 } else {
-
-
+                    Log.i(TAG, "Register Token NOT SENT to Server for some reason");
                 }
             }
         };
-
 
         // Registering BroadcastReceiver
         registerReceiver();
@@ -147,9 +186,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
-
     }
-
 
     private void registerReceiver() {
         if (!isReceiverRegistered) {
@@ -183,30 +220,70 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void configureNavigationView() {
         // Set behavior of Navigation drawer
         assert navigationView != null;
+
         View header = navigationView.getHeaderView(0);
         usernameNav = (TextView) header.findViewById(R.id.nameNavText);
+        userimageNav = (ImageView) header.findViewById(R.id.nameNavImage);
 
-        SharedPreferences preferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
-        userId = preferences.getInt("id", 0);
+        try {
+            String prefName = PrefUtils.getCurrentUser(this).getName();
+            userId = PrefUtils.getCurrentUser(this).getId();
+            picasso.load(PrefUtils.getCurrentUser(this).getProfilePic()).into(userimageNav);
+            if (prefName != null) {
+                usernameNav.setText(prefName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            usernameNav.setText("Guest");
+            userimageNav.setImageDrawable(null);
+        }
+
+        loginButton = (LoginButton) header.findViewById(R.id._Facebook_login_button);
+        loginButton.setReadPermissions("email");
+        loginButton.setReadPermissions("user_birthday");
+//        loginButton.setFragment(getBaseContext());
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                user.setFBToken(loginResult.getAccessToken().getToken());
+                // App code
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.e("response: ", response + "");
+                                try {
+                                    new UserFBLoginTask(object).execute();
+                                    Toast.makeText(getBaseContext(), "welcome " + object.getString("name"), Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, name, email, gender, birthday, picture.type(large)");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(MainActivity.this, "You Have CANCELED the Login Request", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Toast.makeText(MainActivity.this, "Failed to Login", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         Menu menuNav = navigationView.getMenu();
 
-        MenuItem login = menuNav.findItem(R.id.navLoginBTN);
-        MenuItem logout = menuNav.findItem(R.id.navLogoutBTN);
         MenuItem fav = menuNav.findItem(R.id.navFavBTN);
-
-        login.setVisible(false);
-        login.setTitle("Login");
-
-        if (userId == 0) {
-            fav.setVisible(false);
-            login.setVisible(true);
-            logout.setVisible(false);
-        } else {
-            fav.setVisible(true);
-            login.setVisible(false);
-            logout.setVisible(true);
-        }
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -234,26 +311,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             return true;
                         }
 
-
-                        if (menuItem.getItemId() == R.id.navLoginBTN) {
-
-                            DialogFragment newFragment = new LoginFragment();
-                            newFragment.show(getSupportFragmentManager(), "missiles");
-
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                        }
-
-
-                        if (menuItem.getItemId() == R.id.navLogoutBTN) {
-                            SharedPreferences.Editor editor = getSharedPreferences("Credentials", MODE_PRIVATE).edit();
-                            editor.clear();
-                            editor.apply();
-                            finish();
-                            startActivity(getIntent());
-                            mDrawerLayout.closeDrawers();
-                            return true;
-                        }
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
@@ -267,8 +324,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
-        // Create Navigation drawer and inlfate layout
+
+        // Create Navigation drawer and inflate layout
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         // Adding menu icon to Toolbar
         supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -318,38 +377,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onResume() {
+        isResumed = true;
+
+        // Call the 'activateApp' method to log an app event for use in analytics and advertising
+        // reporting.  Do so in the onResume methods of the primary Activities that an app may be
+        // launched into.
+        AppEventsLogger.activateApp(this);
+
         registerReceiver();
         configureToolbar();
         configureNavigationView();
         configureDrawer();
-        SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
-        String restoredText = prefs.getString("name", null);
-        if (restoredText != null) {
-            String name = prefs.getString("name", "No name defined");
-            userId = prefs.getInt("id", 0);
-            if (userId != 0) {
-//                new cartCount().execute();
-                Firebase ref = new Firebase("https://giftshop.firebaseio.com/orders/User");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        System.out.println(snapshot.getValue());
-                    }
 
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                        System.out.println("The read failed: " + firebaseError.getMessage());
-                    }
-                });
-            }
-//            navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(false);
-//            navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(true);
-            usernameNav.setText(name);
-        } else {
-//            navigationView.getMenu().findItem(R.id.navLoginBTN).setVisible(true);
-//            navigationView.getMenu().findItem(R.id.navLogoutBTN).setVisible(false);
-            usernameNav.setText("Guest");
-        }
         super.onResume();
     }
 
@@ -362,15 +401,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         MenuItemCompat.setActionView(item, R.layout.card_update_count);
         Shopping_Cart_Relative = (RelativeLayout) MenuItemCompat.getActionView(item).findViewById(R.id.Shopping_Cart_Relative);
         notif_count = (TextView) MenuItemCompat.getActionView(item).findViewById(R.id.notif_count);
-//        notif_count.setText(String.valueOf(mCartCount));
         getSupportLoaderManager().initLoader(CART_LOADER, null, this);
         Shopping_Cart_Relative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (mCartCount != 0) {
-                    Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
-                    startActivity(intent);
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    shoppingFragment = new ShoppingCartActivity();
+                    fragmentTransaction.add(R.id.fragment_main, shoppingFragment);
+                    fragmentTransaction.hide(fragmentManager.findFragmentByTag("homeFragment"));
+                    fragmentTransaction.addToBackStack(null)         ;
+                    fragmentTransaction.commit();
+//                    Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
+//                    startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this, "Shopping Cart Empty", Toast.LENGTH_SHORT).show();
                 }
@@ -422,5 +466,52 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public class UserFBLoginTask extends AsyncTask<Void, Void, Void> {
+
+        private JSONObject mGraphResponse;
+
+        UserFBLoginTask(JSONObject GraphResponse) {
+            mGraphResponse = GraphResponse;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Core core = new Core(getBaseContext());
+            try {
+                JSONObject object = mGraphResponse;
+                int user_id = core.signUpFBUser(object, user.getFBToken());
+                userId = user_id;
+                user.setId(user_id);
+                user.setFacebookID(object.getInt("id"));
+                user.setProfilePic(object.getJSONObject("picture").getJSONObject("data").getString("url"));
+                user.setEmail(object.getString("email"));
+                user.setDOB(object.getString("birthday"));
+                user.setName(object.getString("name"));
+                user.setGender(object.getString("gender"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            PrefUtils.setCurrentUser(user, getBaseContext());
+            configureNavigationView();
+        }
+
+        //        @Override
+//        protected void onCancelled() {
+//            mAuthTask = null;
+//        }
     }
 }

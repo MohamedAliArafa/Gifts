@@ -12,6 +12,7 @@ import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.Utility.PrefUtils;
 
 import java.io.IOException;
 
@@ -136,12 +137,15 @@ public class RegistrationIntentService extends IntentService {
     }
 
     private void sendRegistrationToServer(String token) {
+        try {
+            int user_id = PrefUtils.getCurrentUser(getBaseContext()).getId();
+            // send network request
+            Core core = new Core(getBaseContext());
+            core.registerDevice(user_id, token);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        SharedPreferences prefs = getSharedPreferences("Credentials", MODE_PRIVATE);
-        int user_id = prefs.getInt("id", 0);
-        // send network request
-        Core core = new Core(getBaseContext());
-        core.registerDevice(user_id, token);
         // if registration sent was successful, store a boolean that indicates whether the generated token has been sent to server
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, true).apply();

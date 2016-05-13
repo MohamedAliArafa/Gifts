@@ -180,7 +180,7 @@ public class ShopAllItemsFragment extends Fragment {
                 TextView price = (TextView) holder.itemView.findViewById(R.id.price);
                 name.setText(items.get(position).getName());
                 description.setText(items.get(position).getDesc());
-                price.setText(items.get(position).getPrice());
+                price.setText("$" + items.get(position).getPrice());
                 if (items.get(position).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
                     image.setImageResource(R.drawable.giftintro);
                 } else {

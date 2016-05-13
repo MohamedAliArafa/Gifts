@@ -371,6 +371,15 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        loadingData = new loadingData();
+        if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
+            loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    @Override
     public void onPause() {
         if (loadingData != null) {
             if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {

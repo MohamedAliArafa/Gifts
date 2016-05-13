@@ -18,17 +18,39 @@
     android:layout_height="@dimen/navheader_height"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
-    android:padding="@dimen/md_keylines">
+    >
+
+    <ImageView
+        android:id="@+id/nameNavImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/trending_gradient_shape"
+        />
 
 
     <TextView
         android:id="@+id/nameNavText"
         style="@style/Base.TextAppearance.AppCompat.Headline"
         android:textColor="@color/white"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="120dp"
         android:elevation="13dp"
         android:text="Guest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:padding="@dimen/md_keylines"/>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/_Facebook_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameNavText"
+        android:padding="@dimen/md_keylines"
+        />
 </RelativeLayout>
