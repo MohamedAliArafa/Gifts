@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,9 @@ import android.view.ViewGroup;
 
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.views.adapters.SamplePagerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomePageFragment extends Fragment {
 
@@ -21,15 +26,13 @@ public class HomePageFragment extends Fragment {
     Bundle bundle = new Bundle();
     ViewPager viewPager;
     TabLayout tabs;
-    static ShopsContentFragment endFragment = new ShopsContentFragment();
-    static ShopsContentFragment ShopsTab;
-    static GiftsContentFragment1 GiftsTab;
-    static CategoryContentFragment1 CategoryTab;
+    final ShopsContentFragment ShopsTab = new ShopsContentFragment();
+    final GiftsContentFragment1 GiftsTab = new GiftsContentFragment1();;
+    final CategoryContentFragment1 CategoryTab = new CategoryContentFragment1();
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        GiftsTab = new GiftsContentFragment1();
-        ShopsTab = new ShopsContentFragment();
-        CategoryTab = new CategoryContentFragment1();
         super.onCreate(savedInstanceState);
     }
 
@@ -57,7 +60,7 @@ public class HomePageFragment extends Fragment {
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
-        SamplePagerAdapter adapter = new SamplePagerAdapter(getFragmentManager());
+        Adapter adapter = new Adapter(getFragmentManager());
         adapter.addFragment(GiftsTab, "Gifts");
         adapter.addFragment(ShopsTab, "Shops");
         adapter.addFragment(CategoryTab, "Categories");
@@ -84,5 +87,37 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+
+
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

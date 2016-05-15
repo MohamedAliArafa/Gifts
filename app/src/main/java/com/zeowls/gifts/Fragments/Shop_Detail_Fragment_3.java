@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -136,6 +135,12 @@ public class Shop_Detail_Fragment_3 extends Fragment {
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        recyclerView.setOnTouchListener(null);
+        recyclerView.setHorizontalScrollBarEnabled(false);
+        recyclerView.setVerticalScrollBarEnabled(false);
+        recyclerView.setEnabled(false);
+        recyclerView.setNestedScrollingEnabled(false);
+
         picasso = Picasso.with(getActivity());
 
         adapter = new MainAdapter();
@@ -143,6 +148,9 @@ public class Shop_Detail_Fragment_3 extends Fragment {
         recyclerView.setLayoutManager(manager);
         adapter.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+
+
+
 
 
         new loadingData().execute();
@@ -159,8 +167,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
             Shop_Pic.setImageBitmap(imageBitmap);
             ShopHeader_Pic.setImageBitmap(imageBitmap);
         }
-        Shop_Name.setText(actionTitle);
-        ((MainActivity) getActivity()).toolbar.setTitle(actionTitle);
+
 
 
 
@@ -265,8 +272,6 @@ public class Shop_Detail_Fragment_3 extends Fragment {
         if (loadingData.getStatus() == AsyncTask.Status.RUNNING) {
             loadingData.cancel(true);
         }
-        ((MainActivity) getActivity()).toolbar.setTitle("Bubble");
-
         super.onPause();
     }
 
@@ -421,8 +426,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
 
     public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
 
-        final Item_Detail_Fragment endFragment = new Item_Detail_Fragment();
-        final ItemDetailFragment endFragment2 = new ItemDetailFragment();
+        ItemDetailFragment endFragment2;
 
         @Override
         public int getSectionCount() {
@@ -473,6 +477,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                         bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
                     }
 
+                    endFragment2 = new ItemDetailFragment();
                     endFragment2.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment2.setId(items.get(absolutePosition).getId());

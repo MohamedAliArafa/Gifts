@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/soft_grey_1"
+    android:background="@color/Back1"
     tools:context="com.zeowls.gifts.Fragments.ItemDetailFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
 
         >
@@ -35,8 +35,8 @@
                 android:layout_toEndOf="@+id/item_Shop_Photo"
                 android:layout_toRightOf="@+id/item_Shop_Photo"
                 android:maxLines="1"
-                tools:text="Shop Name"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:text="Shop Name" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,9 +64,9 @@
             </ImageView>
 
             <!--<android.support.v4.view.ViewPager-->
-                <!--android:id="@+id/item_image_pager"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="250dp">-->
+            <!--android:id="@+id/item_image_pager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="250dp">-->
 
             <!--</android.support.v4.view.ViewPager>-->
         </RelativeLayout>
@@ -107,10 +107,10 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="20dp"
-                    tools:text="120 LE"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
-                    android:textStyle="italic" />
+                    android:textStyle="italic"
+                    tools:text="120 LE" />
 
 
                 <TextView
@@ -159,16 +159,15 @@
 
 
                 <Button
+                    android:id="@+id/addToCart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/item_Qty"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/colorPrimaryDark2"
                     android:text="Add to Cart"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:id="@+id/addToCart"
-                    />
+                    android:textSize="20sp" />
 
 
             </RelativeLayout>
@@ -190,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/Reviews_Header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -207,7 +206,32 @@
                         android:text="Reviews"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-                </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/Reviews_Arrow_Down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_action_hardware_keyboard_arrow_down"
+
+                        />
+
+                    <ImageView
+                        android:id="@+id/Reviews_Arrow_Up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_action_hardware_keyboard_arrow_up"
+                        android:visibility="gone"
+
+                        />
+                </RelativeLayout>
 
 
                 <LinearLayout
@@ -223,13 +247,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginStart="10dp"
-                        android:textAlignment="center"
                         android:text="No One reviewed this item yet!, why won't you be the first."
+                        android:textAlignment="center"
                         android:textSize="20sp" />
 
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/OverView_Header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -246,7 +270,33 @@
                         android:text="OverView"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-                </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/OverView_Arrow_Down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_action_hardware_keyboard_arrow_down"
+
+                        />
+
+                    <ImageView
+                        android:id="@+id/OverView_Arrow_Up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_action_hardware_keyboard_arrow_up"
+                        android:visibility="gone"
+
+
+                        />
+                </RelativeLayout>
 
 
                 <LinearLayout
@@ -262,13 +312,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginStart="10dp"
-                        android:textAlignment="center"
                         android:text="the owner must forget to write overview, Sorry about that"
+                        android:textAlignment="center"
                         android:textSize="20sp" />
 
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/Details_Header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -285,7 +335,33 @@
                         android:text="Details"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-                </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/Details_Arrow_Down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_action_hardware_keyboard_arrow_down"
+
+                        />
+
+                    <ImageView
+                        android:id="@+id/Details_Arrow_Up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_action_hardware_keyboard_arrow_up"
+                        android:visibility="gone"
+
+
+                        />
+                </RelativeLayout>
 
 
                 <LinearLayout
@@ -316,13 +392,12 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            >
+            android:layout_marginTop="10dp">
 
 
             <RelativeLayout
@@ -345,9 +420,9 @@
                     android:layout_below="@+id/item_Shop_Photo_2"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    tools:text="Shop Name"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    tools:text="Shop Name"
 
                     />
 
@@ -368,12 +443,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/Shop_Top_Items"
+                    android:background="@color/colorPrimaryDark2"
                     android:text="Visit Shop"
-                    android:textSize="20sp"
-                    android:background="@color/colorPrimary"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="20sp" />
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>

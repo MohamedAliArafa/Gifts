@@ -280,31 +280,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
 
-        Menu menuNav = navigationView.getMenu();
-
-        MenuItem fav = menuNav.findItem(R.id.navFavBTN);
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     // This method will trigger on item Click of navigation menu
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
 
 //                        // TODO: handle navigation
                         if (menuItem.getItemId() == R.id.navHomeBTN) {
 
-//                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
-//                                fragmentTransaction = fragmentManager.beginTransaction();
-//                                fragment = new HomePageFragment();
-//                                fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
-//                                fragmentTransaction.commit();
-//                            } else {
-//                                fragmentTransaction = fragmentManager.beginTransaction();
-//                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
-//                                fragmentTransaction.commit();
-//                            }
+                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
+                                for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                                    fragmentManager.popBackStack();
+                                }
+                                fragmentTransaction = fragmentManager.beginTransaction();
+                                fragment = new HomePageFragment();
+                                fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
+                                fragmentTransaction.commit();
+                            } else {
+                                for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                                    fragmentManager.popBackStack();
+                                }
+                                fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
+                                fragmentTransaction.commit();
+                            }
 
                             mDrawerLayout.closeDrawers();
                             return true;

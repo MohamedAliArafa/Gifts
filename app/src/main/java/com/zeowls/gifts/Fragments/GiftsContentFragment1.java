@@ -1,7 +1,5 @@
 package com.zeowls.gifts.Fragments;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -9,18 +7,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.ChangeTransform;
-import android.transition.Fade;
 import android.transition.TransitionInflater;
-import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +21,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.zeowls.gifts.Activities.ItemDetailActivity;
 import com.zeowls.gifts.views.adapters.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.views.SpacesItemDecoration;
 import com.zeowls.gifts.BackEndOwl.Core;
@@ -43,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class GiftsContentFragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 

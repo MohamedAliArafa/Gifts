@@ -34,7 +34,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:685286655882:android:cb890e1c83158972",
         "android_client_info": {
-          "package_name": "com.zeowls.gifts"
+          "package_name": "com.zeowls.bubble"
         }
       },
       "oauth_client": [
@@ -42,7 +42,7 @@
           "client_id": "685286655882-d1b07p9505t7rkpq9jlvh1qb01nf59qi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.zeowls.gifts",
+            "package_name": "com.zeowls.bubble",
             "certificate_hash": "B95366B4856DCD7FFB893F7DD22118DECCA2287E"
           }
         }

@@ -320,8 +320,6 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private static final int LENGTH = 18;
-        final Shop_Detail_Fragment endFragment = new Shop_Detail_Fragment();
-        final Shop_Detail_Fragment_2 endFragment2 = new Shop_Detail_Fragment_2();
         final Shop_Detail_Fragment_3 endFragment3 = new Shop_Detail_Fragment_3();
 
 

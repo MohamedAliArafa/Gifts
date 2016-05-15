@@ -2,6 +2,7 @@ package com.zeowls.gifts.Fragments;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,9 +25,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,12 +63,16 @@ public class ItemDetailFragment extends Fragment {
     TextView name, description, price, itemNameToolbar, shopName, item_detail_desc_2, item_detail_shop_name_2;
     Button visitShop, addToCart;
     ImageView itemPic, item_Shop_Photo, item_Shop_Photo_2;
-    LinearLayout Details_Header, OverView_Header, Reviews_Header;
+    RelativeLayout Details_Header, OverView_Header, Reviews_Header;
     LinearLayout Expandable_Reviews, Expandable_OverView, Expandable_Details;
+    ImageView Reviews_Arrow_Down, Reviews_Arrow_Up,
+            OverView_Arrow_Down, OverView_Arrow_Up,
+            Details_Arrow_Down, Details_Arrow_Up;
 
     String item_name, item_price, item_image, item_desc, shop_name_txt, Shop_image, Shop_Address;
 
-    Shop_Detail_Fragment_3 endFragment;
+    Shop_Detail_Fragment_3 endFragment = new Shop_Detail_Fragment_3();
+
 
     Picasso picasso;
     private int id;
@@ -100,9 +107,9 @@ public class ItemDetailFragment extends Fragment {
         //addToCart = (Button) view.findViewById(R.id.item_detail_addtocart);
         itemPic = (ImageView) view.findViewById(R.id.item_image_pager);
 
-        Reviews_Header = (LinearLayout) view.findViewById(R.id.Reviews_Header);
-        OverView_Header = (LinearLayout) view.findViewById(R.id.OverView_Header);
-        Details_Header = (LinearLayout) view.findViewById(R.id.Details_Header);
+        Reviews_Header = (RelativeLayout) view.findViewById(R.id.Reviews_Header);
+        OverView_Header = (RelativeLayout) view.findViewById(R.id.OverView_Header);
+        Details_Header = (RelativeLayout) view.findViewById(R.id.Details_Header);
 
         Expandable_Reviews = (LinearLayout) view.findViewById(R.id.Expandable_Reviews);
         Expandable_OverView = (LinearLayout) view.findViewById(R.id.Expandable_OverView);
@@ -110,6 +117,21 @@ public class ItemDetailFragment extends Fragment {
 
         item_Shop_Photo_2 = (ImageView) view.findViewById(R.id.item_Shop_Photo_2);
         item_Shop_Photo = (ImageView) view.findViewById(R.id.item_Shop_Photo);
+
+        Reviews_Arrow_Down = (ImageView) view.findViewById(R.id.Reviews_Arrow_Down);
+        Reviews_Arrow_Up = (ImageView) view.findViewById(R.id.Reviews_Arrow_Up);
+
+        Details_Arrow_Down = (ImageView) view.findViewById(R.id.Details_Arrow_Down);
+        Details_Arrow_Up = (ImageView) view.findViewById(R.id.Details_Arrow_Up);
+
+        OverView_Arrow_Down = (ImageView) view.findViewById(R.id.OverView_Arrow_Down);
+        OverView_Arrow_Up = (ImageView) view.findViewById(R.id.OverView_Arrow_Up);
+
+        //Set Arrow Up And Down
+        OverView_Arrow_Up.setVisibility(View.GONE);
+        Details_Arrow_Up.setVisibility(View.GONE);
+        Reviews_Arrow_Up.setVisibility(View.GONE);
+
 
         Bundle bundle = getArguments();
         String Title;
@@ -133,9 +155,7 @@ public class ItemDetailFragment extends Fragment {
         shopName.setText(shop_name_txt);
         item_detail_desc_2.setText(item_desc);
         item_detail_shop_name_2.setText(shop_name_txt);
-        if (item_name != null && ((MainActivity) getActivity()).toolbar != null) {
-            ((MainActivity) getActivity()).toolbar.setTitle(item_name);
-        }
+
 //        ((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
 
         picasso.load("http://bubble.zeowls.com/uploads/" + Shop_image).fit().centerCrop().into(item_Shop_Photo);
@@ -165,9 +185,16 @@ public class ItemDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (Expandable_Reviews.getVisibility() == View.GONE) {
+
                     expand();
+                    Reviews_Arrow_Down.setVisibility(View.GONE);
+                    Reviews_Arrow_Up.setVisibility(View.VISIBLE);
                 } else {
+
                     collapse();
+                    Reviews_Arrow_Down.setVisibility(View.VISIBLE);
+                    Reviews_Arrow_Up.setVisibility(View.GONE);
+
                 }
             }
         });
@@ -196,9 +223,15 @@ public class ItemDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (Expandable_OverView.getVisibility() == View.GONE) {
+
                     expand2();
+                    OverView_Arrow_Down.setVisibility(View.GONE);
+                    OverView_Arrow_Up.setVisibility(View.VISIBLE);
                 } else {
+
                     collapse2();
+                    OverView_Arrow_Down.setVisibility(View.VISIBLE);
+                    OverView_Arrow_Up.setVisibility(View.GONE);
                 }
             }
         });
@@ -227,10 +260,25 @@ public class ItemDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (Expandable_Details.getVisibility() == View.GONE) {
+
                     expand3();
+                    Details_Arrow_Down.setVisibility(View.GONE);
+                    Details_Arrow_Up.setVisibility(View.VISIBLE);
                 } else {
+
                     collapse3();
+                    Details_Arrow_Down.setVisibility(View.VISIBLE);
+                    Details_Arrow_Up.setVisibility(View.GONE);
                 }
+            }
+        });
+
+
+
+        itemPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
             }
         });
 
@@ -260,11 +308,11 @@ public class ItemDetailFragment extends Fragment {
 
                 updateUI();
 
-                endFragment = new Shop_Detail_Fragment_3();
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Toast.makeText(getActivity(), "HI Shop", Toast.LENGTH_SHORT).show();
                         String fragmentTag = "ShopFragment";
                         String backStateName = this.getClass().getName();
                         FragmentManager manager = getFragmentManager();
@@ -273,6 +321,11 @@ public class ItemDetailFragment extends Fragment {
                             endFragment.setId(shop_id);
                             ft.add(R.id.fragment_main, endFragment, fragmentTag);
                             ft.addToBackStack(backStateName);
+                            ft.commit();
+                        }else {
+                            FragmentTransaction ft = manager.beginTransaction();
+                            ft.replace(R.id.fragment_main ,manager.findFragmentByTag(fragmentTag));
+                            ft.addToBackStack(null);
                             ft.commit();
                         }
                     }
@@ -283,23 +336,23 @@ public class ItemDetailFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 //                        if (user_id != 0) {
-                            if (item_id != 0 && shop_id != 0) {
-                                new Core(getActivity()).addToCart(shop_id, item_id, item_name, item_price, item_image, item_desc, shop_name_txt);
-                                FireOwl fireOwl = new FireOwl(getActivity());
-                                fireOwl.addOrder(shop_id, item_id, user_id);
+                        if (item_id != 0 && shop_id != 0) {
+                            new Core(getActivity()).addToCart(shop_id, item_id, item_name, item_price, item_image, item_desc, shop_name_txt);
+                            FireOwl fireOwl = new FireOwl(getActivity());
+                            fireOwl.addOrder(shop_id, item_id, user_id);
 
-                                ShoppingCartActivity endFragment2 =  new ShoppingCartActivity();
-                                FragmentManager fragmentManager = getFragmentManager();
-                                fragmentManager.beginTransaction()
-                                        .hide(getFragmentManager().findFragmentByTag("homeFragment"))
-                                        .add(R.id.fragment_main, endFragment2)
-                                        .addToBackStack(null)
-                                        .commit();
+                            ShoppingCartActivity endFragment2 = new ShoppingCartActivity();
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+                                    .add(R.id.fragment_main, endFragment2)
+                                    .addToBackStack(null)
+                                    .commit();
 //                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
 //                                startActivity(intent);
-                            } else {
-                                Log.d("Id Empty", "Item And Shop Ids are Empty");
-                            }
+                        } else {
+                            Log.d("Id Empty", "Item And Shop Ids are Empty");
+                        }
 //                        } else {
 //                            Toast.makeText(getActivity(), "please login first", Toast.LENGTH_SHORT).show();
 //                            ((MainActivity) getActivity()).mDrawerLayout.openDrawer(GravityCompat.START);
@@ -308,7 +361,6 @@ public class ItemDetailFragment extends Fragment {
 //                        }
                     }
                 });
-                ((MainActivity) getActivity()).toolbar.setTitle(item_name);
 
 
             } catch (JSONException e) {
@@ -328,12 +380,6 @@ public class ItemDetailFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) getActivity()).toolbar.setTitle("Bubble");
-
-    }
 
     private void expand() {
         //set Visible
@@ -508,6 +554,68 @@ public class ItemDetailFragment extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences("Credentials", getActivity().MODE_PRIVATE);
         user_id = prefs.getInt("id", 0);
         super.onResume();
+    }
+
+
+    public  class CustomDialogFragment extends DialogFragment {
+        /** The system calls this to get the DialogFragment's layout, regardless
+         of whether it's being displayed as a dialog or an embedded fragment. */
+
+        ImageView Im_Full ;
+        RelativeLayout Item_Full_image_linear;
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            // Inflate the layout to use as dialog or embedded fragment
+            return inflater.inflate(R.layout.item_full_image, container, false);
+        }
+
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            Im_Full = (ImageView) view.findViewById(R.id.Im_Full);
+            Im_Full.setBackground(itemPic.getDrawable());
+            Item_Full_image_linear = (RelativeLayout) view.findViewById(R.id.Item_Full_image_linear);
+            Item_Full_image_linear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+          //  picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(Im_Full);
+
+
+        }
+
+        /** The system calls this only when creating the layout in a dialog. */
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // The only reason you might override this method when using onCreateView() is
+            // to modify any dialog characteristics. For example, the dialog includes a
+            // title by default, but your custom layout might not need it. So here you can
+            // remove the dialog title, but you must call the superclass to get the Dialog.
+            Dialog dialog = super.onCreateDialog(savedInstanceState);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            return dialog;
+        }
+    }
+
+
+    public void showDialog() {
+        FragmentManager fragmentManager = getFragmentManager();
+        CustomDialogFragment newFragment = new CustomDialogFragment();
+
+
+            // The device is smaller, so show the fragment fullscreen
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            // For a little polish, specify a transition animation
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            // To make it fullscreen, use the 'content' root view as the container
+            // for the fragment, which is always the root view for the activity
+            transaction.add(android.R.id.content, newFragment)
+                    .addToBackStack(null).commit();
+
     }
 
 

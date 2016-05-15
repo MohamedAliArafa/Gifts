@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.Models.ItemDataMode;
-import com.zeowls.gifts.Fragments.Item_Detail_Fragment;
 import com.zeowls.gifts.R;
 
 import org.json.JSONArray;
