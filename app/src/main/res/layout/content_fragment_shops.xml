@@ -19,13 +19,13 @@
         android:visibility="gone"
         >
 
+
         <ImageView
             android:layout_gravity="center"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:src="@drawable/no_network"
             android:tint="@color/button_grey"/>
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recycler_view_shops"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"

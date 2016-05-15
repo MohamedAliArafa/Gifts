@@ -228,6 +228,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userimageNav = (ImageView) header.findViewById(R.id.nameNavImage);
 
         try {
+
+
             userId = PrefUtils.getCurrentUser(this).getId();
             picasso.load(PrefUtils.getCurrentUser(this).getProfilePic()).into(userimageNav);
             usernameNav.setText(PrefUtils.getCurrentUser(this).getName());

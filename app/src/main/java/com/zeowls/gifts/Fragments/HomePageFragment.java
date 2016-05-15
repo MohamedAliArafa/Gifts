@@ -31,6 +31,7 @@ public class HomePageFragment extends Fragment {
     final CategoryContentFragment1 CategoryTab = new CategoryContentFragment1();
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

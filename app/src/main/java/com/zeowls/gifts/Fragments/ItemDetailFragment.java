@@ -29,7 +29,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +59,8 @@ public class ItemDetailFragment extends Fragment {
     ValueAnimator mAnimator;
     ValueAnimator mAnimator2;
     ValueAnimator mAnimator3;
+    private ProgressBar mProgressBar;
+
 
     private ArrayList<String> ImagesArray = new ArrayList<>();
 
@@ -69,9 +73,14 @@ public class ItemDetailFragment extends Fragment {
             OverView_Arrow_Down, OverView_Arrow_Up,
             Details_Arrow_Down, Details_Arrow_Up;
 
+
+    LinearLayout Item_Detail_Root_Layout;
+    ScrollView Fragment_Item_Detail_ScrollView;
+
     String item_name, item_price, item_image, item_desc, shop_name_txt, Shop_image, Shop_Address;
 
     Shop_Detail_Fragment_3 endFragment = new Shop_Detail_Fragment_3();
+    LinearLayout mErrorText;
 
 
     Picasso picasso;
@@ -96,6 +105,12 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        Item_Detail_Root_Layout = (LinearLayout) view.findViewById(R.id.Item_Detail_Root_Layout);
+        Fragment_Item_Detail_ScrollView = (ScrollView) view.findViewById(R.id.Fragment_Item_Detail_ScrollView);
+        mErrorText = (LinearLayout) view.findViewById(R.id.error);
+
+
         description = (TextView) view.findViewById(R.id.item_detail_desc);
         item_detail_desc_2 = (TextView) view.findViewById(R.id.item_detail_desc_2);
         addToCart = (Button) view.findViewById(R.id.addToCart);
@@ -274,13 +289,14 @@ public class ItemDetailFragment extends Fragment {
         });
 
 
-
         itemPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog();
             }
         });
+      //  Fragment_Item_Detail_ScrollView.fullScroll(ScrollView.FOCUS_UP);
+
 
     }
 
@@ -295,6 +311,12 @@ public class ItemDetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Object o) {
             try {
+
+
+                mProgressBar.setVisibility(View.GONE);
+                Item_Detail_Root_Layout.setVisibility(View.VISIBLE);
+
+
                 JSONObject item = itemsJSON.getJSONArray("Items").getJSONObject(0);
 
                 item_name = item.getString("name");
@@ -312,19 +334,20 @@ public class ItemDetailFragment extends Fragment {
                 visitShop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getActivity(), "HI Shop", Toast.LENGTH_SHORT).show();
                         String fragmentTag = "ShopFragment";
                         String backStateName = this.getClass().getName();
                         FragmentManager manager = getFragmentManager();
                         if (manager.findFragmentByTag(fragmentTag) == null) { //fragment not in back stack, create it.
                             FragmentTransaction ft = manager.beginTransaction();
                             endFragment.setId(shop_id);
+                            ft.hide(getFragmentManager().findFragmentByTag("ItemDetailFragment"));
                             ft.add(R.id.fragment_main, endFragment, fragmentTag);
                             ft.addToBackStack(backStateName);
                             ft.commit();
-                        }else {
+                        } else {
                             FragmentTransaction ft = manager.beginTransaction();
-                            ft.replace(R.id.fragment_main ,manager.findFragmentByTag(fragmentTag));
+                            ft.show(manager.findFragmentByTag(fragmentTag));
+                            ft.replace(R.id.fragment_main, manager.findFragmentByTag(fragmentTag));
                             ft.addToBackStack(null);
                             ft.commit();
                         }
@@ -365,6 +388,8 @@ public class ItemDetailFragment extends Fragment {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                mErrorText.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
             }
         }
 
@@ -557,12 +582,15 @@ public class ItemDetailFragment extends Fragment {
     }
 
 
-    public  class CustomDialogFragment extends DialogFragment {
-        /** The system calls this to get the DialogFragment's layout, regardless
-         of whether it's being displayed as a dialog or an embedded fragment. */
+    public class CustomDialogFragment extends DialogFragment {
+        /**
+         * The system calls this to get the DialogFragment's layout, regardless
+         * of whether it's being displayed as a dialog or an embedded fragment.
+         */
 
-        ImageView Im_Full ;
+        ImageView Im_Full;
         RelativeLayout Item_Full_image_linear;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -574,7 +602,9 @@ public class ItemDetailFragment extends Fragment {
         public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             Im_Full = (ImageView) view.findViewById(R.id.Im_Full);
-            Im_Full.setBackground(itemPic.getDrawable());
+          //  Im_Full.setBackground(itemPic.getDrawable());
+            picasso.load("http://bubble.zeowls.com/uploads/" + item_image).into(Im_Full);
+
             Item_Full_image_linear = (RelativeLayout) view.findViewById(R.id.Item_Full_image_linear);
             Item_Full_image_linear.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -583,12 +613,14 @@ public class ItemDetailFragment extends Fragment {
                 }
             });
 
-          //  picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(Im_Full);
+            //  picasso.load("http://bubble.zeowls.com/uploads/" + item_image).fit().centerCrop().into(Im_Full);
 
 
         }
 
-        /** The system calls this only when creating the layout in a dialog. */
+        /**
+         * The system calls this only when creating the layout in a dialog.
+         */
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // The only reason you might override this method when using onCreateView() is
@@ -607,14 +639,14 @@ public class ItemDetailFragment extends Fragment {
         CustomDialogFragment newFragment = new CustomDialogFragment();
 
 
-            // The device is smaller, so show the fragment fullscreen
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            // For a little polish, specify a transition animation
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            // To make it fullscreen, use the 'content' root view as the container
-            // for the fragment, which is always the root view for the activity
-            transaction.add(android.R.id.content, newFragment)
-                    .addToBackStack(null).commit();
+        // The device is smaller, so show the fragment fullscreen
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        // For a little polish, specify a transition animation
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        // To make it fullscreen, use the 'content' root view as the container
+        // for the fragment, which is always the root view for the activity
+        transaction.add(android.R.id.content, newFragment)
+                .addToBackStack(null).commit();
 
     }
 

@@ -86,12 +86,12 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
         getLoaderManager().initLoader(SUB_CAT_LOADER, null, this);
         categories.clear();
         SubCategoreis.clear();
-        return inflater.inflate(R.layout.content_fragment, container, false);
+        return inflater.inflate(R.layout.content_fragment_category, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_category);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mErrorText = (LinearLayout) view.findViewById(R.id.error);
         adapter = new MainAdapter2();

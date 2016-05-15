@@ -18,21 +18,19 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_gravity="center"
-    android:layout_marginLeft="@dimen/md_keylines"
-    android:layout_marginRight="@dimen/md_keylines"
-    android:background="@drawable/cardborder"
     android:foreground="?attr/selectableItemBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <ImageView
             android:id="@+id/Sub_Category_Item_Image"
             android:layout_width="70dp"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:src="@drawable/bubble_logo" />
+            android:src="@drawable/ic_action_action_redeem" />
 
         <TextView
             android:id="@+id/Sub_Category_Item_Name"

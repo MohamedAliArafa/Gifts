@@ -25,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +55,11 @@ public class Shop_Detail_Fragment_3 extends Fragment {
     static ArrayList<ItemDataMode> items = new ArrayList<>();
     RecyclerView recyclerView;
     MainAdapter adapter;
+    LinearLayout Shop_Detail_Root_Layout;
+    private ProgressBar mProgressBar;
+    LinearLayout mErrorText;
+
+
 
 
 
@@ -124,6 +131,9 @@ public class Shop_Detail_Fragment_3 extends Fragment {
             transText = bundle.getString("TRANS_TEXT");
         }
 
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        Shop_Detail_Root_Layout = (LinearLayout) view.findViewById(R.id.Shop_Detail_Root_Layout);
+        mErrorText = (LinearLayout) view.findViewById(R.id.error);
 
         Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
         Shop_Pic = (ImageView) view.findViewById(R.id.item_Detail_SHop_Image);
@@ -179,9 +189,9 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                 fragmentTransaction = fragmentManager.beginTransaction();
                 shopAllItemsFragment =  new ShopAllItemsFragment();
                 shopAllItemsFragment.setId(id);
+                fragmentTransaction.hide(getFragmentManager().findFragmentByTag("ShopFragment"));
                 fragmentTransaction.add(R.id.fragment_main, shopAllItemsFragment);
                 fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.hide(getFragmentManager().findFragmentByTag("homeFragment"));
                 fragmentTransaction.commit();
             }
         });
@@ -285,6 +295,8 @@ public class Shop_Detail_Fragment_3 extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
+            mProgressBar.setVisibility(View.GONE);
+            Shop_Detail_Root_Layout.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(adapter);
         }
 
@@ -314,6 +326,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+
             }
             return null;
         }
@@ -482,7 +495,6 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment2.setId(items.get(absolutePosition).getId());
                     fragmentManager.beginTransaction()
-                            .hide(getFragmentManager().findFragmentByTag("homeFragment"))
                             .add(R.id.fragment_main, endFragment2)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
@@ -512,7 +524,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                     layout = R.layout.list_item_header_3;
                     break;
                 case VIEW_TYPE_ITEM:
-                    layout = R.layout.list_item_main;
+                    layout = R.layout.list_item_main_3;
                     break;
                 default:
                     layout = R.layout.list_item_main_bold;

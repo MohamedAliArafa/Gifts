@@ -92,12 +92,12 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
                              Bundle savedInstanceState) {
         getLoaderManager().initLoader(SHOPS_LOADER, null, this);
         shops.clear();
-        return inflater.inflate(R.layout.content_fragment, container, false);
+        return inflater.inflate(R.layout.content_fragment_shops, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_shops);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mErrorText = (LinearLayout) view.findViewById(R.id.error);
 

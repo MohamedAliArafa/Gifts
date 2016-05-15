@@ -258,7 +258,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                     endFragment2.setId(GiftItems.get(absolutePosition).getId());
                     fragmentManager.beginTransaction()
                             .hide(getFragmentManager().findFragmentByTag("homeFragment"))
-                            .add(R.id.fragment_main, endFragment2)
+                            .add(R.id.fragment_main, endFragment2,"ItemDetailFragment")
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
                             .addSharedElement(holder.ItemName, textTransitionName)

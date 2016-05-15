@@ -4,33 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_gravity="center"
-    android:layout_marginLeft="@dimen/md_keylines"
-    android:layout_marginRight="@dimen/md_keylines"
-    android:background="#78909C"
-
     >
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/test6"
-
-
         >
 
         <TextView
             android:id="@+id/Main_Category_Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif-medium"
             android:text="Shop Name"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimaryDark2"
             android:textSize="24sp"
-            android:textStyle="bold|italic"
+            android:textStyle="bold"
             tools:ignore="UnusedAttribute"
             android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
             />
 
 
