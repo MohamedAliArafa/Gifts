@@ -495,6 +495,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment2.setId(items.get(absolutePosition).getId());
                     fragmentManager.beginTransaction()
+                            .hide(getFragmentManager().findFragmentByTag("ShopFragment"))
                             .add(R.id.fragment_main, endFragment2)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)
