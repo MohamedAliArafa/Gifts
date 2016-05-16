@@ -48,6 +48,11 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
 
     loadingData loadingData;
 
+    public static GiftsContentFragment1 newInstance() {
+        Log.e("GiftsContentFragment", "New Instance");
+        return new GiftsContentFragment1();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {

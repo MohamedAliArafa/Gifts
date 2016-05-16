@@ -72,12 +72,6 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
 
     @Override
     public void onStart() {
-
-        super.onStart();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         loadingData = new loadingData();
         if (loadingData.getStatus() != AsyncTask.Status.RUNNING) {
             loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -86,6 +80,16 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
         getLoaderManager().initLoader(SUB_CAT_LOADER, null, this);
         categories.clear();
         SubCategoreis.clear();
+        super.onStart();
+    }
+
+    public static CategoryContentFragment1 newInstance() {
+        Log.e("CategoryContentFragment", "New Instance");
+        return new CategoryContentFragment1();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.content_fragment_category, container, false);
     }
 

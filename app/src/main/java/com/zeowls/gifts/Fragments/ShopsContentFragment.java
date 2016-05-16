@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,11 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
             loadingData.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         super.onStart();
+    }
+
+    public static ShopsContentFragment newInstance() {
+        Log.e("ShopsContentFragment", "New Instance");
+        return new ShopsContentFragment();
     }
 
     @Override

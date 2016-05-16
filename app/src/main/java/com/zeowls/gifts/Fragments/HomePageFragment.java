@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zeowls.gifts.R;
-import com.zeowls.gifts.views.adapters.SamplePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(2);
         tabs = (TabLayout) view.findViewById(R.id.tabs);
         setupViewPager(viewPager);
         assert tabs != null;
@@ -53,13 +53,13 @@ public class HomePageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-//    @Override
-//    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-//        setupViewPager(viewPager);
-//        super.onViewStateRestored(savedInstanceState);
-//    }
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        setupViewPager(viewPager);
+        super.onViewStateRestored(savedInstanceState);
+    }
 
-    // Add Fragments to Tabs
+//     Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getFragmentManager());
         adapter.addFragment(GiftsTab, "Gifts");
@@ -73,7 +73,6 @@ public class HomePageFragment extends Fragment {
 
         super.onResume();
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -93,8 +92,8 @@ public class HomePageFragment extends Fragment {
 
 
     static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+        private List<Fragment> mFragmentList = new ArrayList<>();
+        private List<String> mFragmentTitleList = new ArrayList<>();
 
         public Adapter(FragmentManager manager) {
             super(manager);

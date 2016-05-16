@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -24,6 +27,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +65,8 @@ import com.zeowls.gifts.provider.Contract.CartEntry;
 
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -125,8 +131,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         AppEventsLogger.activateApp(this);
         picasso = Picasso.with(getBaseContext());
 
-        //Set View Cotent
+        //Set View Content
         setContentView(R.layout.activity_main);
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.zeowls.gifts",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.e("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         //check user ID
         try {
@@ -228,8 +247,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userimageNav = (ImageView) header.findViewById(R.id.nameNavImage);
 
         try {
-
-
             userId = PrefUtils.getCurrentUser(this).getId();
             picasso.load(PrefUtils.getCurrentUser(this).getProfilePic()).into(userimageNav);
             usernameNav.setText(PrefUtils.getCurrentUser(this).getName());
@@ -282,7 +299,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
 
-
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     // This method will trigger on item Click of navigation menu
@@ -293,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         if (menuItem.getItemId() == R.id.navHomeBTN) {
 
                             if (fragmentManager.findFragmentByTag("homeFragment") == null) {
-                                for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                                     fragmentManager.popBackStack();
                                 }
                                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -301,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
                                 fragmentTransaction.commit();
                             } else {
-                                for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                                     fragmentManager.popBackStack();
                                 }
                                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -413,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     shoppingFragment = new ShoppingCartActivity();
                     fragmentTransaction.add(R.id.fragment_main, shoppingFragment);
                     fragmentTransaction.hide(fragmentManager.findFragmentByTag("homeFragment"));
-                    fragmentTransaction.addToBackStack(null)         ;
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
 //                    Intent intent = new Intent(MainActivity.this, ShoppingCartActivity.class);
 //                    startActivity(intent);
