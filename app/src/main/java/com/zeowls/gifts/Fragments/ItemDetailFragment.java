@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,9 +44,13 @@ import com.zeowls.gifts.Activities.ShoppingCartActivity;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.BackEndOwl.FireOwl;
 import com.zeowls.gifts.CustomDialogFragment;
+import com.zeowls.gifts.Models.ItemDataMode;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.views.SpacesItemDecoration;
+import com.zeowls.gifts.views.adapters.SectionedRecyclerViewAdapter;
 import com.zeowls.gifts.views.adapters.SlidingImage_Adapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,10 +69,14 @@ public class ItemDetailFragment extends Fragment {
     ValueAnimator mAnimator3;
     private ProgressBar mProgressBar;
 
+    static ArrayList<ItemDataMode> items = new ArrayList<>();
 
     private ArrayList<String> ImagesArray = new ArrayList<>();
+    MainAdapter adapter;
 
-    TextView name, description, price, itemNameToolbar, shopName, item_detail_desc_2, item_detail_shop_name_2;
+
+    TextView name, description, price, itemNameToolbar,
+            shopName, item_detail_desc_2, item_detail_shop_name_2, item_detail_shop_Address, item_Detail_Name, item_detail_shop_Short_Desc, item_Qty;
     Button visitShop, addToCart;
     ImageView itemPic, item_Shop_Photo, item_Shop_Photo_2;
     RelativeLayout Details_Header, OverView_Header, Reviews_Header;
@@ -75,10 +86,11 @@ public class ItemDetailFragment extends Fragment {
             Details_Arrow_Down, Details_Arrow_Up;
 
 
+    RecyclerView item_detail_Shop_Top_Items;
     LinearLayout Item_Detail_Root_Layout;
     ScrollView Fragment_Item_Detail_ScrollView;
 
-    String item_name, item_price, item_image, item_desc, shop_name_txt, Shop_image, Shop_Address;
+    String item_name, item_price, item_image, item_desc, shop_name_txt, Shop_image, Shop_Address, Shop_Short_Desc, item_Qty_String;
 
     Shop_Detail_Fragment_3 endFragment = new Shop_Detail_Fragment_3();
     LinearLayout mErrorText;
@@ -103,11 +115,14 @@ public class ItemDetailFragment extends Fragment {
         picasso = Picasso.with(getActivity());
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         Item_Detail_Root_Layout = (LinearLayout) view.findViewById(R.id.Item_Detail_Root_Layout);
+        Item_Detail_Root_Layout.setVisibility(View.GONE);
+
         Fragment_Item_Detail_ScrollView = (ScrollView) view.findViewById(R.id.Fragment_Item_Detail_ScrollView);
         mErrorText = (LinearLayout) view.findViewById(R.id.error);
 
@@ -118,6 +133,11 @@ public class ItemDetailFragment extends Fragment {
         price = (TextView) view.findViewById(R.id.item_detail_price);
         shopName = (TextView) view.findViewById(R.id.item_detail_shop_name);
         item_detail_shop_name_2 = (TextView) view.findViewById(R.id.item_detail_shop_name_2);
+        item_detail_shop_Address = (TextView) view.findViewById(R.id.item_detail_shop_Address);
+        item_Detail_Name = (TextView) view.findViewById(R.id.item_Detail_Name);
+        item_detail_shop_Short_Desc = (TextView) view.findViewById(R.id.item_detail_shop_Short_Desc);
+        item_Qty = (TextView) view.findViewById(R.id.item_Qty);
+        item_detail_Shop_Top_Items = (RecyclerView) view.findViewById(R.id.item_detail_Shop_Top_Items);
 
         visitShop = (Button) view.findViewById(R.id.item_detail_shop_visit);
         //addToCart = (Button) view.findViewById(R.id.item_detail_addtocart);
@@ -149,6 +169,23 @@ public class ItemDetailFragment extends Fragment {
         Reviews_Arrow_Up.setVisibility(View.GONE);
 
 
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        item_detail_Shop_Top_Items.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        item_detail_Shop_Top_Items.setOnTouchListener(null);
+        item_detail_Shop_Top_Items.setHorizontalScrollBarEnabled(false);
+        item_detail_Shop_Top_Items.setVerticalScrollBarEnabled(false);
+        item_detail_Shop_Top_Items.setEnabled(false);
+        item_detail_Shop_Top_Items.setNestedScrollingEnabled(false);
+
+        picasso = Picasso.with(getActivity());
+
+        adapter = new MainAdapter();
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.grid_span));
+        item_detail_Shop_Top_Items.setLayoutManager(manager);
+        adapter.setLayoutManager(manager);
+        item_detail_Shop_Top_Items.setAdapter(adapter);
+
+
         Bundle bundle = getArguments();
         String Title;
         Bitmap imageBitmap;
@@ -163,14 +200,64 @@ public class ItemDetailFragment extends Fragment {
         }
 
         new loadingData().execute();
+        new loadingData2().execute();
+
+
     }
 
     private void updateUI() {
-        description.setText(item_desc);
-        price.setText(item_price);
-        shopName.setText(shop_name_txt);
-        item_detail_desc_2.setText(item_desc);
-        item_detail_shop_name_2.setText(shop_name_txt);
+
+
+        if (item_Qty_String != null && !item_Qty_String.equals("null")) {
+            item_Qty_String += " items in Stock";
+            item_Qty.setText(item_Qty_String);
+        }
+
+        if (Shop_Short_Desc != null && !Shop_Short_Desc.equals("null")) {
+            item_detail_shop_Short_Desc.setText(Shop_Short_Desc);
+
+        } else {
+            item_detail_shop_Short_Desc.setVisibility(View.GONE);
+        }
+
+        if (item_name != null && !item_name.equals("null")) {
+            item_Detail_Name.setText(item_name);
+        }
+
+        if (item_desc != null && !item_desc.equals("null")) {
+            item_detail_desc_2.setText(item_desc);
+        }
+
+
+        if (shop_name_txt != null && !shop_name_txt.equals("null")) {
+            shopName.setText(shop_name_txt);
+        }
+
+        if (item_desc != null && !item_desc.equals("null")) {
+            item_detail_desc_2.setText(item_desc);
+        }
+
+
+        if (item_desc != null && !item_desc.equals("null")) {
+            description.setText(item_desc);
+        }
+
+        if (item_price != null && !item_price.equals("null")) {
+            price.setText(item_price);
+        }
+
+
+        if (shop_name_txt != null && !shop_name_txt.equals("null")) {
+            item_detail_shop_name_2.setText(shop_name_txt);
+        }
+
+        if (Shop_Address != null && !Shop_Address.equals("null")) {
+            Log.d("Address", Shop_Address);
+            item_detail_shop_Address.setText(Shop_Address);
+        } else {
+            item_detail_shop_Address.setVisibility(View.GONE);
+        }
+
 
 //        ((MainActivity) getActivity()).mDrawerToggle.setDrawerIndicatorEnabled(false);
 
@@ -296,7 +383,7 @@ public class ItemDetailFragment extends Fragment {
                 showDialog();
             }
         });
-      //  Fragment_Item_Detail_ScrollView.fullScroll(ScrollView.FOCUS_UP);
+        //  Fragment_Item_Detail_ScrollView.fullScroll(ScrollView.FOCUS_UP);
 
 
     }
@@ -304,6 +391,12 @@ public class ItemDetailFragment extends Fragment {
     public void setId(int id) {
         this.item_id = id;
     }
+    public void setShopId(int id) {
+        this.shop_id = id;
+    }
+
+
+
 
     private class loadingData extends AsyncTask {
 
@@ -325,11 +418,14 @@ public class ItemDetailFragment extends Fragment {
                 item_image = item.getString("image");
                 item_desc = item.getString("description");
                 shop_name_txt = item.getString("shop_name");
-                shop_id = item.getInt("shop_id");
                 Shop_image = item.getString("shop_image");
+                Shop_Address = item.getString("shop_address");
+                Shop_Short_Desc = item.getString("shop_short_desc");
+                item_Qty_String = String.valueOf(item.getInt("quantity"));
 
 
                 updateUI();
+
 
 
                 visitShop.setOnClickListener(new View.OnClickListener() {
@@ -347,6 +443,7 @@ public class ItemDetailFragment extends Fragment {
                             ft.commit();
                         } else {
                             FragmentTransaction ft = manager.beginTransaction();
+                            ft.hide(getFragmentManager().findFragmentByTag("ItemDetailFragment"));
                             ft.show(manager.findFragmentByTag(fragmentTag));
                             ft.replace(R.id.fragment_main, manager.findFragmentByTag(fragmentTag));
                             ft.addToBackStack(null);
@@ -644,7 +741,6 @@ public class ItemDetailFragment extends Fragment {
         newFragment.setArguments(bundle);
 
 
-
         // The device is smaller, so show the fragment fullscreen
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         // For a little polish, specify a transition animation
@@ -654,6 +750,212 @@ public class ItemDetailFragment extends Fragment {
         transaction.add(android.R.id.content, newFragment)
                 .addToBackStack(null).commit();
 
+    }
+
+
+    public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.MainVH> {
+
+        ItemDetailFragment endFragment2;
+
+        @Override
+        public int getSectionCount() {
+            return 1;
+        }
+
+        @Override
+        public int getItemCount(int section) {
+            if (items.size() >= 5) {
+                return 4;
+            } else {
+                return items.size();
+
+            }
+        }
+
+        @Override
+        public void onBindHeaderViewHolder(MainVH holder, int section) {
+//            holder.ItemName.setText(String.format("Section %d", section));
+            holder.ItemName.setText("");
+        }
+
+        @Override
+        public void onBindViewHolder(final MainVH holder, int section, int relativePosition, final int absolutePosition) {
+            holder.ItemName.setText(String.format("S:%d, P:%d, A:%d", section, relativePosition, absolutePosition));
+
+            final String imageTransitionName = "transition" + absolutePosition;
+            final String textTransitionName = "transtext" + absolutePosition;
+            final Bundle bundle = new Bundle();
+
+
+            if (items.size() != 0) {
+                Log.d("Array size", String.valueOf(items.size()));
+                holder.ItemName.setText(items.get(absolutePosition).getName());
+                holder.ShopName.setText(items.get(absolutePosition).getShopName());
+                holder.ItemPrice.setText("$" + String.valueOf(items.get(absolutePosition).getPrice()));
+                if (items.get(absolutePosition).getImgUrl().equals("http://bubble.zeowls.com/uploads/")) {
+                    holder.imageView.setImageResource(R.drawable.bubble_logo);
+                } else {
+                    picasso.load(items.get(absolutePosition).getImgUrl()).fit().centerCrop().into(holder.imageView);
+                }
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.cardView.setCardElevation(20);
+                    bundle.putString("TRANS_NAME", imageTransitionName);
+                    bundle.putString("TRANS_TEXT", textTransitionName);
+
+                    bundle.putString("ACTION", holder.ItemName.getText().toString());
+                    if (holder.imageView.getDrawable() != null) {
+                        bundle.putParcelable("IMAGE", ((BitmapDrawable) holder.imageView.getDrawable()).getBitmap());
+                    }
+
+                    endFragment2 = new ItemDetailFragment();
+                    endFragment2.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    endFragment2.setId(items.get(absolutePosition).getId());
+                    endFragment2.setShopId(shop_id);
+                    fragmentManager.beginTransaction()
+                            .add(R.id.fragment_main, endFragment2)
+                            .addToBackStack(null)
+                            .addSharedElement(holder.imageView, imageTransitionName)
+                            .addSharedElement(holder.ItemName, textTransitionName)
+                            .commit();
+//                    Intent intent = new Intent(getActivity(), ItemDetailActivity.class);
+//                    intent.putExtra("id", GiftItems.get(absolutePosition).getId());
+//                    getActivity().startActivity(intent);
+
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemViewType(int section, int relativePosition, int absolutePosition) {
+//        if (section == 1)
+//            return 0; // VIEW_TYPE_HEADER is -2, VIEW_TYPE_ITEM is -1. You can return 0 or greater.
+            return super.getItemViewType(section, relativePosition, absolutePosition);
+        }
+
+        @Override
+        public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
+            int layout;
+            switch (viewType) {
+                case VIEW_TYPE_HEADER:
+                    layout = R.layout.list_item_header_3;
+                    break;
+                case VIEW_TYPE_ITEM:
+                    layout = R.layout.list_item_main_3;
+                    break;
+                default:
+                    layout = R.layout.list_item_main_bold;
+                    break;
+            }
+
+            View v = LayoutInflater.from(getActivity()).inflate(layout, parent, false);
+
+            return new MainVH(v);
+        }
+
+        public class MainVH extends RecyclerView.ViewHolder {
+
+
+            TextView ShopName;
+            TextView ItemName;
+            TextView ItemPrice;
+            CardView cardView;
+            ImageView imageView;
+
+            public MainVH(View itemView) {
+                super(itemView);
+
+                ShopName = (TextView) itemView.findViewById(R.id.card_Shop_name);
+                ItemName = (TextView) itemView.findViewById(R.id.card_Name);
+                ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
+                cardView = (CardView) itemView.findViewById(R.id.card_view);
+                imageView = (ImageView) itemView.findViewById(R.id.card_image);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent(context, ItemDetailActivity_2.class);
+//                        context.startActivity(intent);
+                    }
+                });
+
+
+                ShopName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Toast.makeText(context, ShopName.getText().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+                ItemName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        Toast.makeText(context, ItemName.getText(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+                ItemPrice.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //   Toast.makeText(context, "item price", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
+
+    private class loadingData2 extends AsyncTask {
+
+        @Override
+        protected void onPreExecute() {
+            items.clear();
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            mProgressBar.setVisibility(View.GONE);
+            Item_Detail_Root_Layout.setVisibility(View.VISIBLE);
+            item_detail_Shop_Top_Items.setAdapter(adapter);
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+
+            try {
+                Core core = new Core(getContext());
+                JSONObject itemsJSON = core.getShopItems(shop_id);
+                if (itemsJSON != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    Log.d("json", itemsJSON.toString());
+                    for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++) {
+                        JSONArray itemsarray = itemsJSON.getJSONArray("Items");
+                        JSONObject item = itemsarray.getJSONObject(i);
+                        ItemDataMode item1 = new ItemDataMode();
+                        item1.setCatId(item.getInt("cat_id"));
+                        item1.setDesc(item.getString("description"));
+                        item1.setId(item.getInt("id"));
+                        item1.setName(item.getString("name"));
+                        item1.setPrice(item.getString("price"));
+                        item1.setShopId(item.getInt("shop_id"));
+                        item1.setShortDesc(item.getString("short_description"));
+                        item1.setImgUrl(item.getString("image"));
+
+                        items.add(item1);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
+            return null;
+        }
     }
 
 

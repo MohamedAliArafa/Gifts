@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         app:tabTextColor="@color/colorPrimaryDark2"
         app:tabIndicatorColor="@color/colorPrimaryDark2"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+
         />
 
     <android.support.design.widget.CoordinatorLayout

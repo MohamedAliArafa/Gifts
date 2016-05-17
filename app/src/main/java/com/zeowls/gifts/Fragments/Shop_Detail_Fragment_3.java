@@ -133,6 +133,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         Shop_Detail_Root_Layout = (LinearLayout) view.findViewById(R.id.Shop_Detail_Root_Layout);
+        Shop_Detail_Root_Layout.setVisibility(View.GONE);
         mErrorText = (LinearLayout) view.findViewById(R.id.error);
 
         Shop_Name = (TextView) view.findViewById(R.id.item_Detail_Shop_title1);
@@ -189,7 +190,6 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                 fragmentTransaction = fragmentManager.beginTransaction();
                 shopAllItemsFragment =  new ShopAllItemsFragment();
                 shopAllItemsFragment.setId(id);
-                fragmentTransaction.hide(getFragmentManager().findFragmentByTag("ShopFragment"));
                 fragmentTransaction.add(R.id.fragment_main, shopAllItemsFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -495,7 +495,6 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment2.setId(items.get(absolutePosition).getId());
                     fragmentManager.beginTransaction()
-                            .hide(getFragmentManager().findFragmentByTag("ShopFragment"))
                             .add(R.id.fragment_main, endFragment2)
                             .addToBackStack(null)
                             .addSharedElement(holder.imageView, imageTransitionName)

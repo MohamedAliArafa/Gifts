@@ -7,6 +7,8 @@
     <color name="white">#FFFFFF</color>
     <color name="dark_grey">#424242</color>
     <color name="medium_grey">#9E9E9E</color>
+    <color name="medium_grey_2">#999E9E9E</color>
+
     <color name="soft_grey">#d6d6d6</color>
     <color name="soft_grey_1">#E0E0E0</color>
     <color name="Back1">#FAFAFA</color>

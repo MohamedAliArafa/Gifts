@@ -141,6 +141,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                             Gift_Item.setId(item.getInt("id"));
                             Gift_Item.setName(item.getString("name"));
                             Gift_Item.setShopName(item.getString("shop_name"));
+                            Gift_Item.setShopId(item.getInt("shop_id"));
                             Gift_Item.setDesc(item.getString("description"));
                             Gift_Item.setPrice("$" + item.getString("price"));
                             Gift_Item.setImgUrl(item.getString("image"));
@@ -261,6 +262,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                     endFragment2.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment2.setId(GiftItems.get(absolutePosition).getId());
+                    endFragment2.setShopId(GiftItems.get(absolutePosition).getShopId());
                     fragmentManager.beginTransaction()
                             .hide(getFragmentManager().findFragmentByTag("homeFragment"))
                             .add(R.id.fragment_main, endFragment2,"ItemDetailFragment")

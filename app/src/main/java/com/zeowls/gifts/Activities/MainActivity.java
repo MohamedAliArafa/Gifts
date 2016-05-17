@@ -320,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                                     fragmentManager.popBackStack();
                                 }
+                              //  fragment = new HomePageFragment();
                                 fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
                                 fragmentTransaction.commit();
