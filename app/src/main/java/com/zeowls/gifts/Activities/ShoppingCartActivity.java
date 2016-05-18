@@ -78,7 +78,7 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
 
         try {
             userId = PrefUtils.getCurrentUser(getActivity()).getId();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return inflater.inflate(R.layout.activity_shopping_cart, container, false);
@@ -148,8 +148,9 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, final Cursor cursor) {
+        public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
 
+            final Cursor data = cursor;
             holder.Shopping_Cart_Shop_Name.setText(cursor.getString(ShoppingCartActivity.COL_CART_SHOP_NAME));
             holder.Shopping_Cart_Item_Name.setText(cursor.getString(ShoppingCartActivity.COL_CART_ITEM_NAME));
             holder.Shopping_Cart_Item_Price.setText(cursor.getString(ShoppingCartActivity.COL_CART_ITEM_PRICE));
@@ -158,8 +159,9 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
             holder.Shopping_Cart_Check_Out.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    new loadingData().execute();
+                    loadingData loadingData = new loadingData();
+                    loadingData.setItemID(data.getInt(ShoppingCartActivity.COL_CART_ITEM_ID));
+                    loadingData.execute();
                 }
             });
 
@@ -190,6 +192,11 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
 
         int response = 0;
 
+        int ItemID = 0;
+
+        public void setItemID(int itemID) {
+            ItemID = itemID;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -208,14 +215,14 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
         @Override
         protected Object doInBackground(Object[] params) {
 
-            response = core.makeOrder(ShoppingCartActivity.COL_CART_ITEM_ID, userId, 1);
+            response = core.makeOrder(ItemID, userId, 1);
             return null;
         }
     }
 
     private class loadingOrdersData extends AsyncTask {
 
-        String  response;
+        String response;
 
 
         @Override
@@ -234,8 +241,6 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
             return null;
         }
     }
-
-
 
 
 }

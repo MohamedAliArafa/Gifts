@@ -422,7 +422,7 @@ public class ItemDetailFragment extends Fragment {
                 Shop_Address = item.getString("shop_address");
                 Shop_Short_Desc = item.getString("shop_short_desc");
                 item_Qty_String = String.valueOf(item.getInt("quantity"));
-
+                shop_id = item.getInt("shop_id");
 
                 updateUI();
 
@@ -437,7 +437,9 @@ public class ItemDetailFragment extends Fragment {
                         if (manager.findFragmentByTag(fragmentTag) == null) { //fragment not in back stack, create it.
                             FragmentTransaction ft = manager.beginTransaction();
                             endFragment.setId(shop_id);
-                            ft.hide(getFragmentManager().findFragmentByTag("ItemDetailFragment"));
+                            if (getFragmentManager().findFragmentByTag("ItemDetailFragment") != null) {
+                                ft.hide(getFragmentManager().findFragmentByTag("ItemDetailFragment"));
+                            }
                             ft.add(R.id.fragment_main, endFragment, fragmentTag);
                             ft.addToBackStack(backStateName);
                             ft.commit();
@@ -462,13 +464,15 @@ public class ItemDetailFragment extends Fragment {
                             FireOwl fireOwl = new FireOwl(getActivity());
                             fireOwl.addOrder(shop_id, item_id, user_id);
 
-                            ShoppingCartActivity endFragment2 = new ShoppingCartActivity();
-                            FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction()
-                                    .hide(getFragmentManager().findFragmentByTag("homeFragment"))
-                                    .add(R.id.fragment_main, endFragment2)
-                                    .addToBackStack(null)
-                                    .commit();
+                            Toast.makeText(getActivity(), item_name + " Added to cart", Toast.LENGTH_SHORT).show();
+
+//                            ShoppingCartActivity endFragment2 = new ShoppingCartActivity();
+//                            FragmentManager fragmentManager = getFragmentManager();
+//                            fragmentManager.beginTransaction()
+//                                    .hide(getFragmentManager().findFragmentByTag("homeFragment"))
+//                                    .add(R.id.fragment_main, endFragment2)
+//                                    .addToBackStack(null)
+//                                    .commit();
 //                                Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
 //                                startActivity(intent);
                         } else {

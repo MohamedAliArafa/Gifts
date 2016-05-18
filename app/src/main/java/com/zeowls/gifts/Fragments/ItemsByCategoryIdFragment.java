@@ -153,6 +153,7 @@ public class ItemsByCategoryIdFragment extends Fragment {
                     FragmentManager fragmentManager = getFragmentManager();
                     ItemDetailFragment endFragment = new ItemDetailFragment();
                     endFragment.setId(items.get(position).getId());
+                    endFragment.setShopId(items.get(position).getShopId());
                     fragmentManager.beginTransaction()
                             .add(R.id.fragment_main, endFragment)
                             .addToBackStack(backStateName)

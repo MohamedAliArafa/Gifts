@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //                        // TODO: handle navigation
                         if (menuItem.getItemId() == R.id.navHomeBTN) {
 
-                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
+//                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
                                 for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                                     fragmentManager.popBackStack();
                                 }
@@ -316,15 +316,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 fragment = new HomePageFragment();
                                 fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
                                 fragmentTransaction.commit();
-                            } else {
-                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-                                    fragmentManager.popBackStack();
-                                }
-                              //  fragment = new HomePageFragment();
-                                fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
-                                fragmentTransaction.commit();
-                            }
+//                            } else {
+//                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+//                                    fragmentManager.popBackStack();
+//                                }
+//                              //  fragment = new HomePageFragment();
+//                                fragmentTransaction = fragmentManager.beginTransaction();
+//                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
+//                                fragmentTransaction.commit();
+//                            }
 
                             mDrawerLayout.closeDrawers();
                             return true;

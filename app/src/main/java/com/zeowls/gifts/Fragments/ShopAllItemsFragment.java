@@ -199,8 +199,9 @@ public class ShopAllItemsFragment extends Fragment {
 //                    }
                     fragment = new ItemDetailFragment();
                     fragment.setId(items.get(position).getId());
+                    fragment.setShopId(items.get(position).getShopId());
                     fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.fragment_main, fragment);
+                    fragmentTransaction.replace(R.id.fragment_main, fragment, "ItemDetailFragment");
                     fragmentTransaction.commit();
 //                    Context context = v.getContext();
 //                    Toast.makeText(context, "id: " + shops.get(position).getId(), Toast.LENGTH_SHORT).show();

@@ -1,7 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Back1">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -41,8 +42,7 @@
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Back1">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"

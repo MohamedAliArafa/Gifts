@@ -494,6 +494,7 @@ public class Shop_Detail_Fragment_3 extends Fragment {
                     endFragment2.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment2.setId(items.get(absolutePosition).getId());
+                    endFragment2.setShopId(items.get(absolutePosition).getShopId());
                     fragmentManager.beginTransaction()
                             .add(R.id.fragment_main, endFragment2)
                             .addToBackStack(null)

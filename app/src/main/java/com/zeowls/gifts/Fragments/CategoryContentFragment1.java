@@ -247,6 +247,7 @@ public class CategoryContentFragment1 extends Fragment implements LoaderManager.
                 @Override
                 public void onClick(View v) {
 
+                    Fragment fragment = getFragmentManager().findFragmentByTag("homeFragment");
 
                     FragmentManager fragmentManager = getFragmentManager();
                     endFragment.setId(SubCategoreis.get(absolutePosition).getId());
