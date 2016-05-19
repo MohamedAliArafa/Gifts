@@ -177,6 +177,28 @@ public class Core {
         return json;
     }
 
+
+
+    public JSONObject getUserOrdersByUserID(int id) {
+        JSONObject json = null;
+        try {
+            String response = getRequest(Domain + "/getOrdersByUser/" + id + "/JSON");
+            if (!response.equals("0")) {
+                json = new JSONObject(response);
+            } else {
+                Log.d("getOrdersByUser", response);
+            }
+        } catch (Exception e) {
+//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+//        putMoviesDB(json);
+        return json;
+    }
+
+
+
+
 //    public JSONObject getSubAllCategories() {
 //        JSONObject json = null;
 //        try {
