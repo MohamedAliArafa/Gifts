@@ -99,7 +99,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".RegistrationIntentService" android:exported="false"/>
+        <service android:name="com.example.nora.bubblestores.RegistrationIntentService" android:exported="false"/>
 
     </application>
 

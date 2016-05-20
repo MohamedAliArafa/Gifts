@@ -1,18 +1,15 @@
 package com.zeowls.gifts;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.zeowls.gifts.BackEndOwl.Core;
-import com.zeowls.gifts.Utility.PrefUtils;
 
 import java.io.IOException;
 
@@ -110,6 +107,7 @@ public class RegistrationIntentService extends IntentService {
     }
 
     String token = "";
+    int id=0;
 
 
 
@@ -138,10 +136,17 @@ public class RegistrationIntentService extends IntentService {
 
     private void sendRegistrationToServer(String token) {
         try {
-            int user_id = PrefUtils.getCurrentUser(getBaseContext()).getId();
-            // send network request
-            Core core = new Core(getBaseContext());
-            core.registerDevice(user_id, token);
+
+            SharedPreferences preferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
+            id = preferences.getInt("shopID", 0);
+            if (id != 0) {
+
+                // send network request
+                Core core = new Core(getBaseContext());
+                core.registerDevice(id, token);
+            }
+
+
         }catch (Exception e){
             e.printStackTrace();
         }

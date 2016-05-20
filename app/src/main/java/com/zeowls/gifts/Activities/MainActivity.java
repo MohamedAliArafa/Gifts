@@ -309,13 +309,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         if (menuItem.getItemId() == R.id.navHomeBTN) {
 
 //                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
-                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-                                    fragmentManager.popBackStack();
-                                }
-                                fragmentTransaction = fragmentManager.beginTransaction();
-                                fragment = new HomePageFragment();
-                                fragmentTransaction.replace(R.id.fragment_main, fragment, "homeFragment");
-                                fragmentTransaction.commit();
+                            for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                                fragmentManager.popBackStack();
+                            }
+//                            fragmentManager = getSupportFragmentManager();
+                            fragmentTransaction = fragmentManager.beginTransaction();
+//                            fragment = new HomePageFragment();
+                            if (fragmentManager.findFragmentByTag("homeFragment") != null) {
+                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"), "homeFragment");
+                            }
+                            fragmentTransaction.commit();
 //                            } else {
 //                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
 //                                    fragmentManager.popBackStack();
