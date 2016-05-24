@@ -164,7 +164,6 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
                     loadingData.execute();
                 }
             });
-
         }
     }
 

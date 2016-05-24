@@ -54,6 +54,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.Fragments.HomePageFragment;
+import com.zeowls.gifts.Fragments.OrdersFragment;
 import com.zeowls.gifts.Models.UserDataModel;
 import com.zeowls.gifts.QuickstartPreferences;
 import com.zeowls.gifts.R;
@@ -305,32 +306,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-//                        // TODO: handle navigation
+                        // TODO: handle navigation
                         if (menuItem.getItemId() == R.id.navHomeBTN) {
-
-//                            if (fragmentManager.findFragmentByTag("homeFragment") == null) {
                             for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                                 fragmentManager.popBackStack();
                             }
-//                            fragmentManager = getSupportFragmentManager();
                             fragmentTransaction = fragmentManager.beginTransaction();
-//                            fragment = new HomePageFragment();
                             if (fragmentManager.findFragmentByTag("homeFragment") != null) {
                                 fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"), "homeFragment");
                             }
                             fragmentTransaction.commit();
-//                            } else {
-//                                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
-//                                    fragmentManager.popBackStack();
-//                                }
-//                              //  fragment = new HomePageFragment();
-//                                fragmentTransaction = fragmentManager.beginTransaction();
-//                                fragmentTransaction.replace(R.id.fragment_main, fragmentManager.findFragmentByTag("homeFragment"));
-//                                fragmentTransaction.commit();
-//                            }
-
                             mDrawerLayout.closeDrawers();
                             return true;
+                        }
+
+                        if (menuItem.getItemId() == R.id.navOrdersBTN) {
+                            //init home fragment
+                            fragmentManager = getSupportFragmentManager();
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            OrdersFragment fragment = new OrdersFragment();
+                            try {
+                                userId = PrefUtils.getCurrentUser(getBaseContext()).getId();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            fragment.setUserId(userId);
+                            fragmentTransaction.replace(R.id.fragment_main, fragment, "orderFragment");
+                            fragmentTransaction.commit();
                         }
 
                         // Closing drawer on item click

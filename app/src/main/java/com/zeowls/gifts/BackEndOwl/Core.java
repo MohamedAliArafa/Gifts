@@ -31,7 +31,7 @@ public class Core {
         this.context = context;
     }
 
-    private String Domain = "http://bubble-zeowls-pro.herokuapp.com";
+    private String Domain = "http://bubble-zeowls-stage.herokuapp.com";
 
     private String getRequest(String url) throws IOException {
         String data;
@@ -518,24 +518,34 @@ public class Core {
             json.put("user_id", user_id);
             responseJson = new JSONObject(postRequest("/getOrdersByUser", json));
         } catch (Exception e) {
-//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return responseJson;
+    }
+
+    public JSONObject editUserOrder(int order_id, String shipping_address) {
+        JSONObject json = new JSONObject();
+        JSONObject responseJson = new JSONObject();
+
+        try {
+            json.put("order_id", order_id);
+            json.put("shipping_address", shipping_address);
+            responseJson = new JSONObject(postRequest("/editOrdersByUser", json));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return responseJson;
     }
 
     public JSONObject registerDevice(int user_id, String token) {
-
         JSONObject json = new JSONObject();
         JSONObject responseJson = new JSONObject();
-
         try {
             json.put("user_id", user_id);
             json.put("device_token", token);
             responseJson = new JSONObject(postRequest("/registerDevice", json));
             Log.d("registerDeviceToken",  token + "User:" + user_id);
         } catch (Exception e) {
-//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return responseJson;
