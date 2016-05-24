@@ -31,7 +31,7 @@ public class Core {
         this.context = context;
     }
 
-    private String Domain = "http://bubble-zeowls-stage.herokuapp.com";
+    private String Domain = "http://bubble-zeowls-pro.herokuapp.com";
 
     private String getRequest(String url) throws IOException {
         String data;
@@ -41,7 +41,7 @@ public class Core {
         HttpURLConnection httpURLConnection = (HttpURLConnection) url1.openConnection();
         httpURLConnection.setRequestMethod("GET");
         httpURLConnection.setRequestProperty("Authorization", "627562626c6520617069206b6579");
-        httpURLConnection.setConnectTimeout(2000);
+        httpURLConnection.setConnectTimeout(20000);
         httpURLConnection.connect();
 
         InputStream inputStream = httpURLConnection.getInputStream();
@@ -179,22 +179,22 @@ public class Core {
 
 
 
-    public JSONObject getUserOrdersByUserID(int id) {
-        JSONObject json = null;
-        try {
-            String response = getRequest(Domain + "/getOrdersByUser/" + id + "/JSON");
-            if (!response.equals("0")) {
-                json = new JSONObject(response);
-            } else {
-                Log.d("getOrdersByUser", response);
-            }
-        } catch (Exception e) {
-//            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-//        putMoviesDB(json);
-        return json;
-    }
+//    public JSONObject getUserOrdersByUserID(int id) {
+//        JSONObject json = null;
+//        try {
+//            String response = getRequest(Domain + "/getOrdersByUser/" + id + "/JSON");
+//            if (!response.equals("0")) {
+//                json = new JSONObject(response);
+//            } else {
+//                Log.d("getOrdersByUser", response);
+//            }
+//        } catch (Exception e) {
+////            Toast.makeText(context,  e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+////        putMoviesDB(json);
+//        return json;
+//    }
 
 
 
@@ -254,7 +254,7 @@ public class Core {
     public JSONArray getHomePage() {
         JSONArray json = null;
         try {
-            String response = getRequest(Domain + "/HomePageTest/JSON");
+            String response = getRequest(Domain + "/HomePage/JSON");
             if (!response.equals("0")) {
                 json = new JSONArray(response);
 //                putItemsDB(json);
