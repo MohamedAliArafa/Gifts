@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.Utility.PrefUtils;
 
 import java.io.IOException;
 
@@ -92,9 +93,6 @@ public class RegistrationIntentService extends IntentService {
 //    // [END subscribe_topics]
 
 
-
-
-
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String GCM_TOKEN = "gcmToken";
 
@@ -107,8 +105,7 @@ public class RegistrationIntentService extends IntentService {
     }
 
     String token = "";
-    int id=0;
-
+    int id = 0;
 
 
     @Override
@@ -137,8 +134,13 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) {
         try {
 
-            SharedPreferences preferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
-            id = preferences.getInt("shopID", 0);
+            try {
+                id = PrefUtils.getCurrentUser(getBaseContext()).getId();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//            SharedPreferences preferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
+//            id = preferences.getInt("shopID", 0);
             if (id != 0) {
 
                 // send network request
@@ -147,7 +149,7 @@ public class RegistrationIntentService extends IntentService {
             }
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

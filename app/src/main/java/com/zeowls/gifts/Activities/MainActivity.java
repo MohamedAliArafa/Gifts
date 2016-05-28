@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 e.printStackTrace();
                             }
                             fragment.setUserId(userId);
-                            fragmentTransaction.replace(R.id.fragment_main, fragment, "orderFragment");
+                            fragmentTransaction.add(R.id.fragment_main, fragment, "orderFragment");
                             fragmentTransaction.commit();
                         }
 

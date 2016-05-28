@@ -194,8 +194,6 @@ public class ShopsContentFragment extends Fragment implements LoaderManager.Load
                         } else {
                             shop.setDescription("");
                         }
-
-
                         shops.add(shop);
                     }
                 }

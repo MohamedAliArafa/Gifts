@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -131,6 +132,7 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
             ImageView Shopping_Cart_Item_Image;
             TextView Shopping_Cart_Shop_Name, Shopping_Cart_Item_Name, Shopping_Cart_Item_Price;
             Button Shopping_Cart_Check_Out;
+            EditText Shopping_Cart_Item_Qyt;
 
             public ViewHolder(View view) {
                 super(view);
@@ -139,6 +141,7 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
                 Shopping_Cart_Item_Price = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Price);
                 Shopping_Cart_Check_Out = (Button) view.findViewById(R.id.Shopping_Cart_Check_Out);
                 Shopping_Cart_Item_Image = (ImageView) view.findViewById(R.id.Shopping_Cart_Item_Image);
+                Shopping_Cart_Item_Qyt = (EditText) view.findViewById(R.id.Shopping_Cart_Item_Qty);
             }
         }
 
@@ -146,6 +149,8 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shopping_cart_recycler_item, parent, false));
         }
+
+        String Qyt;
 
         @Override
         public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
@@ -159,9 +164,13 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
             holder.Shopping_Cart_Check_Out.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadingData loadingData = new loadingData();
-                    loadingData.setItemID(data.getInt(ShoppingCartActivity.COL_CART_ITEM_ID));
-                    loadingData.execute();
+                    if (Qyt != null && !Qyt.isEmpty()) {
+                        loadingData loadingData = new loadingData();
+                        loadingData.setItemID(data.getInt(ShoppingCartActivity.COL_CART_ITEM_ID));
+                        loadingData.execute();
+                    } else {
+                        Toast.makeText(getActivity(), "Enter The Quantity You Want", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }

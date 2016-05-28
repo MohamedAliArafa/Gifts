@@ -178,7 +178,6 @@ public class Core {
     }
 
 
-
 //    public JSONObject getUserOrdersByUserID(int id) {
 //        JSONObject json = null;
 //        try {
@@ -195,8 +194,6 @@ public class Core {
 ////        putMoviesDB(json);
 //        return json;
 //    }
-
-
 
 
 //    public JSONObject getSubAllCategories() {
@@ -257,7 +254,7 @@ public class Core {
             String response = getRequest(Domain + "/HomePage/JSON");
             if (!response.equals("0")) {
                 json = new JSONArray(response);
-//                putItemsDB(json);
+                putItemsDB(json.getJSONObject(0));
             } else {
                 Log.d("get Items By Cat id", response);
             }
@@ -491,6 +488,20 @@ public class Core {
     }
 
 
+    public int updateItemFavoriteDB(int fav, int id) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ItemEntry.COLUMN_FAV, fav);
+        return context.getContentResolver().update(ItemEntry.CONTENT_URI, contentValues, ItemEntry.COLUMN_ID + "=" + id, null);
+    }
+
+
+    public int updateShopFavoriteDB(int fav, int id) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ShopEntry.COLUMN_FAV, fav);
+        return context.getContentResolver().update(ShopEntry.CONTENT_URI, contentValues, ShopEntry.COLUMN_ID + "=" + id, null);
+    }
+
+
     public int makeOrder(int item_id, int user_id, int quantity) {
 
         JSONObject json = new JSONObject();
@@ -544,7 +555,7 @@ public class Core {
             json.put("user_id", user_id);
             json.put("device_token", token);
             responseJson = new JSONObject(postRequest("/registerDevice", json));
-            Log.d("registerDeviceToken",  token + "User:" + user_id);
+            Log.d("registerDeviceToken", token + "User:" + user_id);
         } catch (Exception e) {
             e.printStackTrace();
         }

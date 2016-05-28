@@ -47,7 +47,6 @@ public class OrdersFragment extends Fragment {
     ContentAdapter adapter;
 
 
-
     public OrdersFragment() {
         // Required empty public constructor
     }
@@ -78,11 +77,11 @@ public class OrdersFragment extends Fragment {
     }
 
 
-
     public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
 
-        ImageView Shopping_Cart_Item_Image;
-        TextView Shopping_Cart_Shop_Name, Shopping_Cart_Item_Name, Shopping_Cart_Item_Price;
+        ImageView Shopping_Cart_Item_Image, Shopping_Cart_Shop_Image;
+        TextView Shopping_Cart_Shop_Name, Shopping_Cart_Item_Name, Shopping_Cart_Item_Price,
+                Shopping_Cart_Item_Quantity, Shopping_Cart_Order_Status;
         Button Shopping_Cart_Check_Out;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -91,15 +90,18 @@ public class OrdersFragment extends Fragment {
                 super(view);
                 Shopping_Cart_Shop_Name = (TextView) view.findViewById(R.id.Shopping_Cart_Shop_Name);
                 Shopping_Cart_Item_Name = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Name);
+                Shopping_Cart_Item_Quantity = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Qty);
+                Shopping_Cart_Order_Status = (TextView) view.findViewById(R.id.Shopping_Cart_Order_Status);
                 Shopping_Cart_Item_Price = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Price);
                 Shopping_Cart_Check_Out = (Button) view.findViewById(R.id.Shopping_Cart_Check_Out);
                 Shopping_Cart_Item_Image = (ImageView) view.findViewById(R.id.Shopping_Cart_Item_Image);
+                Shopping_Cart_Shop_Image = (ImageView) view.findViewById(R.id.imageView);
             }
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shopping_cart_recycler_item, parent, false));
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.order_recycler_item, parent, false));
         }
 
         @Override
@@ -108,8 +110,29 @@ public class OrdersFragment extends Fragment {
                 orderDataModel order = OrdersArray.get(position);
                 Shopping_Cart_Shop_Name.setText(order.getShop_name());
                 Shopping_Cart_Item_Name.setText(order.getItem_name());
-                Shopping_Cart_Item_Price.setText(order.getItem_price());
+                Shopping_Cart_Item_Price.setText("$" + order.getItem_price());
+                Shopping_Cart_Item_Quantity.setText(order.getItem_quantity());
+                switch (order.getStatus()) {
+                    case 0:
+                        Shopping_Cart_Order_Status.setText("Pending");
+                        break;
+                    case 1:
+                        Shopping_Cart_Order_Status.setText("Confirmed by User");
+                        break;
+                    case 2:
+                        Shopping_Cart_Order_Status.setText("Confirmed by shop");
+                        break;
+                    case 3:
+                        Shopping_Cart_Order_Status.setText("On Delivery");
+                        break;
+                    case 4:
+                        Shopping_Cart_Order_Status.setText("Received by User");
+                        break;
+                    default:
+                        Shopping_Cart_Order_Status.setText("Unknown");
+                }
                 picasso.load("http://bubble.zeowls.com/uploads/" + order.getItem_image()).into(Shopping_Cart_Item_Image);
+                picasso.load("http://bubble.zeowls.com/uploads/" + order.getShop_image()).into(Shopping_Cart_Shop_Image);
             }
         }
 
@@ -143,7 +166,11 @@ public class OrdersFragment extends Fragment {
                         order.setItem_id(jsonObject.getInt("id"));
                         order.setItem_name(jsonObject.getString("item_name"));
                         order.setShop_name(jsonObject.getString("shop_name"));
+                        order.setShop_image(jsonObject.getString("shop_image"));
                         order.setItem_price(jsonObject.getString("item_price"));
+                        order.setItem_image(jsonObject.getString("item_image"));
+                        order.setItem_quantity(jsonObject.getString("item_quantity"));
+                        order.setStatus(jsonObject.getInt("order_status"));
                         OrdersArray.add(order);
                     }
                 }

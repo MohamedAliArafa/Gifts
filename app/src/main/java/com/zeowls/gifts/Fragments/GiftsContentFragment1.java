@@ -127,14 +127,13 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                 JSONArray sectionsArray = core.getHomePage();
                 for (int i = 0; i < sectionsArray.length(); i++){
                     String sectionName = sectionsArray.getJSONObject(i).getString("Catname");
-                    JSONArray sectionItems = sectionsArray.getJSONObject(i).getJSONArray("Category");
+                    JSONArray sectionItems = sectionsArray.getJSONObject(i).getJSONArray("Items");
                     int itemsCount = sectionItems.length();
                     if (itemsCount > 1) {
                         ItemDataMode category = new ItemDataMode();
                         category.setName(sectionName);
                         category.setCatId(itemsCount);
                         CategoryList.add(category);
-
                         for (int y = 0; y < sectionItems.length(); y++){
                             ItemDataMode Gift_Item = new ItemDataMode();
                             JSONObject item = sectionItems.getJSONObject(y);
@@ -150,35 +149,6 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                     }
 
                 }
-
-//                JSONArray subCatArray = core.getSubAllCategories().getJSONArray("Category");
-//                for (int z = 0; z < subCatArray.length(); z++) {
-//                    ItemDataMode category = new ItemDataMode();
-//                    category.setName(subCatArray.getJSONObject(z).getString("name"));
-//                    category.setId(subCatArray.getJSONObject(z).getInt("id"));
-//                    CategoryList.add(category);
-//                }
-//                Collections.sort(CategoryList);
-//
-//                if (itemsarray.length() != 0) {
-//                    for (int i = 0; i < itemsarray.length(); i++) {
-//                        JSONArray items = itemsarray.getJSONObject(i).getJSONArray("Category");
-//                        if (items.length() > 3) {
-//                            CategoryList.get(i).setCatId(items.length());
-//                            for (int y = 0; y < items.length(); y++) {
-//                                ItemDataMode Gift_Item = new ItemDataMode();
-//                                JSONObject item = items.getJSONObject(y);
-//                                Gift_Item.setId(item.getInt("id"));
-//                                Gift_Item.setName(item.getString("name"));
-//                                Gift_Item.setShopName(item.getString("shop_name"));
-//                                Gift_Item.setDesc(item.getString("description"));
-//                                Gift_Item.setPrice("$" + item.getString("price"));
-//                                Gift_Item.setImgUrl(item.getString("image"));
-//                                GiftItems.add(Gift_Item);
-//                            }
-//                        }
-//                    }getJSONArray
-//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -224,6 +194,8 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
             final String imageTransitionName = "transition" + absolutePosition;
             final String textTransitionName = "transtext" + absolutePosition;
             final Bundle bundle = new Bundle();
+
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.ItemName.setTransitionName(textTransitionName);
@@ -277,6 +249,14 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                 }
             });
 
+            holder.favBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Core core = new Core(getActivity());
+                    core.updateItemFavoriteDB(1, GiftItems.get(absolutePosition).getId());
+                }
+            });
+
         }
 
         @Override
@@ -313,7 +293,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
             TextView ItemName;
             TextView ItemPrice;
             CardView cardView;
-            ImageView imageView;
+            ImageView imageView, favBTN;
 
             public MainVH(View itemView) {
                 super(itemView);
@@ -323,6 +303,7 @@ public class GiftsContentFragment1 extends Fragment implements LoaderManager.Loa
                 ItemPrice = (TextView) itemView.findViewById(R.id.share_button);
                 cardView = (CardView) itemView.findViewById(R.id.card_view);
                 imageView = (ImageView) itemView.findViewById(R.id.card_image);
+                favBTN = (ImageView) itemView.findViewById(R.id.card_Favorite);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

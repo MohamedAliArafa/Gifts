@@ -13,6 +13,7 @@ public class orderDataModel {
     public String shipping_address;
     public int shop_id;
     public String shop_name;
+    public String shop_image;
     public String shop_mobile;
     public String shop_email;
     public String shop_address;
@@ -23,19 +24,29 @@ public class orderDataModel {
     public String item_price;
     public String item_quantity;
     public int status;
-
     public orderDataModel() {
 
     }
-
     public orderDataModel(int item_id, int user_id, int status) {
         this.item_id = item_id;
         this.user_id = user_id;
         this.status = status;
     }
 
+    public String getShop_image() {
+        return shop_image;
+    }
+
+    public void setShop_image(String shop_image) {
+        this.shop_image = shop_image;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getItem_image() {
@@ -44,10 +55,6 @@ public class orderDataModel {
 
     public void setItem_image(String item_image) {
         this.item_image = item_image;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUser_name() {
