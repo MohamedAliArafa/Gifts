@@ -502,7 +502,7 @@ public class Core {
     }
 
 
-    public int makeOrder(int item_id, int user_id, int quantity) {
+    public int makeOrder(int item_id, int user_id, int quantity, String shipping_address) {
 
         JSONObject json = new JSONObject();
         int result = 0;
@@ -510,6 +510,7 @@ public class Core {
             json.put("item_id", item_id);
             json.put("user_id", user_id);
             json.put("quantity", quantity);
+            json.put("shipping_address", shipping_address);
             String response = postRequest("/makeOrder", json);
             JSONObject resJson = new JSONObject(response);
             result = resJson.getInt("response");

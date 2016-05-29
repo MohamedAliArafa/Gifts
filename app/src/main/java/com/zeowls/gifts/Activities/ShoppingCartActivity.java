@@ -18,14 +18,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
+import com.zeowls.gifts.CustomDialogFragment;
 import com.zeowls.gifts.R;
 import com.zeowls.gifts.Utility.PrefUtils;
 import com.zeowls.gifts.provider.Contract;
@@ -103,7 +106,6 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
         @Override
         protected void onPostExecute(Object o) {
 //            try {
-//
 //              //  itemName.setText(itemsJSON.getJSONArray("Cart").getJSONObject(0).getString("item_name"));
 //               // price.setText( "$" + itemsJSON.getJSONArray("Cart").getJSONObject(0).getString("item_price"));
 //            } catch (JSONException e) {
@@ -155,22 +157,24 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
         @Override
         public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
 
-            final Cursor data = cursor;
             holder.Shopping_Cart_Shop_Name.setText(cursor.getString(ShoppingCartActivity.COL_CART_SHOP_NAME));
             holder.Shopping_Cart_Item_Name.setText(cursor.getString(ShoppingCartActivity.COL_CART_ITEM_NAME));
             holder.Shopping_Cart_Item_Price.setText(cursor.getString(ShoppingCartActivity.COL_CART_ITEM_PRICE));
             picasso.load("http://bubble.zeowls.com/uploads/" + cursor.getString(ShoppingCartActivity.COL_CART_ITEM_IMAGE)).into(holder.Shopping_Cart_Item_Image);
-            final int Shop_id = cursor.getInt(ShoppingCartActivity.COL_CART_SHOP_ID);
+            final int item_id = cursor.getInt(ShoppingCartActivity.COL_CART_ITEM_ID);
             holder.Shopping_Cart_Check_Out.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Qyt != null && !Qyt.isEmpty()) {
-                        loadingData loadingData = new loadingData();
-                        loadingData.setItemID(data.getInt(ShoppingCartActivity.COL_CART_ITEM_ID));
-                        loadingData.execute();
-                    } else {
-                        Toast.makeText(getActivity(), "Enter The Quantity You Want", Toast.LENGTH_SHORT).show();
-                    }
+                    CustomDialogFragment dialog = new CustomDialogFragment();
+                    dialog.setItemID(item_id);
+                    dialog.show(getFragmentManager(), "Order Dialog");
+//                    if (Qyt != null && !Qyt.isEmpty()) {
+//                        loadingData loadingData = new loadingData();
+//                        loadingData.setItemID(data.getInt(ShoppingCartActivity.COL_CART_ITEM_ID));
+//                        loadingData.execute();
+//                    } else {
+//                        Toast.makeText(getActivity(), "Enter The Quantity You Want", Toast.LENGTH_SHORT).show();
+//                    }
                 }
             });
         }
@@ -196,37 +200,37 @@ public class ShoppingCartActivity extends Fragment implements LoaderManager.Load
     }
 
 
-    private class loadingData extends AsyncTask {
-
-        int response = 0;
-
-        int ItemID = 0;
-
-        public void setItemID(int itemID) {
-            ItemID = itemID;
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            if (response == 1) {
-                Toast.makeText(getActivity(), "Order Sent Successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity(), "please login first", Toast.LENGTH_SHORT).show();
-                ((MainActivity) getActivity()).mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-        }
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-
-            response = core.makeOrder(ItemID, userId, 1);
-            return null;
-        }
-    }
+//    private class loadingData extends AsyncTask {
+//
+//        int response = 0;
+//
+//        int ItemID = 0;
+//
+//        public void setItemID(int itemID) {
+//            ItemID = itemID;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Object o) {
+//            if (response == 1) {
+//                Toast.makeText(getActivity(), "Order Sent Successfully", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(getActivity(), "please login first", Toast.LENGTH_SHORT).show();
+//                ((MainActivity) getActivity()).mDrawerLayout.openDrawer(GravityCompat.START);
+//            }
+//        }
+//
+//        @Override
+//        protected Object doInBackground(Object[] params) {
+//
+//            response = core.makeOrder(ItemID, userId, 1);
+//            return null;
+//        }
+//    }
 
     private class loadingOrdersData extends AsyncTask {
 

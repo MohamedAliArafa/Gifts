@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -14,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.zeowls.gifts.BackEndOwl.Core;
 import com.zeowls.gifts.Models.ItemDataMode;
 import com.zeowls.gifts.R;
+import com.zeowls.gifts.views.SpacesItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +38,10 @@ public class ItemsByCategoryIdFragment extends Fragment {
     Context context;
     int id = 0;
 
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
+    private LinearLayout mErrorText;
+
     protected FragmentActivity myContext;
 
     @Override
@@ -45,18 +53,26 @@ public class ItemsByCategoryIdFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        adapter = new ContentAdapter();
+//        recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
 
         new loadingData().execute();
 
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return inflater.inflate(R.layout.content_fragment, container, false);
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        adapter = new ContentAdapter();
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mErrorText = (LinearLayout) view.findViewById(R.id.error);
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
 
-        return recyclerView;
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     public void setId(int id) {
@@ -72,7 +88,15 @@ public class ItemsByCategoryIdFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            recyclerView.setAdapter(adapter);
+//            recyclerView.setAdapter(adapter);
+            if (items.size() != 0) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(adapter);
+            } else {
+                mErrorText.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -81,8 +105,8 @@ public class ItemsByCategoryIdFragment extends Fragment {
             try {
                 Core core = new Core(getContext());
                 JSONObject itemsJSON = core.getItemsByCategoryId(id);
-                if (core.getItemsByCategoryId(id) != null && itemsJSON.getJSONArray("Items").length() != 0) {
-                    Log.d("json", core.getItemsByCategoryId(id).toString());
+                if (itemsJSON != null && itemsJSON.getJSONArray("Items").length() != 0) {
+                    Log.d("json", itemsJSON.toString());
                     for (int i = 0; i < itemsJSON.getJSONArray("Items").length(); i++) {
                         JSONArray itemsarray = itemsJSON.getJSONArray("Items");
                         JSONObject item = itemsarray.getJSONObject(i);

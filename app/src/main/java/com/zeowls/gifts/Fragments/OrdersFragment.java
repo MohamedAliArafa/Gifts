@@ -81,7 +81,7 @@ public class OrdersFragment extends Fragment {
 
         ImageView Shopping_Cart_Item_Image, Shopping_Cart_Shop_Image;
         TextView Shopping_Cart_Shop_Name, Shopping_Cart_Item_Name, Shopping_Cart_Item_Price,
-                Shopping_Cart_Item_Quantity, Shopping_Cart_Order_Status;
+                Shopping_Cart_Item_Quantity, Shopping_Cart_Order_Status, Shopping_Cart_Item_Address;
         Button Shopping_Cart_Check_Out;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -89,6 +89,7 @@ public class OrdersFragment extends Fragment {
             public ViewHolder(View view) {
                 super(view);
                 Shopping_Cart_Shop_Name = (TextView) view.findViewById(R.id.Shopping_Cart_Shop_Name);
+                Shopping_Cart_Item_Address = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Address);
                 Shopping_Cart_Item_Name = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Name);
                 Shopping_Cart_Item_Quantity = (TextView) view.findViewById(R.id.Shopping_Cart_Item_Qty);
                 Shopping_Cart_Order_Status = (TextView) view.findViewById(R.id.Shopping_Cart_Order_Status);
@@ -112,6 +113,7 @@ public class OrdersFragment extends Fragment {
                 Shopping_Cart_Item_Name.setText(order.getItem_name());
                 Shopping_Cart_Item_Price.setText("$" + order.getItem_price());
                 Shopping_Cart_Item_Quantity.setText(order.getItem_quantity());
+                Shopping_Cart_Item_Address.setText(order.getShipping_address());
                 switch (order.getStatus()) {
                     case 0:
                         Shopping_Cart_Order_Status.setText("Pending");
@@ -170,6 +172,7 @@ public class OrdersFragment extends Fragment {
                         order.setItem_price(jsonObject.getString("item_price"));
                         order.setItem_image(jsonObject.getString("item_image"));
                         order.setItem_quantity(jsonObject.getString("item_quantity"));
+                        order.setShipping_address(jsonObject.getString("shipping_address"));
                         order.setStatus(jsonObject.getInt("order_status"));
                         OrdersArray.add(order);
                     }
